@@ -1,0 +1,21 @@
+Der Source von 7Up ist derzeit diversen Wandlungen unterworfen. Dieses Archiv
+ist der erste Schritt zu vielen neuen Versionen - oder auch nicht. Enthalten
+ist jedenfalls der komplette Source zu 7Up. Zum öbersetzung wird die MiNTLIB
+(min. PL 46) und die GEMLIB (min. PL 32) empfohlen.
+Zu diesen Libraries existieren ErgÑnzungen, Erweiterungen und Korrekturen von
+Markus Kohm. Diese sind als MLBMJK<Nummer>.ZIP und GLBMJK<Nummer>.ZIP
+verîffentlicht, wobei <Nummer> eine fortlaufende Revisionsnummer ist. Aktuell
+ist jeweils Revision 00.
+Mîglicherweise werden zukÅnftige Erweiterungen in 7Up von diesen erweiterten
+Libraries abghÑngig sein.
+
+Da ich (GS) es nicht geschaft habe 7Up nur mit der MiNT-Lib zu erstellen wird noch
+die PCSTDLIB.LIB hinzugelinkt.
+
+In diesem Archiv findet sich auûerdem das Modul VAFUNC. Dieses wurde
+ursprÅnglich von Stephan Gerle entwickelt. Leider die verfÅgbare Version von
+der Pure-C-GEM-Library bzw. dazu variablen-kompatiblen Libraries abhÑngig. Da
+das Modul nicht im Source verfÅgbar war, habe ich es kurzerhand komplett neu
+programmiert. Dabei habe ich mich bemÅht variablen-kompatibel zu bleiben. In
+den Funktionen wurden einige énderungen und die eine oder andere Erweiterung
+vorgenommen, wie man leicht sieht, wenn man die Objektdateien disassembliert.

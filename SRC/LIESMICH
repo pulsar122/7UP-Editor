@@ -1,0 +1,18 @@
+Die aktuelle Version von 7Up ist in zwei Distributionen verfgbar.
+Zum einen gibt es eine Binary-Distribution, die entweder ausgepackt oder als
+selbstentpackendes Archiv existiert. Das selbstendpackende Archiv tr„gt den
+Namen 7UP233B.TOS. Darin enthalten sind alle Dateien, die man fr die
+Benutzung von 7Up ben”tigt.
+Daneben gibt es die Source-Distribution, die neben den Sourcen zu 7Up auch den
+Inhalt der Binary-Distribution enth„lt. Diese Distribution gibt es nur als
+selbstentpackendes Archiv. Das selbstentpackende Archiv tr„gt den Namen
+7UP233S.TOS.
+
+Jedes der Archive legt beim Auspacken einen Ordner Namens 7UP233 an, in dem
+dann der Inhalt zu finden ist. Existiert der Ordner bereits, wird diser
+existierende Ordner verwendet. Zum Auspacken legen Sie 7UP233B.TOS bzw.
+7UP233S.TOS in das gewnschte Zielverzeichnis und starten es per Doppelklick
+mit der linken Maustaste.
+
+Bitte beachten Sie danach auch die Dateien LIESMICH.TXT im Verzeichnis
+7UP233\DOC und 7UP233\DOC\SRC.

@@ -1,0 +1,267 @@
+Bugfixing 2.31
+--------------
+
+    1.4.95
+1.) Cursorschmutz beseitigt
+    Ursache: "wegoptimiertes" Clipping
+
+2.) Fehler mit setvbuf()/fclose() beseitigt.
+    Ursache: Libraryfehler im Compiler
+
+3.) Fehler beim Suchen mit "ignore case" beseitigt
+    Ursache: Routine kam mit Leerzeile nicht klar
+
+4.) Die Makros sind auch ohne Registrierung anwendbar
+    Ursache: einfach vergessen worden
+
+Bugs 2.31
+---------
+1.) Die Infozeile in der Pickliste ist ohne Bedeutung, weil
+    es keine Speicherfunktion dafr gibt.
+
+2.) Beim šbertippen eines markierten Blocks mittels Einfgen
+    und horizontal gescrollten Fensters wird u. U. die
+    Einfgeposition falsch berechnet. Der eingefgte Text steht
+    dann am Ende der Zeile, statt an der gewnschten Position kurz
+    vorher.
+
+3.) Das links/rechtsbndige oder zentrierende Formatieren mit einer
+    zu kurzen Zeilel„nge fhrt zu Datenverlust. Zuerst sollte man
+    mit verkrzter Zeilel„nge Blocksatz formatieren und dann die
+    oberen drei Modi benutzen.
+
+------------------------------------------------------------------------------
+
+Bugfixing und nderungen 2.32
+-----------------------------
+
+    16.4.95
+1.) Disablete Menshortcuts wurden f„lschlicherweise
+    an den Text weitergegeben und verursachten Kapriolen.
+    Ursache: falsche Betrachtung des Disabled Status.
+    Fehler beseitigt.
+
+    2.5.95
+2.) Selektionsfehler bei SELECT_ALL. Interne Variable falsch
+    initialisiert.
+    Fehler beseitigt.
+
+    5.5.95
+3.) Umlautkonvertierung ge"andert. ;-) Statt 'ae' jetzt '"a'.
+
+    8.5.95
+4.) Textformatierung: Hilfetext ge„ndert und Warnmeldung eingebaut.
+    Zeilenl„nge je nach Kontext disabled.
+
+    8.5.95
+5.) Absturz beim Drucken beseitigt. Ursache: nichtinitialisierte dynamische
+    Struktur.
+    Fehler beseitigt.
+
+6.) 11.5.95
+    Der Comboboxbutton in "Seitenlayout..." war irrtmlich TOUCHEXIT.
+    Fehler beseitigt.
+
+7.) 14.5.95
+    "[X] Arbeit sichern" in "Diverses..." verwarf das nderungsflag.
+    Fehler beseitigt.
+
+8.) 18.5.95
+    Wenn 7UP.INF nicht gefunden wird, so erscheint eine Meldung mit
+    Pfadangabe.
+
+9.) 18.6.95
+    Control-(1-9) auf Ziffernblock sichert jetzt jede offene ge„nderte Datei.
+    Bisher wurde nur das nderungsflag der obersten Fensters beachtet,
+    das der anderen aber explizit verworfen (Das war Absicht so!).
+
+10.)18.6.95
+    Mit \t<Pfadname> k”nnen jetzt auch Dateien als Textfloskeln benutzt
+    werden. Der Pfadname mu eingetippt werden. Ein Fileselektor erscheint
+    nicht.
+    Z. B.: "\tC:\FLOSKELN\ANREDE.TXT"
+
+Bugs 2.32
+---------
+1.) Die Infozeile in der Pickliste ist ohne Bedeutung, weil es keine
+    Speicherfunktion dafr gibt. Man kann die Infos aber per Hand in 7UP.PCK
+    eintragen. Sie werden dargestellt.
+
+2.) Beim šbertippen eines markierten Blocks mittels Einfgen und horizontal
+    gescrollten Fensters wird u. U. die Einfgeposition falsch berechnet. Der
+    eingefgte Text steht dann am Ende der Zeile, statt an der gewnschten
+    Position kurz vorher.
+
+3.) AMC-GDOS verursacht einen Absturz beim Abscannen der Fonts, wenn man das
+    "Seitenlayout..." ”ffnet. Live am Telefon erlebt.
+    Das binde ich mir aber nicht ans Bein. Die Routine l„uft unter NVDI 1,2,3
+    und Speedo 4.x korrekt.
+
+Bugfixing und nderungen 2.33 MJK
+---------------------------------
+
+1.) 11.3.97 (MJK)
+  Berechnung der Cursorposition bei CUT im Zeilenblockmodus bei horizontal
+  gescrolltem Fenster korrigiert.
+
+2.) 11.3.97 (MJK)
+  Berechnung der Cursorposition bei CUT im Zeilenblockmodus von innerhalb der
+  ersten Zeile bis innerhalb der letzten Zeile korrigiert.
+
+3.) 11.3.97 (MJK)
+  Wird unmittelbar nach dem ™ffnen der Pickliste HOME oder SHIFT-HOME
+  gedrckt, so wird das entsprechende Element jetzt nicht nur ausgew„hlt,
+  sondern nach OK auch tats„chlich geladen.
+
+4.) 11.3.97 (MJK)
+  Die Infozeile in der Pickliste wird gespeichert.
+
+5.) 11.3.97 (MJK)
+  Das Programm mu nicht mehr registriert werden.
+
+6.) 11.3.97 (MJK)
+  Fensterdialoge werden jetzt bem Laden der Resourcen freigegeben.
+
+7.) 12.3.97 (MJK)
+  Tastaturbelegung (wegen Doppelbelegung) im Shorcut-Dialog ge„ndert.
+
+8.) 19.3.97 (MJK)
+  Copyright- und Sharewaredialog an den neuen Programmstatus angepat.
+  Registriedialog wird nicht mehr aufgerufen (ist aber derzeit noch
+  enthalten).
+
+9.) 19.3.97 (MJK)
+  Menu_icheck() und Menu_ienable() funktionieren nicht mit Geneva, deshalb
+  (auer fr MSDOS) durch menu_icheck() und menu_ienable() ersetzt.
+
+Bugfixing und nderungen 2.33 PL 1
+----------------------------------
+
+1.) 1997-03-25 - 1997-04-09 (MJK)
+  Headerfiles angelegt,
+  Headerfiles werden geladen,
+  Prototypen korrigiert,
+  Source mit eingeschalteten Warnungen compilierbar.
+
+2.) 1997-03-27 (MJK)
+  Bug im Textvergleich (Fensterinhalt verschieben und Cursorposition
+  berechnen) behoben.
+
+3.) 1997-04-08 (MJK)
+  Bug im Marke-Setzen behoben.
+
+4.) 1997-04-09 (MJK)
+  Alle MSDOS-Teile komplett entfernt (es war ohnehin schon l„nger nicht mehr
+  m”glich eine MSDOS-Version zu erzeugen).
+
+5.) 1997-04-10 - 1997-04-22 (MJK)
+  Modularisierung teilweise berarbeitet.
+
+6.) 1997-04-11 (MJK)
+  Alle Nicht-GEMDOS-Teile komplett entfernt (aus Mangel an Informationen und
+  Testbarkeit k”nnte ich die ohnehin nicht "pflegen")
+
+7.) 1997-04-20 - 1997-04-23 (MJK)
+  Das ganze ist unabh„ngig von den TC-/PC-Libraries und wurde mit dem Source
+  eines neuen VAFUNC-Moduls versehen.
+
+8.) 1997-04-24 (MJK)
+  Beim Speichern der Pickliste konnten mehr als MAXPICKFILES (128) Eintr„ge in
+  der Liste landen. Beim Laden wurden diese dann in einen Speicher gelesen, in
+  dem nur fr MAXPICKFILES Platz ist. Das fhrte natrlich zu wundersamen
+  Abstrzen aller m”glichen Programme bzw. zu Speicherschutzverletzungen.
+  Jetzt werden nur noch max. MAXPICKFILES eingelesen. Beim Schreiben kann man
+  bei Listenberfllung w„hlen, ob vordere Eintr„ge entfernt oder neue
+  ignoriert werden sollen.
+  Hier befindet sich noch ein BUG: Alle offenen Fenster werden als neue
+  Eintr„ge gerechnet, auch wenn diese ber die Pickliste geladen wurden.
+
+9.) 1997-04-24 (MJK)
+  Befindet sich die AppLine von Holger Weets am oberen oder unteren
+  Bildschirmrand, so wird dies beim automatischen Anordnen der Fenster
+  bercksichtigt (nicht getestet, da kein MagiC vorhanden).
+
+Bugs 2.33
+---------
+
+1.) Der Fileselektor von Geneva liefert auerdem noch einen Leerstring
+    an 7UP.
+
+2.) Das Speichern der Druckereinstellung in CONFIG.C ist unter aller Sau!
+
+3.) Pickliste wird zu frh als voll betrachtet.
+
+4.) Die Pickliste ist unabh„ngig vom Dateisystem casesensitiv.
+
+5.) Der Makrorecorder arbeitet derzeit nicht (mevent.c).
+
+Features 2.33
+-------------
+
+1.) Die Pickliste beachtet nicht, da Dateien unterschiedlichen Namens
+    identisch sein k”nnen (Links oder per Pseudo-Laufwerk U:).
+
+Bugfixing und nderungen 2.33 PL 2
+----------------------------------
+
+1.) 1997-06-18 (MJK)
+  Der Redraw bei aktiver Selektion funktioniert wieder korrekt.
+
+2.) 1997-06-20 (MJK)
+  Dateien werden nicht mehr nur anhand ihres Namens, sondern nach M”glichkeit
+  ber das tats„chliche Device und die inode-Nummer verglichen.
+  Dadurch kann man nun nicht mehr dieselbe Datei unter unterschiedlichen Namen
+  (z. B. links oder ber "u:") laden. Dies wird auch in der Pickliste
+  beachtet.
+
+3.) 1997-06-20 (MJK)
+  Die Pickliste wird dynamisch verwaltet (Gr”enbeschr„nkung von 128 Eintr„gen
+  f„llt damit weg).
+
+Bugfixing und nderungen 2.33 PL 3
+----------------------------------
+
+1.) 1998-03-07 (MJK)
+  Der Macrorekorder arbeitet jetzt wieder. Dabei werden Aktionen in
+  Fensterdialogen nicht aus dem Rekorder eingespielt.
+
+2.) 1998-03-07 (MJK)
+  In der Pickliste werden nun zus„tzlich die Dateireferenzen gespeichert.
+  Damit geht das Schlieen einer Datei sehr viel schneller. Darber hinaus
+  wird an verschiedenen Stellen in der Pickliste ber die Referenz nach
+  "Leichen" gesucht und diese ggf. entfernt.
+
+Bugfixing und nderungen 2.33 PL 4
+----------------------------------
+
+1.) 2000-03-11 (GS)
+  Y2K Fehler beim expandieren der Funktionstasten entfernt.
+2.) 2000-03-02 (GS)
+  Y2K Fehler beim Fileinfo entfernt.
+
+
+Allgemein:
+----------
+- Die Pure-C Funktionen mem*.c sind fehlerhaft. Es wird u. U. mindestens ein
+  Byte zuviel aus der Quelle kopiert, sodaá Speicherschutzmechanismen Alarm
+  schlagen und das Programm abwrgen.
+- In den Turbo-C Libraries sind diverse Fehler, die dann natrlich auch in das
+  Programm wandern. Ich empfehle statt dessen die MiNTLIB und GEMLIB zu
+  verwenden.
+- Die freie GEMLIB PL 32 zur MiNTLIB mute teilweise erweitert werden, um
+  allzuviele Source„nderungen zu vermeiden. Siehe GLBMJK00.ZIP.
+- Die MiNTLIB PL 46 wurde teilweise korrigiert (es gibt dort tats„chlich noch
+  Fehler) und in wenigen Punkten ge„ndert und erg„nzt. Es existiert wahlweise
+  ein Version mit deutschen Fehlermeldungen. Siehe MLBMJK00.ZIP.
+
+ToDo
+----
+
+- Bug 2 beheben (Bug 1 kann ich ohne Geneva nicht selbst beheben)
+- Modularisierung weiter verbessern, so da Kreisabh„ngikeiten entfallen und
+  die Module sauber hierarchisch und thematisch getrennt sind.
+- Mehrfaches UNDO fhrt hin und wieder noch immer zu Bomben
+- Kann eine Datei nicht geschrieben werden, sollte sie als ver„ndert markiert
+  bleiben.
+- Gr”enbeschr„nkung fr die Pickliste wieder einfhren (am besten beim
+  Laden).

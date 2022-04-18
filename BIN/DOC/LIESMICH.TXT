@@ -1,0 +1,33 @@
+Nachdem Michael Th„nitz die Entwicklung und den Support fr 7Up eingestellt
+hat, gleichzeitig aber freundlicherweise die Sourcen freigegeben hat, habe ich
+mir das ganz geschnappt und einige nderungen daran vorgenommen. Obwohl es so
+aussehen mag, als habe ich nur an ein paar Stellen ein paar kleinere Bugs
+beseitigt, war das ganze bis jetzt doch wesentlich mehr Arbeit, als ich
+Anfangs dachte. Dies liegt nicht zuletzt daran, da ich 7Up komplett auf die
+frei verfgbare MiNTLIB und GEMLIB umgestellt habe. Dies hatte vor allem fr
+mich als Programmierer einige Vorteile. Letztlich profitieren davon aber auch
+die Anwender, insbesondere diejenigen, die ein Multitasking-TOS wie MiNT oder
+MagiC verwenden.
+
+Leider habe ich nicht die Zeit, auch noch die Anleitung zu „ndern. Sie ist
+deshalb noch immer auf dem Stand von 7Up Version 2.2. Alle nderungen von mir
+sind deshalb ausschlielich in der Datei BUGS23-.TXT dokumentiert. Sp„tere
+nderungen ersetzen dabei frhere Aussagen teilweise wieder. Zugegeben, fr
+den Anwender ist es dadurch nicht immer leicht zu erkennen, was nun
+tats„chlich Sache ist. In 7Up selbst wird das dann hoffentlich deutlich.
+
+Einen schwerwiegenden Bug konnte ich leider noch immer nicht ausfindig machen.
+Bei mir kommt es bei mehrfacher Anwendung von UNDO in Folge immer wieder zu
+Abstrzen mit zwei Bomben. Zwar habe ich diesbezglich einen Fehler
+lokalisiert und auch behoben, es war aber offensichtlich nicht der einzige.
+
+Ich weie ausdrcklich darauf hin, da ich momentan wenig Zeit habe und
+deshalb augenblicklich nicht an 7Up weiterentwickle! Anscheinend ist das
+Interesse an 7Up inzwischen auch sehr gering geworden.
+
+Markus Kohm, Juni 1998
+
+Nachdem auch Markus Kohm seine aktivit„t auf dem Atari eingeschr„nkt hat, habe ich
+zumindest den Y2K-Fehler aus 7Up entfernt.
+
+Gerhard Stoll, M„rz 2000
