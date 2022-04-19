@@ -9,8 +9,8 @@ ist jeweils Revision 00.
 Mîglicherweise werden zukÅnftige Erweiterungen in 7Up von diesen erweiterten
 Libraries abghÑngig sein.
 
-Da ich (GS) es nicht geschaft habe 7Up nur mit der MiNT-Lib zu erstellen wird noch
-die PCSTDLIB.LIB hinzugelinkt.
+Da ich (GS) es nicht geschaft habe 7Up nur mit der MiNT-Lib zu erstellen wird
+noch die PCSTDLIB.LIB hinzugelinkt.
 
 In diesem Archiv findet sich auûerdem das Modul VAFUNC. Dieses wurde
 ursprÅnglich von Stephan Gerle entwickelt. Leider die verfÅgbare Version von

@@ -31,4 +31,7 @@ void sicons(void);
 int saveformat(OBJECT *tree, char *fname);
 int loadformat(OBJECT *tree, char *fname);
 
+int readnames(void);
+void writenames(void);
+
 #endif /* CONFIG_H */

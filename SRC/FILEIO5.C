@@ -11,6 +11,9 @@
 	                  compilierbar mit max. Warnungen,
 	1997-04-09 (MJK): MSDOS-Teile entfernt
 	1997-04-11 (MJK): Eingeschr„nkt auf GEMDOS
+	2000-03-28 (GS) : Einlesen der zuletzt bearbeiteten Dateien
+										(readnames) wieder aktiviert.
+										
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -1979,7 +1982,7 @@ void file_input(int argc, char *argv[])
 			winmenu[WINQUIT  ].ob_flags|=HIDETREE;
 			return;
 		}
-		if(1/*!readnames()*/)  /* nur FSB, wenn keine alten Dateien oder Parameter */
+		if(!readnames())  /* nur FSB, wenn keine alten Dateien oder Parameter */
 		{
 			msgbuf[0]=MN_SELECTED;
 			msgbuf[1]=gl_apid;

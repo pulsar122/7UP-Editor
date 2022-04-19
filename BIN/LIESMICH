@@ -16,3 +16,12 @@ mit der linken Maustaste.
 
 Bitte beachten Sie danach auch die Dateien LIESMICH.TXT im Verzeichnis
 7UP233\DOC und 7UP233\DOC\SRC.
+
+Nachdem es Probleme mit den Dateinamen der Archive gab, man konnte nur an
+hand der Dateil„nge bestimmen welches „lter war. Habe ich die den Namen
+ge„ndert.
+
+Ab jetzt (29.04.2000) sollten folgende Namen benutzt werden:
+7UP233Bx.TOS bzw. 7UP233Sx.TOS das x steht fr den Patchlevel. Ist der Level 9
+erreicht und eine Version wird erstellt, sollte die Versionsnummer erh”ht und
+der Patchlevel auf 0 gesetzt werden.

@@ -10,11 +10,17 @@
 	                  Speicherung der Iconpositionen verbessert
 	1997-04-09 (MJK): MSDOS-Teile entfernt
 	1997-04-11 (MJK): EingeschrÑnkt auf GEMDOS
+	2000-03-28 (GS) : readnames und writenames wieder aktiviert.
+										Checkbox Dateinamen wieder aktiv
+										unistd.h eingefÅgt.
+
 	BEMERKUNG: Die Speicherung der Seitenparameter gehîrt geÑndert!
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	undef abs
+#else
+#	include <unistd.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,9 +92,11 @@ void hndl_diverses(OBJECT *tree, int start)
 	char *cp;
 	/*static*/ char fpattern[FILENAME_MAX]="*.ACC";
 
+/* wieder eingefÅhrt GS 28.3.00
 	/* MT 19.11.94 abgelîst durch Pickliste */
 	divmenu[DIVNAME].ob_flags |= HIDETREE;
 	divmenu[DIVNAME].ob_state &=~SELECTED;
+*/
 
 	r=tree[DIVTABEX].ob_state;
 	a=tree[DIVWRET ].ob_state;
@@ -1090,7 +1098,7 @@ void sicons(void)
 		iconcoords[i-DESKICN1].y = abs2rel(desktop[DESKICNB].ob_y, ydesk+hdesk);
 	}
 }
-/*
+
 int readnames(void) /* letzte Dateinamen sichern */
 {
 	FILE *fp;
@@ -1137,11 +1145,12 @@ void writenames(void) /* letzte Dateien laden */
 					fputs("\n",fp);
 				}
 				else
-					_wind[i].col=_wind[i].row=
+				{
+					_wind[i].col=_wind[i].row=0;
 					_wind[i].wfirst=_wind[i].hfirst=0;
+				}
 			}
 			fclose(fp);
 		}
 	}
 }
-*/

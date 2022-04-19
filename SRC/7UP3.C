@@ -42,9 +42,16 @@
 	                  funktioniert nun wieder.
 	PL3:
 	1998-03-06 (MJK): Makrorekorder wieder angeschlossen
+	
+	PL4:
+	
+	PL5:
+	2000-04-29 (GS) : Die Dateinamen der ge”ffneten Fenster werden
+										wieder gespeichert.
+
 *****************************************************************/
 
-#define PL7UP "03"	/* Patchlevel von 7Up */
+#define PL7UP "05"	/* Patchlevel von 7Up */
 
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -497,9 +504,10 @@ void pexit(void)
    
 	graf_mouse(BUSY_BEE,0L);
 	append_picklist(picklist, NULL,0L); /* Pickliste erweitern */
-/*
+/* wieder aktiv GS 28.3.00 */
 	writenames(); /* Dateinamen sichern */
-*/
+/* */
+
 	sicons();	  /* Iconpositionen sichern */
 	Wnew();								 /* alles dicht machen */
 	if((mevent.e_ks & (K_RSHIFT|K_LSHIFT)) ||
