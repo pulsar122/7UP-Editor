@@ -236,14 +236,37 @@ Bugfixing und 始derungen 2.33 PL 4
 
 1.) 2000-03-11 (GS)
   Y2K Fehler beim expandieren der Funktionstasten entfernt.
+
 2.) 2000-03-02 (GS)
   Y2K Fehler beim Fileinfo entfernt.
 
 Bugfixing und 始derungen 2.33 PL 5
 ----------------------------------
 
-1.) 2000-04-29
+1.) 2000-04-29 (GS)
   "Dateinamen merken" in "Diverse" auf wunsch wieder eingebaut.
+
+Bugfixing und 始derungen 2.33 PL 6
+----------------------------------
+
+1.) 2000-06-17 (Ulrich Kaiser, GS)
+  7up kommt jetzt besser mit proportinalen AES-Font zurecht.
+
+2.) 2000-06-22 (GS)
+  Bestimmte Funktionen sind nicht mehr von MiNT abh�nig.
+  Beim Start wird in die MiNT-Domain geschaltet, womit 7up nun
+  auch lange Dateinamen beherscht.
+
+3.) 2000-06-28 (GS)
+  Fenster k馬nen iconifiziert werden.
+
+4.) 2000-08-18 (GS)
+  Das schnelle Drucken kann auch bei der formatierten Ausgabe benutzt werden.
+
+5.) 2000-08-19 (GS)
+  Vor der Nutzung des Klemmbretts wird ermittelt ob es vorhanden ist. Falls
+  nicht erscheint eine Alertbox und im Dialog 'Diverses' wird der ent-
+  sprechende Eintrag deselektiert.
 
 
 Allgemein:

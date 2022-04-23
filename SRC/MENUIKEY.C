@@ -25,7 +25,7 @@
 #ifdef TCC_GEM
 #	include <aes.h>
 #else
-#	include <aesbind.h>
+#	include <gem.h>
 #endif
 #ifndef PATH_MAX
 #	include <limits.h>
@@ -47,7 +47,7 @@
 #	ifdef TCC_GEM
 #		define	_AESapid (_GemParBlk.global[2])
 #	else
-#		error First define _AESapid as global[2]
+#		define  _AESapid (aes_global[2])
 #	endif
 #endif
 

@@ -38,8 +38,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 
 #ifndef PATH_MAX

@@ -12,6 +12,11 @@ Libraries abghÑngig sein.
 Da ich (GS) es nicht geschaft habe 7Up nur mit der MiNT-Lib zu erstellen wird
 noch die PCSTDLIB.LIB hinzugelinkt.
 
+Mittlerweile wird 7up mit der MiNTLib 49 und der GEMLIB 38 erzeugt. Die GEMLIB
+habe ich dabei um die von Markus Kohm erstellten Funktionen erweitert. Zudem
+sollten sie jetzt beim offizellen Koordinator der GEMLIB sein, so daû in der
+Zukunft keine Libs gepacht werden mÅssen.
+
 In diesem Archiv findet sich auûerdem das Modul VAFUNC. Dieses wurde
 ursprÅnglich von Stephan Gerle entwickelt. Leider die verfÅgbare Version von
 der Pure-C-GEM-Library bzw. dazu variablen-kompatiblen Libraries abhÑngig. Da

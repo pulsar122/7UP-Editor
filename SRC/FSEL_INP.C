@@ -22,7 +22,7 @@
 #ifdef TCC_GEM
 #	include <vdi.h>
 #else
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 
 #include "fsel_inp.h"

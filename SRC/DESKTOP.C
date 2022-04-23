@@ -27,8 +27,7 @@
 #	include <vdi.h>
 # define event_timer( time ) evnt_timer( (int)(time >> 16), (int)(time & 0xFFFF) )
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 # define event_timer( time ) evnt_timer( time )
 #endif
 #ifndef PATH_MAX

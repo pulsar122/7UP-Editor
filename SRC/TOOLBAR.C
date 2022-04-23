@@ -8,6 +8,9 @@
 	1997-03-25 (MJK): int-Deklaration erg„nzt
 	1997-04-08 (MJK): ben”tigte Headerfiles werden geladen,
 	                  compilierbar mit max. Warnungen
+	2000-06-23 (GS) : Bedienung der Toolbar abh„ngig gemacht ob das
+										Fenster iconifiziert ist.
+										
 *****************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -16,8 +19,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 
 #include "windows.h"
@@ -69,6 +71,9 @@ int toolbar_do(WINDOW *wp, OBJECT *tree, int x, int y, int bstate, int kstate)
 	int i,oum,msgbuf[8];
 	char *cp;
 	
+	if(wp->w_state & ICONIFIED)					/* (GS) Ist Fenster iconify ?	*/
+		return 0;		
+
    if(wp && tree)
    {
       if((oum=objc_find(tree, ROOT, MAX_DEPTH, x, y))>0) /* null, nicht -1! */
@@ -373,7 +378,7 @@ void hndl_mm1(OBJECT *tree, int mx, int my)
 					EXOB_TYPE(ob->ob_type)<TABBAR) /* nicht bei Tabbar */
 				{
 					strcpy(infostr, &((char *)tree[EXOB_TYPE(ob->ob_type)].ob_spec.index)[1]);
-					wind_set(wp->wihandle,WF_INFO,infostr);
+					wind_set_str(wp->wihandle,WF_INFO,infostr);
 					strcpy(wp->info, infostr);
 					lastobj = obj;
 				}
@@ -383,7 +388,7 @@ void hndl_mm1(OBJECT *tree, int mx, int my)
 			             (ob->ob_type ==G_USERDEF))
 			{
 				sprintf(infostr," Tab: %ld",(mx-wp->work.g_x+wp->wfirst)/wp->wscroll+1);
-				wind_set(wp->wihandle,WF_INFO,infostr);
+				wind_set_str(wp->wihandle,WF_INFO,infostr);
 				strcpy(wp->info, infostr);
 				lastobj = obj;
 			}

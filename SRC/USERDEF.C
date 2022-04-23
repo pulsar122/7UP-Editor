@@ -10,6 +10,11 @@
 	1997-04-09 (MJK): MSDOS-Teile entfernt
 	1997-04-11 (MJK): EingeschrÑnkt auf GEMDOS
 	1997-04-16 (MJK): veraltetes FDB durch MFDB ersetzt
+	2000-06-17 (GS) :	draw_altbutton, draw_checkbox und draw_radio erweitert,
+										daû sie mit jedem AES-Font zurecht kommten (nach einer
+										Idee von Ulrich Kaiser (UK)).
+										BerÅcksichtigt nur Texte mit groûem Font (IBM)!
+
 *****************************************************************/
 
 #define RSC_CREATE 1
@@ -21,8 +26,8 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
+#	include <gemx.h>
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
@@ -40,6 +45,7 @@
 #include "resource.h"
 #include "editor.h"
 #include "fontsel.h"
+#include "fontaesi.h"
 
 #include "userdef.h"
 
@@ -97,6 +103,39 @@ static  USERBLK	  selfont_blk;
 static  USERBLK	  threeDbox_blk;
 
 /*********************************************************************/
+
+static int txtlen(int handle,char *str)
+{
+	int	pxy[8];
+	
+/*
+	if (gl_nvdi >= 0x300)
+		vqt_real_extent(handle, 0, 0, str, pxy);
+	else
+*/
+		vqt_extent(handle, str, pxy);
+
+	return pxy[2] - pxy[0];
+}
+
+static int get_shortcut(char *text, char *c)
+{
+	int pos;
+	char *cp;
+	
+	pos = -1;
+	if (c != NULL)
+		*c = '\0';
+
+  if((cp=strchr(text,'_'))!=NULL)
+  {
+  	pos = (int) (cp - text);
+		if (c != NULL)
+   		*c = *(cp +1);
+	}
+
+	return pos;
+}
 
 static void vdi_fix (MFDB *pfd, void *theaddr, int wb, int h)
 {
@@ -174,7 +213,7 @@ static void reset_clip (int handle, int x, int y, int w, int h)
 } /* set_clip */
 
 /*****************************************************************************/
-/* Zeichnet tastaturbedienbare Exitbuttons															 */
+/* Zeichnet tastaturbedienbare Exitbuttons															 		 */
 /*****************************************************************************/
 
 #define odd(i) ((i)&1)
@@ -185,7 +224,9 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
   BOOLEAN selected, changed;
   int     pxy [10];
   int	    i,cx,cy,cw,ch,ret,l_width;
-  char	 *cp,string[32];
+  int     bw,bh;  /* UK: boxwidth,boxheigt   */
+	int     distances[5], effects[3]; /* GS: */
+  char	 *cp,string[32], c;
 
   ob_x		= pb->pb_x+2;
   ob_y		= pb->pb_y+2;
@@ -256,14 +297,27 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 	 }
 	 vr_recfl(userhandle,pxy);	  /* weiûes rechteck in workspace */
 
-    vst_color (userhandle, BLACK);
+   vst_color (userhandle, BLACK);
 	 vswr_mode (userhandle, MD_TRANS); /*3D (XOR) */
 
 	 if(((TEDINFO *)pb->pb_parm)->te_font==IBM)
 	 {
-		 vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch);
-		 cx=(int)(pb->pb_x+(pb->pb_w-strlen(string)*cw)/2);
-		 cy=pb->pb_y+(pb->pb_h-ch)/2-1;
+			/* UK: removed: vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch); */
+			vst_font(userhandle,AES_fontid_norm); /* (UK) */
+      vst_height(userhandle,AES_fontheight_norm,&cw,&ch,&bw,&bh); /* (UK) */
+
+      /* UK: removed: cx=(int)(pb->pb_x+(pb->pb_w-strlen(string)*cw)/2); */
+      /* UK: removed: cy=pb->pb_y+(pb->pb_h-ch)/2-1; */
+           
+      vqt_extent(userhandle,string,pxy);         /* (UK) */
+      cx = pb->pb_x + (pb->pb_w - pxy[2]) / 2;   /* UK: zentrieren innherhalb pb_w */
+      vqt_attributes(userhandle,pxy);            /* UK: pxy[9] enthÑlt die cell height
+																										fÅr den oben gesetzten Font       */
+      vqt_fontinfo(userhandle,&ret,&ret,distances,&ret,effects); /* UK: todo: geeignte Dekl. von distances und effects */
+      /* UK: distances[4] ist der Abstand zwischen der Oberkante der "Zelle" des Zeichensatzes und der sog. Basislinie */
+
+      cy = pb->pb_y + ((pb->pb_h - pxy[9]) / 2) /*+ distances[4]*/; /* (UK) */
+
 		 if(boxh<=8)
 		 	cy++;
 		 if(threedee) /* 3D-Look */
@@ -280,6 +334,7 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 			 v_gtext(userhandle,cx,cy+1,string); /* ein Pixel tiefer */
 		 if(cp)
 		 {
+       /* UK: removed:
 			 pxy[0]=(int)(cx + (cp-string)*cw);
 			 pxy[1]=cy + ch - 1;
 			 pxy[2]=(int)(cx + (cp-string+1L)*cw - 1);
@@ -296,6 +351,17 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 				 pxy[3]++;
 			 }
 			 v_pline(userhandle,2,pxy);
+       :removed :UK */
+			 
+			 i = get_shortcut((char *)((TEDINFO *)pb->pb_parm)->te_ptext, &c);
+   		 strcpy(string, (char *)((TEDINFO *)pb->pb_parm)->te_ptext);
+			 string[i] = 0;
+			 i = txtlen(userhandle, string);
+			 string[0]=c;
+			 string[1]=0;
+       vst_effects(userhandle,TXT_UNDERLINED);			/* (UK) */
+       v_gtext(userhandle,cx + i,cy,string);       	/* (UK) */
+       vst_effects(userhandle,0);          					/* (UK) */
 		 }
 	 }
 	 else
@@ -378,19 +444,32 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 
 		 if(((TEDINFO *)pb->pb_parm)->te_font==IBM)
 		 {
-			 vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch);
-			 cx=(int)(pb->pb_x+(pb->pb_w-strlen(string)*cw)/2);
-			 cy=pb->pb_y+(pb->pb_h-ch)/2-1;
-			 if(boxh<=8)
-			 	cy++;
-	       if(selected)
-	       {
-	       	cx++;
-	       	cy++;
-	       }
+			 /* UK: removed: vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch); */
+			 vst_font(userhandle,AES_fontid_norm); /* (UK) */
+       vst_height(userhandle,AES_fontheight_norm,&cw,&ch,&bw,&bh); /* (UK) */
+
+       /* UK: removed: cx=(int)(pb->pb_x+(pb->pb_w-strlen(string)*cw)/2); */
+       /* UK: removed: cy=pb->pb_y+(pb->pb_h-ch)/2-1; */
+           
+       vqt_extent(userhandle,string,pxy);         /* (UK) */
+       cx = pb->pb_x + (pb->pb_w - pxy[2]) / 2;   /* UK: zentrieren innherhalb pb_w */
+       vqt_attributes(userhandle,pxy);            /* UK: pxy[9] enthÑlt die cell height
+																										fÅr den oben gesetzten Font       */
+       vqt_fontinfo(userhandle,&ret,&ret,distances,&ret,effects); /* UK: todo: geeignte Dekl. von distances und effects */
+       /* UK: distances[4] ist der Abstand zwischen der Oberkante der "Zelle" des Zeichensatzes und der sog. Basislinie */
+
+       cy = pb->pb_y + ((pb->pb_h - pxy[9]) / 2) /*+ distances[4]*/; /* (UK) */
+ 		   if(boxh<=8)
+				cy++;
+	     if(selected)
+	     {
+	      cx++;
+	     	cy++;
+	     }
 			 v_gtext(userhandle,cx,cy,string);
 			 if(cp)
 			 {
+    		 /* UK: removed:
 				 pxy[0]=(int)(cx + (cp-string)*cw);
 				 pxy[1]=cy + ch - 1;
 				 pxy[2]=(int)(cx + (cp-string+1L)*cw - 1);
@@ -402,6 +481,17 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 					 pxy[3]++;
 				 }
 				 v_pline(userhandle,2,pxy);
+         :removed :UK */
+
+				 i = get_shortcut((char *)((TEDINFO *)pb->pb_parm)->te_ptext, &c);
+	   		 strcpy(string, (char *)((TEDINFO *)pb->pb_parm)->te_ptext);
+				 string[i] = 0;
+				 i = txtlen(userhandle, string);
+				 string[0]=c;
+				 string[1]=0;
+	       vst_effects(userhandle,TXT_UNDERLINED);			/* (UK) */
+	       v_gtext(userhandle,cx + i,cy,string);       	/* (UK) */
+	       vst_effects(userhandle,0);          					/* (UK) */
 			 }
 		 }
 		 else
@@ -475,15 +565,17 @@ static int __CDECL draw_altbutton (PARMBLK *pb)
 } /* draw_altbutton */
 
 /*****************************************************************************/
-/* Zeichnet ankreuzbare Buttons															 */
+/* Zeichnet ankreuzbare Buttons									  													 */
 /*****************************************************************************/
+
 static int __CDECL draw_checkbox (PARMBLK *pb)
 {
   short   ob_x, ob_y, ob_width, ob_height;
   BOOLEAN disabled, selected, changed;
   int     pxy[12];
+  int			i;	/* GS */
   int	    cw,ch,ret,viele_Farben;
-  char	 *cp,string[32];
+  char	 *cp,string[32],c;
 
   ob_x		= pb->pb_x+1;
   ob_y		= pb->pb_y+1;
@@ -539,6 +631,40 @@ static int __CDECL draw_checkbox (PARMBLK *pb)
 
 	 if(((TEDINFO *)pb->pb_parm)->te_font==IBM)
 	 {
+  	 vst_font(userhandle,AES_fontid_norm); /* (UK) */
+     vst_height(userhandle,AES_fontheight_norm,&ret,&ret,&ret,&ret); /* (UK) */
+
+     vqt_attributes(userhandle,pxy);            /* UK: pxy[9] enthÑlt die cell height
+																										fÅr den oben gesetzten Font       */
+		 if(boxh>8)
+		 {
+			 v_gtext(userhandle,pb->pb_x+(3*pxy[6]),pb->pb_y-1,string);
+		 }
+		 else
+		 {
+			 v_gtext(userhandle,pb->pb_x+(3*pxy[6]),pb->pb_y,string);
+		 }
+		 if(cp)
+		 {
+			 i = get_shortcut((char *)((TEDINFO *)pb->pb_parm)->te_ptext, &c);
+   		 strcpy(string, (char *)((TEDINFO *)pb->pb_parm)->te_ptext);
+			 string[i] = 0;
+			 i = txtlen(userhandle, string);
+			 string[0]=c;
+			 string[1]=0;
+       vst_effects(userhandle,TXT_UNDERLINED);			/* (UK) */
+			 if(boxh>8)
+			 {
+				 v_gtext(userhandle,pb->pb_x+(3*pxy[6]) + i,pb->pb_y-1,string);
+			 }
+			 else
+			 {
+				 v_gtext(userhandle,pb->pb_x+(3*pxy[6]) + i,pb->pb_y,string);
+			 }
+       vst_effects(userhandle,0);          					/* (UK) */
+		 }
+
+		 /* GS: removed:
 		 vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch);
 		 if(boxh>8)
 		 {
@@ -565,6 +691,7 @@ static int __CDECL draw_checkbox (PARMBLK *pb)
 			 }
 			 v_pline(userhandle,2,pxy);
 		 }
+		 :removed GS:*/
 	 }
 	 else
 	 {
@@ -629,10 +756,11 @@ static int __CDECL draw_radio (PARMBLK *pb)
   MFDB    s, d;
   BITBLK *bitblk;
   int     robj; /* radio button object number */
-  int     pxy [8];
+  int 		i;
+  int     pxy [10];
   int     index [2];
   int	    cw,ch,ret,viele_Farben;
-  char	 *cp,string[32];
+  char	 *cp,string[32],c;
 
   ob_x         = pb->pb_x;
   ob_y         = pb->pb_y;
@@ -763,6 +891,40 @@ static int __CDECL draw_radio (PARMBLK *pb)
 
 	 if(((TEDINFO *)pb->pb_parm)->te_font==IBM)
 	 {
+  	 vst_font(userhandle,AES_fontid_norm); /* (UK) */
+     vst_height(userhandle,AES_fontheight_norm,&ret,&ret,&ret,&ret); /* (UK) */
+
+     vqt_attributes(userhandle,pxy);            /* UK: pxy[9] enthÑlt die cell height
+																										fÅr den oben gesetzten Font       */
+		 if(boxh>8)
+		 {
+			 v_gtext(userhandle,pb->pb_x+(3*pxy[6]),pb->pb_y-1,string);
+		 }
+		 else
+		 {
+			 v_gtext(userhandle,pb->pb_x+(3*pxy[6]),pb->pb_y,string);
+		 }
+		 if(cp)
+		 {
+			 i = get_shortcut((char *)((TEDINFO *)pb->pb_parm)->te_ptext, &c);
+   		 strcpy(string, (char *)((TEDINFO *)pb->pb_parm)->te_ptext);
+			 string[i] = 0;
+			 i = txtlen(userhandle, string);
+			 string[0]=c;
+			 string[1]=0;
+       vst_effects(userhandle,TXT_UNDERLINED);			/* (UK) */
+			 if(boxh>8)
+			 {
+				 v_gtext(userhandle,pb->pb_x+(3*pxy[6]) + i,pb->pb_y-1,string);
+			 }
+			 else
+			 {
+				 v_gtext(userhandle,pb->pb_x+(3*pxy[6]) + i,pb->pb_y,string);
+			 }
+       vst_effects(userhandle,0);          					/* (UK) */
+		 }
+
+		 /* GS: removed:
 		 vst_point(userhandle,norm_point,&ret,&ret,&cw,&ch);
 		 if(boxh>8)
 		 {
@@ -789,6 +951,7 @@ static int __CDECL draw_radio (PARMBLK *pb)
 			 }
 			 v_pline(userhandle,2,pxy);
 		 }
+		 :removed GS:*/
 	 }
 	 else
 	 {
@@ -821,6 +984,7 @@ static int __CDECL draw_radio (PARMBLK *pb)
   else
      return (pb->pb_currstate & ~ SELECTED);
 } /* draw_radio */
+
 /*
 /*****************************************************************************/
 /* Zeichnet runde Radiobuttons mit VDI	            NICHT BENUTZT!!!		     */
@@ -912,6 +1076,7 @@ static int __CDECL draw_radio (PARMBLK *pb)
   return (pb->pb_currstate & ~ SELECTED);
 } /* draw_radio */
 */
+
 /*****************************************************************************/
 /* Zeichnet Buttons mit Kreis																*/
 /*****************************************************************************/
@@ -1078,14 +1243,15 @@ static int __CDECL draw_font (PARMBLK *pb)
 	return (pb->pb_currstate & ~ SELECTED);
 
 } /* draw_font */
+
 /*****************************************************************************/
-/* Zeichnet öberschriftenunterstreichung												 */
+/* Zeichnet öberschriftenunterstreichung												 						 */
 /*****************************************************************************/
 static int __CDECL draw_uline (PARMBLK *pb)
 {
 	int x, cw, ch, width, ret, pxy[4];
 
-   set_clip (userhandle, pb->pb_xc,pb->pb_yc,pb->pb_wc,pb->pb_hc);
+  set_clip (userhandle, pb->pb_xc,pb->pb_yc,pb->pb_wc,pb->pb_hc);
 
 	vst_color (userhandle, BLACK);
 	vswr_mode (userhandle, MD_TRANS);
@@ -1124,8 +1290,9 @@ static int __CDECL draw_uline (PARMBLK *pb)
 	return (pb->pb_currstate);
 
 } /* draw_uline */
+
 /*****************************************************************************/
-/* Zeichnet Eselsohren																		*/
+/* Zeichnet Eselsohren																											 */
 /*****************************************************************************/
 static int __CDECL draw_ear (PARMBLK *pb)
 {

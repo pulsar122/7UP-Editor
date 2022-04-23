@@ -27,7 +27,7 @@ Interesse an 7Up inzwischen auch sehr gering geworden.
 
 Markus Kohm, Juni 1998
 
-Nachdem auch Markus Kohm seine aktivit„t auf dem Atari eingeschr„nkt hat, habe ich
-zumindest den Y2K-Fehler aus 7Up entfernt.
+Nachdem auch Markus Kohm seine aktivit„t auf dem Atari eingeschr„nkt hat, habe
+ich zumindest den Y2K-Fehler aus 7Up entfernt.
 
 Gerhard Stoll, M„rz 2000

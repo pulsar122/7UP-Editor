@@ -21,8 +21,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
@@ -53,7 +52,7 @@
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -61,7 +60,7 @@
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -165,7 +164,7 @@ void hndl_AVProt(int msgbuf[])
 			if((wp=Wgettop()) != NULL)
 			{
 				if(wp->kind & INFO)
-					wind_set(wp->wihandle,WF_INFO,CALCLOCKMSG);
+					wind_set_str(wp->wihandle,WF_INFO,CALCLOCKMSG);
 				else
 					form_alert(1,Aavprot[3]);
 			}

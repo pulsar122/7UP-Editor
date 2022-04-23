@@ -13,7 +13,14 @@
 	1997-04-11 (MJK): EingeschrÑnkt auf GEMDOS
 	2000-03-28 (GS) : Einlesen der zuletzt bearbeiteten Dateien
 										(readnames) wieder aktiviert.
-										
+	2000-08-18 (GS) : path_exists eingefÅgt.
+										Bevor vom Klemmbrett gelesen oder geschrieben
+										wird erfolgt eine Kontrolle ob es Åberhaupt
+										vorhanden ist.
+	2000-09-12 (GS) : Kam es beim Schreiben aufs Klemmbrett zu einem
+										Fehler so wird der Eintrag im Dialog 'Diverses'
+										zurÅckgesetzt.
+
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -36,8 +43,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 
 #include "fsel_inp.h"
@@ -68,7 +74,7 @@ void  _exit( int status );	/* Der Prototyp fehlt in den meisten Bindings */
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -76,7 +82,7 @@ void  _exit( int status );	/* Der Prototyp fehlt in den meisten Bindings */
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -174,6 +180,19 @@ void Wfree(WINDOW *wp)
 				wp->w_state &= ~PROPFONT;
 			}
 	}
+}
+
+int path_exists(char *pathname)
+{
+	struct stat	s;
+	int			r = 0;
+	
+	if (pathname[0] != EOS)
+	{
+		if ((stat(pathname, &s) == 0) && S_ISDIR(s.st_mode))
+			r = 1;
+	}
+	return r;
 }
 
 void complete_path(char *path)
@@ -829,6 +848,15 @@ int read_clip(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut)
 		if(!*filename)
 		{
 			form_alert(1,Afileio[3]);
+			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
+																	/* versucht wird. 											*/
+			return(0);
+		}
+		if(!path_exists(filename))
+		{
+			form_alert(1,Afileio[3]);
+			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
+																	/* versucht wird. 											*/
 			return(0);
 		}
 		complete_path(filename);
@@ -853,7 +881,7 @@ WINDOW *Wnewfile(char *name)
 {
 	WINDOW *wp=NULL;
 	char pathname[PATH_MAX],filename[FILENAME_MAX];
-/*	
+
 	int wort1, ret;
   WI_KIND &= ~SMALLER;
 	if(_AESversion>=0x0399)
@@ -862,7 +890,7 @@ WINDOW *Wnewfile(char *name)
 	   if((wort1 & 0x0080) && (wort1 & 0x0100))
 	     WI_KIND |= SMALLER;
 	}
-*/
+
 	if((wp=Wcreate(WI_KIND,xdesk,ydesk,wdesk,hdesk)) != NULL)
 	{
 		Wdefattr(wp);
@@ -917,7 +945,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 {
 	WINDOW *wp=NULL;
 	char pathname[PATH_MAX],filename[FILENAME_MAX];
-/*	
+
 	int wort1, ret;
    WI_KIND &= ~SMALLER;
 	if(_AESversion>=0x0399)
@@ -926,7 +954,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 	   if((wort1 & 0x0080) && (wort1 & 0x0100))
 	     WI_KIND |= SMALLER;
 	}
-*/
+
 	if((wp=Wcreate(WI_KIND,xdesk,ydesk,wdesk,hdesk)) != NULL)
 	{
 		Wdefattr(wp);
@@ -1715,10 +1743,19 @@ void write_clip(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 			}
 		}
 		complete_path(filename);
+		if(!path_exists(filename))
+		{
+			form_alert(1,Afileio[3]);
+			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
+																	/* versucht wird. 											*/
+			return;
+		}
 		strcat(filename,"SCRAP.TXT");
 		if(!_write_blk(wp, filename, begcut, endcut))
 		{
 			form_alert(1,Afileio[25]);
+			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
+																	/* versucht wird. 											*/
 		}
 		inst_clipboard_icon(desktop,DESKICNB,DESKICNC,0);
 	}
@@ -1891,7 +1928,7 @@ static void nofilearg(char *arg, char what)
 						Wsetrcinfo(wp);
 						Wcursor(wp);
 						graf_mouse_on(1);
-						wind_set(wp->wihandle,WF_INFO,errorstr);
+						wind_set_str(wp->wihandle,WF_INFO,errorstr);
 					}
 					else
 						form_alert(1,Afileio[21]);

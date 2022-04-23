@@ -19,7 +19,7 @@
 #ifdef TCC_GEM
 #	include <aes.h>
 #else
-#	include <aesbind.h>
+#	include <gem.h>
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>

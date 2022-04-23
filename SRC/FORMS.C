@@ -24,9 +24,8 @@
 #	include <vdi.h>
 #	define Objc_edit(a,b,c,d,e,f) objc_edit(a,b,c,f,e)
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
-#	define Objc_edit(a,b,c,d,e,f) objc_edit(a,b,c,d,e,f)
+#	include <gem.h>
+#	define Objc_edit(a,b,c,d,e,f) objc_edit(a,b,c,f,e)
 #endif
 
 #include "7up.h"
@@ -48,7 +47,7 @@
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -964,7 +963,7 @@ int form_exopen(OBJECT *tree, int modus)
 		(dial_handle=wind_create(wi_kind,xdesk,ydesk,wdesk,hdesk))>0)
 	{
 		set_menu(0);
-		wind_set(dial_handle,WF_NAME,(char *)((TEDINFO *)tree[ROOT+2].ob_spec.userblk->ub_parm)->te_ptext);
+		wind_set_str(dial_handle,WF_NAME,(char *)((TEDINFO *)tree[ROOT+2].ob_spec.userblk->ub_parm)->te_ptext);
 		form_size(tree, 2*boxh);
 		wind_calc(WC_BORDER,NAME|MOVER,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,&x,&y,&w,&h);
 		if(y<ydesk) /* MOVER nicht in Menzeile */

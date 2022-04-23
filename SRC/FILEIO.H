@@ -37,6 +37,7 @@ WINDOW *Wnewfile(char *name);
 WINDOW *Wreadfile(char *name, int automatic);
 WINDOW *Wreadtempfile(char *filename, int mode);
 
+int path_exists(char *pathname);
 void complete_path(char *path);
 void cut_path(char *path);
 

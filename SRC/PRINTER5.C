@@ -10,6 +10,8 @@
 	                  compilierbar mit max. Warnungen
 	1997-04-09 (MJK): MSDOS-Teile entfernt
 	1997-04-11 (MJK): Eingeschr„nkt auf GEMDOS
+	2000-08-18 (GS) : Auch bei der formatierten Eingabe wird der
+	                  Standardkanal 'prn:' ge”ffnet.
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -28,8 +30,8 @@
 #	include <vdi.h>
 # define event_timer( time ) evnt_timer( (int)(time >> 16), (int)(time & 0xFFFF) )
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
+#	include <gemx.h>
 # define event_timer( time ) evnt_timer( time )
 #endif
 #ifndef PATH_MAX
@@ -233,7 +235,7 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 	FILE *fp;
 */
 	int handle,exists;
-	char name[33];
+	char name[33], device_name[100];
 	
 	scrollist = (TSCROLLIST *)malloc(sizeof(TSCROLLIST));
 	memset(scrollist,0,sizeof(TSCROLLIST));
@@ -285,7 +287,7 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 				if(vq_vgdos()==0x5F46534DL) /* Abfragbar ab Vektor GDOS */
 				{
 					memset(name,0,sizeof(name));
-					vqt_devinfo(handle,i,&exists,name);
+					vq_devinfo(handle,i,&exists,name,device_name);
 					if(exists)
 					{
 						if((cp=strrchr(name,'.'))!=NULL) /* '.SYS' weg */
@@ -361,7 +363,7 @@ void print_block(WINDOW *wp, LINESTRUCT *beg, LINESTRUCT *end)
 		{
 			graf_mkstate(&ret, &ret, &ret, &kstate); /* Shifttaste? */
 #if !defined( __TURBOC__ ) || defined( __MINT__ )
-			stdprn=fopen("PRN:","w");
+			stdprn=fopen("prn:","w");
 #endif
 			do
 			{
@@ -939,7 +941,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 		if(tree3[PRNNOFORM].ob_state&SELECTED)
 		{
 #if !defined( __TURBOC__ ) || defined( __MINT__ )
-			stdprn=fopen("PRN:","w");
+			stdprn=fopen("prn:","w");
 #endif
 			for(m=0; m<copies; m++)
 			{
@@ -960,6 +962,9 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 				else
 				{
 					form_alert(1,Aprinter[0]);
+#if !defined( __TURBOC__ ) || defined( __MINT__ )
+					fclose(stdprn);
+#endif
 					return;
 				}
 			}
@@ -969,6 +974,9 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 		}
 		else
 		{
+#if !defined( __TURBOC__ ) || defined( __MINT__ )
+			stdprn=fopen("prn:","w");
+#endif
 			for(m=0; m<copies; m++)
 			{
 				sprintf(alertstr,"%d",m+1);
@@ -976,6 +984,9 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 				if(!draftprint(tree1,tree2,tree3,wp,stdprn))
 					break;
 			}
+#if !defined( __TURBOC__ ) || defined( __MINT__ )
+			fclose(stdprn);
+#endif
 		}
 	}
 	return;

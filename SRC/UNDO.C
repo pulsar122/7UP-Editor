@@ -20,7 +20,7 @@
 #	include <aes.h>
 # define event_timer( time ) evnt_timer( (int)(time >> 16), (int)(time & 0xFFFF) )
 #else
-#	include <aesbind.h>
+#	include <gem.h>
 # define event_timer( time ) evnt_timer( time )
 #endif
 
@@ -40,7 +40,7 @@
 #	ifdef TCC_GEM
 #		define	_AESapid (_GemParBlk.global[2])
 #	else
-#		error First define _AESapid as global[2]
+#		define  _AESapid (aes_global[2])
 #	endif
 #endif
 

@@ -12,7 +12,7 @@
 #ifdef TCC_GEM
 #	include <aes.h>
 #else
-#	include <aesbind.h>
+#	include <gem.h>
 	extern short _app;
 #endif
 #include <string.h>

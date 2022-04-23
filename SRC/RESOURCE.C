@@ -25,8 +25,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 
 #include "windows.h"
@@ -54,7 +53,7 @@
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -62,7 +61,7 @@
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -398,6 +397,7 @@ static void fix_tree(int n_tree)
 #pragma warn -par
 int rsrc_init(char *rscname, char *inffile)
 {
+	unsigned int *ss;
 	int /*hiword,loword,*/i,x,y,w,h,area[4];
 /*	OBJECT *ob;*/
 
@@ -423,7 +423,14 @@ int rsrc_init(char *rscname, char *inffile)
 		inst_clipboard_icon(desktop,DESKICNB,DESKICNC,FALSE);
 		if(!nodesktop || pexec)		/* nur dann MÅll abrÑumen */
 		{
-			wind_set(0,WF_NEWDESK,nodesktop?NULL:desktop,0,0);
+			if(nodesktop)
+				wind_set(0,WF_NEWDESK,0,0,0,0);
+			else
+			{
+				ss = (unsigned int) &desktop;
+				wind_set(0,WF_NEWDESK,ss[0],ss[1],0,0);
+			}
+/*			wind_set(0,WF_NEWDESK,nodesktop?NULL:desktop,0,0);*/
 			_wind_get(0, WF_FIRSTXYWH, &area[0], &area[1], &area[2], &area[3]);
 			while( area[2] && area[3] )
 			{
@@ -940,7 +947,14 @@ int rsrc_init(char *rscname, char *inffile)
 		desktop->ob_spec.obspec.interiorcol=GREEN;
 	if(!nodesktop || pexec)		/* nur dann MÅll abrÑumen */
 	{
-		wind_set(0,WF_NEWDESK,nodesktop?NULL:desktop,0,0);
+		if(nodesktop)
+			wind_set(0,WF_NEWDESK,0,0,0,0);
+		else
+		{
+			ss = (unsigned int) &desktop;
+			wind_set(0,WF_NEWDESK,ss[0],ss[1],0,0);
+		}
+/*		wind_set(0,WF_NEWDESK,nodesktop?NULL:desktop,0,0);*/
 		_wind_get(0, WF_FIRSTXYWH, &area[0], &area[1], &area[2], &area[3]);
 		while( area[2] && area[3] )
 		{

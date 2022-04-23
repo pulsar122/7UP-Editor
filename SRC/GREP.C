@@ -20,7 +20,7 @@
 #ifdef TCC_GEM
 #	include <aes.h>
 #else
-#	include <aesbind.h>
+#	include <gem.h>
 #endif
 
 #include "alert.h"

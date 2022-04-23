@@ -13,6 +13,9 @@
 	2000-03-28 (GS) : readnames und writenames wieder aktiviert.
 										Checkbox Dateinamen wieder aktiv
 										unistd.h eingefÅgt.
+	2000-09-12 (GS)	: Vor dem Anzeigen des Dialog 'Diverses' wird
+										wird ermittelt ob sich die Variable 'clipbrd'
+										geÑndert hat.
 
 	BEMERKUNG: Die Speicherung der Seitenparameter gehîrt geÑndert!
 *****************************************************************/
@@ -29,8 +32,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 #ifndef PATH_MAX
 #	include <limits.h>
@@ -59,7 +61,7 @@
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -84,12 +86,15 @@ static WINDOW _dummy[]=
 	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L
 };					  /* | | */
 
+static GRECT _koord[8];
+
 #pragma warn -par
 void hndl_diverses(OBJECT *tree, int start)
 {
 	int exit_obj,desk,area[4];
 	int a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,v,w,x,y,z;
 	char *cp;
+		unsigned short *ss;
 	/*static*/ char fpattern[FILENAME_MAX]="*.ACC";
 
 /* wieder eingefÅhrt GS 28.3.00
@@ -97,6 +102,11 @@ void hndl_diverses(OBJECT *tree, int start)
 	divmenu[DIVNAME].ob_flags |= HIDETREE;
 	divmenu[DIVNAME].ob_state &=~SELECTED;
 */
+
+	if(clipbrd)											/* Kann sich zwischen durch Ñndern*/
+		tree[DIVCLIP].ob_state=SELECTED;		/* (GS) 200-09-12						*/
+	else
+		tree[DIVCLIP].ob_state=NORMAL;
 
 	r=tree[DIVTABEX].ob_state;
 	a=tree[DIVWRET ].ob_state;
@@ -133,6 +143,7 @@ void hndl_diverses(OBJECT *tree, int start)
 	else
 		tree[DIVPAPER].ob_state&=~DISABLED;
 
+		
 	form_exopen(tree,0);
 	do
 	{
@@ -197,7 +208,7 @@ void hndl_diverses(OBJECT *tree, int start)
 		tree[DIVVAST ].ob_state=t;
 		tree[DIVUMLAUT].ob_state=x;
 		tree[DIVCLIP ].ob_state=y;
-	   tree[DIVTABBAR].ob_state=z;
+    tree[DIVTABBAR].ob_state=z;
 		return;
 	}
 	if(tree[DIVBUTIM].ob_state & SELECTED)
@@ -312,7 +323,7 @@ void hndl_diverses(OBJECT *tree, int start)
 				winmenu[WINDAT1-1].ob_flags|=HIDETREE;
 				winmenu[WINOPALL-1].ob_height-=boxh;
 			}
-			wind_set(0,WF_NEWDESK,NULL,0,0);
+			wind_set(0,WF_NEWDESK,0,0,0,0);
 			if(get_cookie('MiNT') && (_AESnumapps != 1))
 			{
 				form_dial(FMD_FINISH,0,0,0,0,xdesk,ydesk,wdesk,hdesk);
@@ -335,7 +346,8 @@ void hndl_diverses(OBJECT *tree, int start)
 			for(i=WINDAT1-1; i<=WINDAT7; i++)
 			  	winmenu[i].ob_flags|=HIDETREE;
 
-			wind_set(0,WF_NEWDESK,desktop,0,0);
+			ss = (unsigned short *) &desktop;
+			wind_set(0,WF_NEWDESK,ss[0],ss[1],0,0);
 			inst_trashcan_icon(desktop,DESKICN8,DESKICND,0);
 			wind_update(BEG_UPDATE);
 			_wind_get(0, WF_FIRSTXYWH, &area[0], &area[1], &area[2], &area[3]);
@@ -521,10 +533,11 @@ void saveconfig(int windstruct)
 	FILE *fp;
 	register int i;
 	char *cp, fpattern[FILENAME_MAX];
+	int xy[4];
 	
 	if(!windstruct)
 	{
-	   strcpy(fpattern,"*.INF");
+    strcpy(fpattern,"*.INF");
 		find_7upinf(pathname,"INF",1);
 		if((cp=strrchr(pathname,'\\'))!=NULL || (cp=strrchr(pathname,'/'))!=NULL)
 			strcpy(&cp[1],fpattern);
@@ -614,7 +627,9 @@ void saveconfig(int windstruct)
 		fputs("\r\n",fp);
 
 		if(windstruct)
+		{
 			fwrite(&_wind[1],(MAXWINDOWS-1)*sizeof(WINDOW),1,fp); /* Fenster */
+		}
 		else
 		{
 			for(i=1; i<MAXWINDOWS; i++)
@@ -633,6 +648,7 @@ void saveconfig(int windstruct)
 			}
 			fwrite(&_dummy[1],(MAXWINDOWS-1)*sizeof(WINDOW),1,fp); /* Fenster */
 		}
+
 /*
 		fwrite(savename,sizeof(savename),1,fp);				/* Dateinamen */
 */

@@ -19,8 +19,7 @@
 #	include <vdi.h>
 # define event_timer( time ) evnt_timer( (int)(time >> 16), (int)(time & 0xFFFF) )
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 # define event_timer( time ) evnt_timer( time )
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -1216,7 +1215,7 @@ int special(WINDOW *wp, WINDOW **blkwp, int state, int key, LINESTRUCT **begcut,
 					if(*errorstr=='\"' && errorstr[strlen(errorstr)-1]=='\"')
 					{
 						if(wp->kind & INFO)
-							wind_set(wp->wihandle,WF_INFO,errorstr);
+							wind_set_str(wp->wihandle,WF_INFO,errorstr);
 						else
 							form_alert(1,Aeditor[3]);
 					}

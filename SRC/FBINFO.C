@@ -11,6 +11,8 @@
 	1997-04-11 (MJK): Eingeschr„nkt auf GEMDOS
 	1997-04-21 (MJK): Unabh„ngig von den TC/PC-Libraries
 	2000-03-25 (GS) : Y2K-Fehler beim Fileinfo behoben
+	2000-06-22 (GS) :	Im Fileinfo wird immer von langen Datenamen aus-
+										gegangen.
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -35,8 +37,7 @@
 #	include <vdi.h>
 # define event_timer( time ) evnt_timer( (int)(time >> 16), (int)(time & 0xFFFF) )
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 # define event_timer( time ) evnt_timer( time )
 #endif
 #ifndef PATH_MAX
@@ -212,38 +213,24 @@ NODESKTOP:
 						else
 							Wtxtsize(wp,&lines,&chars);
 
-/* Dateiname TOS und MiNTversion */
-						if(get_cookie('MiNT'))
+/* Dateiname TOS  */
+						infomenu[INFOTNAME].ob_flags|=HIDETREE;
+						infomenu[INFOTNAME].ob_flags&=~EDITABLE;
+						infomenu[INFOMNAME].ob_flags&=~HIDETREE;
+						strcpy(filename,split_fname((char *)Wname(wp)));
+						if(strlen(filename)>INFONAME_LEN)
 						{
-							infomenu[INFOTNAME].ob_flags|=HIDETREE;
-							infomenu[INFOTNAME].ob_flags&=~EDITABLE;
-							infomenu[INFOMNAME].ob_flags&=~HIDETREE;
-							strcpy(filename,split_fname((char *)Wname(wp)));
-							if(strlen(filename)>INFONAME_LEN)
-							{
-								infomenu[INFOZUR  ].ob_flags&=~HIDETREE;
-								infomenu[INFOVOR  ].ob_flags&=~HIDETREE;
-							}
-							else
-							{
-								infomenu[INFOZUR  ].ob_flags|=HIDETREE;
-								infomenu[INFOVOR  ].ob_flags|=HIDETREE;
-							}
-							strncpy(alertstr,filename,INFONAME_LEN);
-							alertstr[INFONAME_LEN]=0;
-							form_write(infomenu,INFOMNAME,alertstr,0);
+							infomenu[INFOZUR  ].ob_flags&=~HIDETREE;
+							infomenu[INFOVOR  ].ob_flags&=~HIDETREE;
 						}
 						else
 						{
-							infomenu[INFOTNAME].ob_flags&=~HIDETREE;
-							infomenu[INFOTNAME].ob_flags|=EDITABLE;
-							infomenu[INFOMNAME].ob_flags|=HIDETREE;
 							infomenu[INFOZUR  ].ob_flags|=HIDETREE;
 							infomenu[INFOVOR  ].ob_flags|=HIDETREE;
-							strcpy(filename,split_fname((char *)Wname(wp)));
-							make_infoname(filename,0);
-							form_write(infomenu,INFOTNAME,filename,0);
 						}
+						strncpy(alertstr,filename,INFONAME_LEN);
+						alertstr[INFONAME_LEN]=0;
+						form_write(infomenu,INFOMNAME,alertstr,0);
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 						if(!findfirst((char *)Wname(wp),(struct ffblk *)&mydta,0))
 						{
@@ -332,38 +319,13 @@ NODESKTOP:
 									form_alert(1,Afbinfo[0]);
 									objc_change(infomenu,exit_obj,0,infomenu->ob_x,infomenu->ob_y,infomenu->ob_width,infomenu->ob_height,infomenu[exit_obj].ob_state&~SELECTED,1);
 									break;
-								
 							}
-							if(get_cookie('MiNT'))
-							{
-								strncpy(alertstr,&filename[hfirst],INFONAME_LEN);
-								alertstr[INFONAME_LEN]=0;
-								form_write(infomenu,INFOMNAME,alertstr,1);
-							}
+							strncpy(alertstr,&filename[hfirst],INFONAME_LEN);
+							alertstr[INFONAME_LEN]=0;
+							form_write(infomenu,INFOMNAME,alertstr,1);
 						}
 						while(!(exit_obj==INFOABBR || exit_obj==INFOOK));
 						form_exclose(infomenu,exit_obj,0);
-						
-						if(!get_cookie('MiNT') && (exit_obj==INFOOK))
-						{
-							form_read(infomenu,INFOTNAME,filename);
-                     make_infoname(filename,1);
-/*
-printf("\33H%s %s",(char *)split_fname((char *)Wname(wp)),filename);
-*/
-							if(*filename && 
-							   *filename!=' ' && 
-							   strcmp((char *)split_fname((char *)Wname(wp)),
-							   	filename))
-							{
-								if((cp=make_newpathname((char *)Wname(wp),filename)) != NULL)
-								{
-									wp->w_state|=CHANGED;
-									Wnewname(wp,cp);
-									ren_icon(desktop, wp->icon);
-								}
-							}
-						}
 						form_write(infomenu,INFOTITL,DATEIINFO,0);
 					}
 					break;

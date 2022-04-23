@@ -11,7 +11,7 @@
 #		ifdef TCC_GEM
 #			include <aes.h>
 #		else
-#			include <gemfast.h>
+#			include <gem.h>
 #		endif
 #	endif
 #endif

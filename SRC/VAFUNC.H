@@ -64,7 +64,7 @@
 #	ifdef TCC_GEM
 #		define MultiAES()               (_GemParBlk.global[1]!=1)
 #	else
-# 	define MultiAES()               (_AESnumapps!=1)
+# 	define MultiAES()               (aes_global[1]!=1)
 #	endif
 #endif
 

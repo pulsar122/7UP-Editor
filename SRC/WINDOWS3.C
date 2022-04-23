@@ -13,6 +13,13 @@
 	                  (GRECT *) umgestellt.
 	PL02:
 	1997-06-20 (MJK): beim "Namesvergleich" links verfolgen
+
+	PL06:
+	2000-06-16 (GS) :	Bei wind_get "|0x8000" ausgeklammert da dies in der
+										GEMLIB 38gs nicht unterstÅtzt wird.
+	2000-06-23 (GS) : Curserbewegung im Fenster nur falls das Fenster
+										nicht iconifiziert ist.
+
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -29,8 +36,7 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
 #endif
 #ifndef PATH_MAX
 #	include <limits.h>
@@ -59,7 +65,7 @@
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -67,7 +73,7 @@
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -75,7 +81,7 @@
 #	ifdef TCC_GEM
 #		define _AESrshdr ((RSHDR *)(*((long *)&_GemParBlk.global[7])))
 #	else
-#		error First define _AESrshdr to global[7] and global[8]
+#		define _AESrshdr ((RSHDR *)(*((long *)&aes_global[7])))
 #	endif
 #endif
 
@@ -143,7 +149,7 @@ WINDOW *Wcreate(int kind, int x, int y, int w, int h)
 
 	if(Wcount(CREATED)<(MAXWINDOWS-1))
 	{
-		wind_get(0,WF_WORKXYWH|0x8000,&x_desk,&y_desk,&w_desk,&h_desk);
+		wind_get(0,WF_WORKXYWH /*|0x8000*/ ,&x_desk,&y_desk,&w_desk,&h_desk);
 		wh=wind_create(kind,x,y,w,h);
 		if(wh>0 /* && wh<MAXWINDOWS */ )
 		{
@@ -248,9 +254,9 @@ int Wopen(register WINDOW *wp)
    }
 */
 	if((wp->kind & NAME) && wp->name)
-		wind_set(wp->wihandle,WF_NAME,wp->name,0,0,0);
+		wind_set_str(wp->wihandle,WF_NAME,wp->name);
 	if((wp->kind & INFO) && wp->info)
-		wind_set(wp->wihandle,WF_INFO,wp->info,0,0,0);
+		wind_set_str(wp->wihandle,WF_INFO,wp->info);
 	_wind_calc(wp->wihandle,WC_BORDER,wp->kind,wp->work.g_x,wp->work.g_y,wp->work.g_w,wp->work.g_h,
 		&x,&y,&w,&h);
 	if(y<y_desk) /* Korrektur, wenn jetzt mit Infozeile */
@@ -302,7 +308,7 @@ void Wattrchg(WINDOW *wp, int newkind)
 /* neu *********************************************************************/
 		if((wp->kind & NAME))
 		{
-			wind_set(wp->wihandle,WF_NAME,wp->name,0,0,0);
+			wind_set_str(wp->wihandle,WF_NAME,wp->name);
 		}
 		if((wp->kind & INFO))
 			Wnewinfo(wp,"");
@@ -365,7 +371,7 @@ void Wnewname(register WINDOW *wp, const char* name)
 		}
 		if(strcmp(wp->name,newname))
 		{
-			wind_set(wp->wihandle,WF_NAME,strcpy(wp->name,newname),0,0,0);
+			wind_set_str(wp->wihandle,WF_NAME,strcpy(wp->name,newname));
 		}
 	}
 }
@@ -373,7 +379,7 @@ void Wnewname(register WINDOW *wp, const char* name)
 void Wnewinfo(register WINDOW *wp, const char* newinfo)
 {
 	if(wp && (wp->kind & INFO) && strcmp(wp->info,newinfo))
-		wind_set(wp->wihandle,WF_INFO,strcpy(wp->info,newinfo),0,0,0);
+		wind_set_str(wp->wihandle,WF_INFO,strcpy(wp->info,newinfo));
 }
 
 int Wnewfont(WINDOW *wp, int fontid, int fontsize)
@@ -418,7 +424,7 @@ int Wfontsize(register WINDOW *wp, int font)
 	}
 	return(0);
 }
-/*
+
 static void _Wicndraw(const register WINDOW *wp, int dir, int clip[])
 {
   MFDB	  s, d;
@@ -428,20 +434,20 @@ static void _Wicndraw(const register WINDOW *wp, int dir, int clip[])
   
 	if(wp)
 	{
-		bitblk = userimg [WICON].ob_spec.bitblk;
+		bitblk = userimg [WICON_KLEIN].ob_spec.bitblk;
 		
-		d.mp  = NULL; /* screen */
-		s.mp  = (VOID *)bitblk->bi_pdata;
-		s.fwp = bitblk->bi_wb << 3;
-		s.fh  = bitblk->bi_hl;
-		s.fww = s.fwp/16;
-		s.ff  = 0;
-		s.np  = 1;
+		d.fd_addr  = NULL; /* screen */
+		s.fd_addr  = (void *)bitblk->bi_pdata;
+		s.fd_w = bitblk->bi_wb << 3;
+		s.fd_h  = bitblk->bi_hl;
+		s.fd_wdwidth = s.fd_w/16;
+		s.fd_stand  = 0;
+		s.fd_nplanes  = 1;
 		
 		pxy [0] = 0;
 		pxy [1] = 0;
-		pxy [2] = s.fwp - 1;
-		pxy [3] = s.fh - 1;
+		pxy [2] = s.fd_w - 1;
+		pxy [3] = s.fd_h - 1;
 		pxy [4] = wp->work.g_x;
 		pxy [5] = wp->work.g_y;
 		pxy [6] = wp->work.g_x+wp->work.g_w-1;
@@ -453,7 +459,7 @@ static void _Wicndraw(const register WINDOW *wp, int dir, int clip[])
 		vrt_cpyfm (wp->vdihandle, MD_REPLACE, pxy, &s, &d, index);	 /* copy it */
 	}
 }
-*/
+
 void Wredraw(register WINDOW *wp, GRECT *rect)
 {
   int area[4],clip[4];
@@ -475,11 +481,10 @@ void Wredraw(register WINDOW *wp, GRECT *rect)
 				clip[2]=area[0]+area[2]-1;
 				clip[3]=area[1]+area[3]-1;
 				vs_clip(wp->vdihandle,1,clip);
-/*
+
 		   	if(wp->w_state & ICONIFIED)
 			   	_Wicndraw(wp,VERTICAL+HORIZONTAL,clip);
 			   else
-*/
 				   wp->draw(wp,VERTICAL+HORIZONTAL,clip);
 			}
 		}
@@ -509,11 +514,11 @@ void Wtop(register WINDOW *wp)
    }
 }
 
-void Wbottom(register WINDOW *wp) /*14.4.94*/
+void Wbottom(register WINDOW *wp)
 {
-	if(wp) /* WiNX */
+	if(wp)
 	{
-		wind_set(wp->wihandle,25/*WF_BOTTOM*/,0,0,0,0);
+		wind_set(wp->wihandle,WF_BOTTOM,0,0,0,0);
    }
 }
 
@@ -610,7 +615,7 @@ void Wmovesize(register WINDOW *wp, GRECT *nxywh)
 {
 	register long i, oldrow, oldhfirst;
 
-	if(wp /*&& wp->w_state & OPENED*/)
+	if(wp /*&& wp->w_state & OPENED*/ && !(wp->w_state & ICONIFIED) ) /* (GS) */
 	{
 		if(nxywh->g_w<MIN_WIDTH)
 			nxywh->g_w=MIN_WIDTH;
@@ -684,6 +689,11 @@ void Wmovesize(register WINDOW *wp, GRECT *nxywh)
 		Wslupdate(wp,1+2+4+8);
 		wp->w_state &= ~FULLED;
 	}
+	else
+	{
+		wind_set(wp->wihandle,WF_CURRXYWH,nxywh->g_x,nxywh->g_y,nxywh->g_w,nxywh->g_h);
+		wind_get(wp->wihandle,WF_WORKXYWH,&wp->work.g_x,&wp->work.g_y,&wp->work.g_w,&wp->work.g_h); /* (GS): ohne Toolboxberechnung*/
+	}
 }
 
 static void _Wtile(void)
@@ -696,7 +706,7 @@ static void _Wtile(void)
    TWindpos pos;
    int i,k,xd,yd,wd,hd;
 
-   wind_get(0,WF_WORKXYWH | 0x8000,&xd,&yd,&wd,&hd);
+   wind_get(0,WF_WORKXYWH /*| 0x8000*/ ,&xd,&yd,&wd,&hd);
 
    switch(Wcount(OPENED))
    {
@@ -920,7 +930,7 @@ void Warrange(int how)
 		Wfull(Wgettop());
 }
 
-/*
+
 /* 11.9.1993 */
 void Wiconify(WINDOW *wp, int nxywh[])
 {
@@ -936,7 +946,7 @@ void Wiconify(WINDOW *wp, int nxywh[])
                WF_ICONIFY,
                nxywh[0],nxywh[1],nxywh[2],nxywh[3]);
 		
-      _wind_get(wp->wihandle, WF_WORKXYWH,
+      wind_get(wp->wihandle, WF_WORKXYWH,
 		         &wp->work.g_x, &wp->work.g_y,
                &wp->work.g_w, &wp->work.g_h);
 
@@ -974,7 +984,7 @@ void Wuniconify(WINDOW *wp, int nxywh[])
 		wp->w_state &= ~ICONIFIED;
 	}
 }
-*/
+
 void Wcycle(register WINDOW *wp)
 {
 	register int i,k;
@@ -1403,9 +1413,15 @@ void Wslupdate(register WINDOW *wp, int what)
 void Wclose(register WINDOW *wp)
 {
 	int x,y,w,h,xi,yi,wi,hi;
+	int xy[4];										/* (GS) */
 
 	if(wp && wp->w_state & OPENED)
 	{
+		if(wp->w_state & ICONIFIED)		/* (GS), damit GRECT work wieder korrekt ist */
+		{
+			_wind_get(wp->wihandle,WF_UNICONIFY,&xy[0],&xy[1],&xy[2],&xy[3]);
+			Wuniconify(wp, &xy[0]);
+		}
 		_wind_get(wp->wihandle,WF_CURRXYWH,&x,&y,&w,&h);
 		wind_close(wp->wihandle);
 		iconposition(Wh(wp),&xi,&yi,&wi,&hi);
@@ -1515,6 +1531,8 @@ void Wnew(void) /* neu: MT 22.9.94 */
 {
 	register int i;
 	WINDOW *wp;
+	int xy[4];										/* (GS) */
+
 	if(_AESversion>=0x0140)
 	{
 		for(i=1; i<MAXWINDOWS; i++)
@@ -1531,6 +1549,12 @@ void Wnew(void) /* neu: MT 22.9.94 */
 					_AESrshdr=(RSHDR *)wp->toolbaraddress;
 					rsrc_free();
 				}
+				if(wp->w_state & ICONIFIED)		/* (GS), damit GRECT work wieder korrekt ist */
+				{
+					_wind_get(wp->wihandle,WF_UNICONIFY,&xy[0],&xy[1],&xy[2],&xy[3]);
+					Wuniconify(wp, &xy[0]);
+				}
+
 				if(_AESnumapps == 1) /* Singletasking */
 					wind_delete(wp->wihandle);
 				close_work(wp->vdihandle,SCREEN);
@@ -1995,10 +2019,13 @@ int Whndlkbd(register WINDOW *wp, int state, int key)
 	int abscol,arrowed=0;
 	register LINESTRUCT *help;
 
-	if(! wp) /* Kein Fenster */
-		return(0);
-		
-	if(! (key & 0x8000)) /* Scancodebit muû gesetzt sein */
+	if(! wp) 														/* Kein Fenster 							*/
+		return 0;
+
+	if(wp->w_state & ICONIFIED)					/* (GS) Ist Fenster iconify ?	*/
+		return 0;		
+
+	if(! (key & 0x8000)) 							/* Scancodebit muû gesetzt sein */
 		return(0);
 
 	switch(key)
