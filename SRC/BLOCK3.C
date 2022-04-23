@@ -24,8 +24,13 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "undo.h"
 #include "7up3.h"
@@ -796,7 +801,7 @@ void paste_col(WINDOW *wp,LINESTRUCT *beg, LINESTRUCT *end)
 		{
 			if(!ins_str(dst,src,(int)abscol))
 			{
-				form_alert(1,Ablock[0]);
+				my_form_alert(1,Ablock[0]);
 				break;
 			}
 			count++;

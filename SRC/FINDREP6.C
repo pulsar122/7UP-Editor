@@ -28,9 +28,14 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "language.h"
 #include "editor.h"
 #include "resource.h"
@@ -43,6 +48,7 @@
 #include "printer.h"
 #include "Wirth.h"
 #include "graf_.h"
+#include "mevent.h"									/* (GS)	*/
 
 #include "findrep.h"
 
@@ -538,17 +544,17 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 					case FINDHELP:
 						if(findmenu[FINDNORM].ob_state&SELECTED)
 						{
-							form_alert(1,Afindrep[0]);
+							my_form_alert(1,Afindrep[0]);
 						}
 						if(findmenu[FINDMAT ].ob_state&SELECTED)
 						{
-							form_alert(1,Afindrep[1]);
+							my_form_alert(1,Afindrep[1]);
 						}
 						if(findmenu[FINDGREP].ob_state&SELECTED)
 						{
-							if(form_alert(2,Afindrep[2])==2)
-								if(form_alert(2,Afindrep[3])==2)
-									form_alert(1,Afindrep[4]);
+							if(my_form_alert(2,Afindrep[2])==2)
+								if(my_form_alert(2,Afindrep[3])==2)
+									my_form_alert(1,Afindrep[4]);
 						}
 						objc_change(findmenu,exit_obj,0,findmenu->ob_x,findmenu->ob_y,findmenu->ob_width,findmenu->ob_height,findmenu[exit_obj].ob_state&~SELECTED,1);
 						break;
@@ -714,7 +720,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 			all= *findmenu[FINDALLQ].ob_spec.tedinfo->te_ptext;
 			if(!one || !all)
 			{
-				form_alert(1,Afindrep[5]);
+				my_form_alert(1,Afindrep[5]);
 				return(0);
 			}
 			findstrlen=matchlen(findstr,all);
@@ -727,7 +733,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 			{
 				if(!icompile(findstr)) /* immer kompilieren !!! */
 				{
-					form_alert(1,Afindrep[6]);
+					my_form_alert(1,Afindrep[6]);
 					return(0);
 				}
 			}
@@ -735,7 +741,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 			{
 				if(!compile(findstr)) /* immer kompilieren !!! */
 				{
-					form_alert(1,Afindrep[6]);
+					my_form_alert(1,Afindrep[6]);
 					return(0);
 				}
 			}
@@ -802,7 +808,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 		Wcursor(wp);		 /* ausschalten */
 		if(item==SEARFIND) /* Dialogbox wegr„umen */
 		{
-			evnt_event(&mevent); /* Dummyaufruf um Redraw zu killen */
+			evnt_mevent(&mevent); /* Dummyaufruf um Redraw zu killen */
 			Wredraw(wp,array2grect(&msgbuf[4]));
 		}
 		graf_mouse_on(1);
@@ -1055,7 +1061,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 		  									sprintf(alertstr,Afindrep[16]);
 											break;
 									}
-		 							form_alert(1,alertstr);
+		 							my_form_alert(1,alertstr);
 									index=(int)(sp - line->string);
 									replall=0;
 								}
@@ -1119,7 +1125,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
   									sprintf(alertstr,Afindrep[16]);
 									break;
 							}
-							form_alert(1,alertstr);
+							my_form_alert(1,alertstr);
 							index=(int)(sp - line->string);
 							replall=0;
 						}
@@ -1158,7 +1164,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 			{
 				if(!replace || ask)
 				{
-					form_alert(1,Afindrep[8]);
+					my_form_alert(1,Afindrep[8]);
 					inblk=0; /* Cursor unsichtbar, wenn Block markiert */
 				}
 				if(replace && replall)
@@ -1167,7 +1173,7 @@ int hndl_find(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int item)
 					if(!ask)
 					{
 						sprintf(alertstr,Afindrep[9],count);
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 					}
 					replall=0;
 				}
@@ -1418,7 +1424,7 @@ int hndl_goto(WINDOW *wp, OBJECT *tree, long line)
 	  }
 /*
 	  else
-		  form_alert(1,Afindrep[10]);
+		  my_form_alert(1,Afindrep[10]);
 */
   }
   return(0);
@@ -1769,7 +1775,7 @@ void changeletters(WINDOW *wp, LINESTRUCT *beg, LINESTRUCT *end, int mode)
 static void gotobraceerror(WINDOW *wp, long line, int col, int diff, char Aerror[])
 {
 	sprintf(alertstr,Aerror,diff);
-	form_alert(1,alertstr);
+	my_form_alert(1,alertstr);
 	hndl_goto(wp,NULL,line+1); /* Fehlerstelle */
 	graf_mouse_on(0); /* Cursor positionieren */
 	Wcursor(wp);
@@ -1823,7 +1829,7 @@ void check_braces(OBJECT *tree, WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endc
 			exit_obj=form_exdo(tree,0);
 			if(exit_obj==BRACHELP)
 			{
-				form_alert(1,Afindrep[11]);
+				my_form_alert(1,Afindrep[11]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 			}
 		}

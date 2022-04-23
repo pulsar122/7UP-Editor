@@ -20,6 +20,10 @@
 	2000-06-23 (GS) : Curserbewegung im Fenster nur falls das Fenster
 										nicht iconifiziert ist.
 
+	PL08:
+	2002-09-28 (GS) : Der Fensterinhalt wird auch bei den PC spezifischen
+										Tasten gescrollt ( Bild hoch, Bild runter, Ende ).
+
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -42,7 +46,11 @@
 #	include <limits.h>
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "undo.h"
 #include "7up3.h"
 #include "resource.h"
@@ -2140,6 +2148,7 @@ int Whndlkbd(register WINDOW *wp, int state, int key)
 			Wcursor(wp);
 			break;
 /**************************** SHIFT **************************************/
+		case 0x8049:	/* PC Bild hoch [GS] */
 		case 0x8248:	/*  shift up	*/
 			graf_mouse_on(0);
 			Wcursor(wp);
@@ -2154,6 +2163,7 @@ int Whndlkbd(register WINDOW *wp, int state, int key)
 			Wcuron(wp);
 			Wcursor(wp);
 			break;
+		case 0x8051:	/* PC Bild runter [GS] */
 		case 0x8250:	/* shift down  */
 			graf_mouse_on(0);
 			Wcursor(wp);
@@ -2198,6 +2208,7 @@ int Whndlkbd(register WINDOW *wp, int state, int key)
 			Wcuron(wp);
 			Wcursor(wp);
 			break;
+		case 0x804f:	/* PC Ende [GS] */
 		case 0x8247:	/* Clr (shift Home) */
 			graf_mouse_on(0);
 			Wcursor(wp);

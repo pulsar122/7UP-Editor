@@ -58,38 +58,3 @@ void objc_update(OBJECT *tree, int obj, int depth)
 		objc_draw(tree,obj,depth,array[0],array[1],array[2],array[3]);
 	}
 }
-
-#ifdef TCC_GEM
-int objc_sysvar(int ob_smode, int ob_swhich, 
-                int ob_sival1, int ob_sival2,
-                int *ob_soval1, int *ob_soval2 )
-{
-	AESPB aespb=
-	{
-		_GemParBlk.contrl,
-		_GemParBlk.global,
-		_GemParBlk.intin,
-		_GemParBlk.intout,
-		(int *)_GemParBlk.addrin,
-		(int *)_GemParBlk.addrout
-	};
-
-	_GemParBlk.intin [0] = ob_smode;
-	_GemParBlk.intin [1] = ob_swhich;
-	_GemParBlk.intin [2] = ob_sival1;
-	_GemParBlk.intin [3] = ob_sival2;
-
-	_GemParBlk.contrl[0]=48;
-	_GemParBlk.contrl[1]=4;	
-	_GemParBlk.contrl[2]=3;	
-	_GemParBlk.contrl[3]=0;	
-	_GemParBlk.contrl[4]=0;	
-
-	_crystal(&aespb);
-
-	*ob_soval1 = _GemParBlk.intout[1];
-	*ob_soval2 = _GemParBlk.intout[2];
-
-	return(_GemParBlk.intout[0]);
-}
-#endif

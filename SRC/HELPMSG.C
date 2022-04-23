@@ -19,7 +19,11 @@
 #	include <gem.h>
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "resource.h"
 #include "7up3.h"

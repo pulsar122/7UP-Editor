@@ -45,8 +45,13 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "version.h"
 #include "macro.h"
@@ -316,7 +321,7 @@ NODESKTOP:
 								   	hfirst++;
 									break;
 								case INFOHELP:
-									form_alert(1,Afbinfo[0]);
+									my_form_alert(1,Afbinfo[0]);
 									objc_change(infomenu,exit_obj,0,infomenu->ob_x,infomenu->ob_y,infomenu->ob_width,infomenu->ob_height,infomenu[exit_obj].ob_state&~SELECTED,1);
 									break;
 							}
@@ -332,13 +337,13 @@ NODESKTOP:
 				case DESKICN8: /* Papierkorb */
 				case DESKICND: /* voller Papierkorb */
 					sprintf(alertstr,Afbinfo[1],countdeletedfiles);
-					form_alert(1,alertstr);
+					my_form_alert(1,alertstr);
 					break;
 				case DESKICN9: /* Drucker	 */
 					if(is_busy())
-						form_alert(1,Afbinfo[2]);
+						my_form_alert(1,Afbinfo[2]);
 					else
-						form_alert(1,Afbinfo[3]);
+						my_form_alert(1,Afbinfo[3]);
 					break;
 				case DESKICNA: /* Diskette	*/
 					if((wp=Wgettop()) != NULL)
@@ -350,10 +355,10 @@ NODESKTOP:
 						sprintf(alertstr,Afbinfo[4],
 							(char *)split_fname((char *)Wname(wp)),frei);
 						graf_mouse(ARROW,0L);
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 					}
 					else
-						form_alert(1,Afbinfo[5]);
+						my_form_alert(1,Afbinfo[5]);
 					break;
 				case DESKICNB: /* Klemmbrett */
 					count=0;
@@ -382,10 +387,10 @@ NODESKTOP:
 #endif
 					sprintf(alertstr,Afbinfo[6],count);
 					graf_mouse(ARROW,0L);
-					form_alert(1,alertstr);
+					my_form_alert(1,alertstr);
 					break;
 				case DESKICNC:
-					form_alert(1,Afbinfo[7]);
+					my_form_alert(1,Afbinfo[7]);
 					break;
 				default:
 					break;
@@ -560,7 +565,7 @@ void textcompare(void)
 	switch(diff)
 	{
 		case -1:
-			form_alert(1,Afbinfo[8]);
+			my_form_alert(1,Afbinfo[8]);
 			break;
 		case  0:
 			break;
@@ -568,7 +573,7 @@ void textcompare(void)
 			sprintf(alertstr,Afbinfo[9], 
 				split_fname(Wname(Wp(_wind[diff].wihandle))), 
 				row=Wline(&_wind[diff],line[diff])+1, col+1);
-			form_alert(1,alertstr);
+			my_form_alert(1,alertstr);
 			ltoa(row,ascrow,10);
 			for(i=1; i<MAXWINDOWS; i++)
 				if(_wind[i].w_state & OPENED)

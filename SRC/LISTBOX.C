@@ -19,7 +19,13 @@
 #include <string.h>
 
 #include "forms.h"
-#include "7up.h"
+
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
+
 #include "resource.h"
 #include "objc_.h"
 
@@ -102,8 +108,8 @@ static void _listbox_fill(OBJECT *tree, SCROLLIST *liste, long firstentry)
    }
    /* liste->count > MAXENTRIES. Keine Division durch null. */
    slider = (int)(firstentry*1000/max(1,liste->count-MAXENTRIES));
-   setsliderpos(tree,9,slider);
-   objc_update(tree,8,MAX_DEPTH);
+   setsliderpos(tree, SLBSL, slider);
+   objc_update(tree, SLBGR, MAX_DEPTH);
 }
 
 static int _listbox_hndl(OBJECT *tree, SCROLLIST *liste)
@@ -144,13 +150,13 @@ static int _listbox_hndl(OBJECT *tree, SCROLLIST *liste)
          tree[i+ROOT+1].ob_flags |= HIDETREE;
 
    graf_handle(&boxw,&boxh,&ret,&ret);
-   tree[9].ob_height=(int)max(boxh,MAXENTRIES*tree[8].ob_height/max(MAXENTRIES,liste->count));
-   setsliderpos(tree,9,0);
+   tree[SLBSL].ob_height=(int)max(boxh,MAXENTRIES*tree[SLBGR].ob_height/max(MAXENTRIES,liste->count));
+   setsliderpos(tree, SLBSL,0);
 
    i=(int)((firstentry*1000L)/max(1,liste->count-MAXENTRIES));
    i=min(i,1000);
    i=max(0,i);
-   setsliderpos(tree,9,i);
+   setsliderpos(tree, SLBSL, i);
 
    form_open(tree,0);
    do
@@ -160,18 +166,18 @@ static int _listbox_hndl(OBJECT *tree, SCROLLIST *liste)
       {
          switch(exit_obj &= 0x7FFF) /* MSB weg */
          {
-            case 6:
+            case SLBUP:
                if(firstentry>0)
                {
                   firstentry=0;
-						_listbox_fill(tree, liste, firstentry);
+									_listbox_fill(tree, liste, firstentry);
                }
                break;
-            case 7:
+            case SLBDN:
                if(firstentry < liste->count-MAXENTRIES)
                {
 	               firstentry = liste->count-MAXENTRIES;
-						_listbox_fill(tree, liste, firstentry);
+									_listbox_fill(tree, liste, firstentry);
                }
 					break;
 /*
@@ -193,22 +199,22 @@ static int _listbox_hndl(OBJECT *tree, SCROLLIST *liste)
             case ROOT:
                done = 1;
                break;
-            case 6:
+            case SLBUP:
                if(firstentry>0)
                {
                   firstentry--;
-						_listbox_fill(tree, liste, firstentry);
+									_listbox_fill(tree, liste, firstentry);
                }
                break;
-            case 7:
+            case SLBDN:
                if(firstentry < liste->count-MAXENTRIES)
                {
                   firstentry++;
-						_listbox_fill(tree, liste, firstentry);
+									_listbox_fill(tree, liste, firstentry);
                }
                break;
-            case 8:
-               objc_offset(tree,9,&x,&y);
+            case SLBGR:
+               objc_offset(tree, SLBSL, &x, &y);
                graf_mkstate(&mx,&my,&i,&i);
                if(my < y)
                {
@@ -220,14 +226,14 @@ static int _listbox_hndl(OBJECT *tree, SCROLLIST *liste)
                   if((firstentry += MAXENTRIES) > (liste->count-MAXENTRIES))
                      firstentry = liste->count-MAXENTRIES;
                }
-					_listbox_fill(tree, liste, firstentry);
+							 _listbox_fill(tree, liste, firstentry);
                break;
-            case 9:
+            case SLBSL:
                graf_mouse(FLAT_HAND, NULL);
                slider=graf_slidebox(tree, exit_obj-1, exit_obj, 1);
                graf_mouse(ARROW, NULL);
                firstentry = (liste->count-MAXENTRIES) * slider/1000;
-					_listbox_fill(tree, liste, firstentry);
+		  				 _listbox_fill(tree, liste, firstentry);
                break;
             case ROOT+1:
             case ROOT+2:
@@ -271,9 +277,9 @@ int listbox_hndl(OBJECT *tree, int item, SCROLLIST *liste)
    if(liste->count<=MAXENTRIES)
    {
 	   listbox->ob_width-=(2*boxw+1);
-	   listbox[6].ob_flags|=HIDETREE;
-	   listbox[7].ob_flags|=HIDETREE;
-	   listbox[8].ob_flags|=HIDETREE;
+	   listbox[SLBUP].ob_flags|=HIDETREE;
+	   listbox[SLBDN].ob_flags|=HIDETREE;
+	   listbox[SLBGR].ob_flags|=HIDETREE;
 	}
 /*
 	listbox->ob_flags|=FLAGS15; /* kein Windial!!!, weil kein Handle mehr frei*/
@@ -282,9 +288,9 @@ int listbox_hndl(OBJECT *tree, int item, SCROLLIST *liste)
    if(liste->count<=MAXENTRIES)
    {
 	   listbox->ob_width+=(2*boxw+1);
-	   listbox[6].ob_flags&=~HIDETREE;
-	   listbox[7].ob_flags&=~HIDETREE;
-	   listbox[8].ob_flags&=~HIDETREE;
+	   listbox[SLBUP].ob_flags&=~HIDETREE;
+	   listbox[SLBDN].ob_flags&=~HIDETREE;
+	   listbox[SLBGR].ob_flags&=~HIDETREE;
 	}
 	if(!windials)
 		objc_draw(tree,ROOT,MAX_DEPTH,listbox->ob_x-1,listbox->ob_y-1,

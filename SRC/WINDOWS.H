@@ -109,7 +109,7 @@ extern WINDOW _wind[];
 *****************************************************************/
 
 int align(register int x, register int n);
-#ifdef TC_GEM
+#ifdef TCC_GEM
 int rc_intersect(register GRECT *g1, register GRECT *g2);
 #endif
 

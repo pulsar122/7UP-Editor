@@ -35,15 +35,21 @@
 #include "fsel_inp.h"
 #include "forms.h"
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "version.h"
 #include "alert.h"
+#include "falert.h"
 #include "7up3.h"
 #include "tabulat.h"
 #include "fileio.h"
 #include "objc_.h"
 #include "grep.h"
 #include "resource.h"
+#include "mevent.h"									/* (GS)	*/
 
 #include "grepfile.h"
 
@@ -95,7 +101,7 @@ static int grepfile(OBJECT *tree, char *fname)
 	char *cp, string[29];
 	WINDOW *wp;
 
-	event=evnt_event(&mevent);
+	event=evnt_mevent(&mevent);
 	wind_update(BEG_UPDATE);
 	if(event & MU_MESAG)
 	{
@@ -126,7 +132,7 @@ static int grepfile(OBJECT *tree, char *fname)
 	if(event&MU_KEYBD)
 	{
 		if((mevent.e_kr>>8)==ESC)							 /* ESC gedrckt? */
-			if(form_alert(2,Agrepfile[0])==2)
+			if(my_form_alert(2,Agrepfile[0])==2)
 				abbruch=1;
 	}
 	wind_update(END_UPDATE);
@@ -330,12 +336,12 @@ void hndl_grepmenu(OBJECT *tree, int start)
 			case GREPHELP:
          	if(tree[GREPGREP].ob_state&SELECTED) /* bei reg. Exp. */
          	{
-				   if(form_alert(2,Agrepfile[6])==2)
-   				   if(form_alert(2,Agrepfile[7])==2)
-	   				   form_alert(1,Agrepfile[8]);
+				   if(my_form_alert(2,Agrepfile[6])==2)
+   				   if(my_form_alert(2,Agrepfile[7])==2)
+	   				   my_form_alert(1,Agrepfile[8]);
 				}
 				else
-				   form_alert(1,Agrepfile[1]);
+				   my_form_alert(1,Agrepfile[1]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case GREPOK:
@@ -384,7 +390,7 @@ void hndl_grepmenu(OBJECT *tree, int start)
 						objc_update(tree,ROOT,MAX_DEPTH);
 					if(strstr(lfilename,".reg")==NULL || strstr(lfilename,".REG")==NULL)
 					{
-						form_alert(1,Agrepfile[3]);
+						my_form_alert(1,Agrepfile[3]);
 						done=1;
 						break;
 					}
@@ -443,7 +449,7 @@ void hndl_grepmenu(OBJECT *tree, int start)
 					else
 					{
 						sprintf(alertstr,Agrepfile[5],(char *)split_fname(filename));
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 					}
 				}
 			case GREPABBR:

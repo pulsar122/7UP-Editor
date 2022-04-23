@@ -14,7 +14,6 @@
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	undef abs
 #	include <tos.h>
-#	include <ext.h>
 #else
 #	include <osbind.h>
 #endif
@@ -30,7 +29,11 @@
 
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "macro.h"
 #include "undo.h"
 #include "language.h"
@@ -372,8 +375,13 @@ WEITER:
 
 #define RSC_CREATE
 #ifdef RSC_CREATE
-#include "7up.rsh"
-#include "7up.rh"
+#ifndef ENGLISH
+	#include "7up.rsh"
+	#include "7up.rh"
+#else
+	#include "7up_eng.rsh"
+	#include "7up_eng.rh"
+#endif
 
 static void fix_tree(int n_tree)
 {

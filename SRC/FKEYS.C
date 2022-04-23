@@ -33,9 +33,14 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "language.h"
 #include "undo.h"
 #include "block.h"
@@ -329,7 +334,7 @@ int fkeys(WINDOW *wp, int ks, unsigned int kr, LINESTRUCT **begcut, LINESTRUCT *
 											{
 												case -1:	/* kein ram frei */
 													sprintf(alertstr,Afkeys[1],split_fname(&str[i+2]));
-													form_alert(1,alertstr); /* kein break, es geht weiter */
+													my_form_alert(1,alertstr); /* kein break, es geht weiter */
 												case 1: /* ok */
 													store_undo(wp, &undo, *begcut, *endcut, WINEDIT, EDITCUT);
 													wp->w_state|=CHANGED;
@@ -355,7 +360,7 @@ int fkeys(WINDOW *wp, int ks, unsigned int kr, LINESTRUCT **begcut, LINESTRUCT *
 													break;
 												case 0:
 													sprintf(alertstr,Afkeys[2],(char *)split_fname(&str[i+2]));
-													form_alert(1,alertstr);
+													my_form_alert(1,alertstr);
 													undo.item=0;	/* EDITCUT */
 													break;
 											}
@@ -459,7 +464,7 @@ int fkeys(WINDOW *wp, int ks, unsigned int kr, LINESTRUCT **begcut, LINESTRUCT *
 											{
 												case -1:	/* kein ram frei */
 													sprintf(alertstr,Afkeys[1],split_fname(&str[i+2]));
-													form_alert(1,alertstr); /* kein break, es geht weiter */
+													my_form_alert(1,alertstr); /* kein break, es geht weiter */
 												case 1: /* ok */
 													store_undo(wp, &undo, *begcut, *endcut, WINEDIT, EDITCUT);
 													wp->w_state|=CHANGED;
@@ -485,7 +490,7 @@ int fkeys(WINDOW *wp, int ks, unsigned int kr, LINESTRUCT **begcut, LINESTRUCT *
 													break;
 												case 0:
 													sprintf(alertstr,Afkeys[2],(char *)split_fname(&str[i+2]));
-													form_alert(1,alertstr);
+													my_form_alert(1,alertstr);
 													undo.item=0;	/* EDITCUT */
 													break;
 											}
@@ -691,7 +696,7 @@ void hndl_fkeymenu(OBJECT *tree, int start)
 				}
 				break;
 			case FKEYHELP:
-				form_alert(1,Afkeys[0]);
+				my_form_alert(1,Afkeys[0]);
 				objc_change(tree,exit_obj,0,x,y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case FKEYOK:

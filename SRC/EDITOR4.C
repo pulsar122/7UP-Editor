@@ -24,14 +24,18 @@
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
-#	include <ext.h>
 #else
 #	include <osbind.h>
 #endif
 
 #include "macro.h"
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "undo.h"
@@ -247,7 +251,7 @@ int ins_line(WINDOW *wp)			/* neue zeile einfgen */
 				insline->string=help;
 			else
 			{
-				form_alert(1,Aeditor[0]);
+				my_form_alert(1,Aeditor[0]);
 				_exit(-1); /* ohne atexit Vektor */
 			}
 			strcpy(insline->string,&wp->cstr->string[abscol]);
@@ -625,7 +629,7 @@ void editor(register WINDOW *wp, int state, int key, LINESTRUCT **begcut, LINEST
 			{
             if((*begcut)==wp->fstr && (*endcut)->next==NULL)
             {
-               if(form_alert(2,Aeditor[6])==1)
+               if(my_form_alert(2,Aeditor[6])==1)
                   return /*errcode*/;
             }
      			if((*begcut) == (*endcut))
@@ -1070,7 +1074,7 @@ void hndl_chartable(WINDOW *wp, OBJECT *tree)
 			switch(c)
 			{
 				case CHARHELP:
-					form_alert(1,Aeditor[5]);
+					my_form_alert(1,Aeditor[5]);
 					objc_change(tree,c,0,tree->ob_x,tree->ob_y,
 						tree->ob_width,tree->ob_height,tree[c].ob_state&~SELECTED,1);
 					break;
@@ -1083,7 +1087,7 @@ void hndl_chartable(WINDOW *wp, OBJECT *tree)
 					{
 						sprintf(alertstr,Aeditor[1],
 							(c-FCHAR)&0xff,(c-FCHAR)&0xff,(c-FCHAR)&0xff);
-						if(form_alert(2,alertstr) == 2)
+						if(my_form_alert(2,alertstr) == 2)
 						{
 							ende = 1;
 						}
@@ -1197,7 +1201,7 @@ int special(WINDOW *wp, WINDOW **blkwp, int state, int key, LINESTRUCT **begcut,
 					if(!help())
 					{
                   sprintf(alertstr,Aeditor[2],(char *)(divmenu[DIVHDA].ob_spec.index/*+16L*/));
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 					}
 					return(1);
 			}
@@ -1217,10 +1221,10 @@ int special(WINDOW *wp, WINDOW **blkwp, int state, int key, LINESTRUCT **begcut,
 						if(wp->kind & INFO)
 							wind_set_str(wp->wihandle,WF_INFO,errorstr);
 						else
-							form_alert(1,Aeditor[3]);
+							my_form_alert(1,Aeditor[3]);
 					}
 					else
-						form_alert(1,Aeditor[4]);
+						my_form_alert(1,Aeditor[4]);
 					return(1);
 				case 0x027F: /* Shift DELETE */
 					if(cut)
@@ -1657,7 +1661,7 @@ int special(WINDOW *wp, WINDOW **blkwp, int state, int key, LINESTRUCT **begcut,
 			{
 				case 0x8062: /* Help */
 					if(!help())
-						form_alert(1,Aeditor[2]);
+						my_form_alert(1,Aeditor[2]);
 					return(1);
 				case 0x8061: /* UNDO */
 					desel_icons(desktop,DESKICN1,DESKICNC,1);

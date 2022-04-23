@@ -34,9 +34,14 @@
 
 #include "vaproto.h"
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "undo.h"
 #include "editor.h"
 #include "fileio.h"
@@ -262,12 +267,12 @@ static int _write_disk(WINDOW *wp, char *filename, LINESTRUCT *beg, LINESTRUCT *
 			}
 			if(fputs(line->string,fp)==EOF)
 			{
-				form_alert(1,Aformat[0]);
+				my_form_alert(1,Aformat[0]);
 				goto WEITER;
 			}
 			if(fputs(" ",fp)==EOF)
 			{
-				form_alert(1,Aformat[0]);
+				my_form_alert(1,Aformat[0]);
 				goto WEITER;
 			}
 			line=line->next;
@@ -299,7 +304,7 @@ static int write_disk(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 				scrp_read(filename);
 			else
 			{
-				form_alert(1,Aformat[1]);
+				my_form_alert(1,Aformat[1]);
 				return(0);
 			}
 		}
@@ -307,7 +312,7 @@ static int write_disk(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 		{
 			if(first) /* beim erstenmal Clipbrd l”schen */
 			{
-				scrp_clear();
+				scrp_clear_own();
 				first=0;
 			}
 		}
@@ -320,7 +325,7 @@ static int write_disk(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 
 		if(!_write_disk(wp, filename, begcut, endcut))
 		{
-			form_alert(1,Aformat[2]);
+			my_form_alert(1,Aformat[2]);
 			return(0);
 		}
 		inst_clipboard_icon(desktop,DESKICNB,DESKICNC,0);
@@ -446,12 +451,12 @@ static void read_disk(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut)
 		switch(_read_disk(wp,filename,begcut,endcut))
 		{
 			case -1:
-				form_alert(1,Aformat[3]);
+				my_form_alert(1,Aformat[3]);
 			case 1:
 				wp->w_state|=CHANGED;
 				break;
 			case 0:
-				form_alert(1,Aformat[4]);
+				my_form_alert(1,Aformat[4]);
 				break;
 		}
 		unlink(filename);
@@ -515,7 +520,7 @@ void textformat(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int abcurs
 	if(wp && !cut && *begcut && *endcut)
 	{
 		if(((*begcut)==wp->fstr && (*endcut)->next==NULL) || badblock(wp,*begcut,*endcut))
-			if(form_alert(2,Aformat[5])==1)
+			if(my_form_alert(2,Aformat[5])==1)
 				return;
 
 		graf_mouse_on(0);
@@ -549,7 +554,7 @@ void textformat(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int abcurs
 			write_ram(wp,formbuff,chars+lines+2,*begcut,*endcut);
 			free_blk(wp,*begcut);
 			if(read_ram(wp,formbuff,strlen(formbuff),begcut,endcut)<1)
-				form_alert(1,Aformat[6]);
+				my_form_alert(1,Aformat[6]);
          store_undo(wp, &undo, *begcut, *endcut, WINEDIT, CUTPAST);
 			graf_mouse_on(0);
 			Wcursor(wp);
@@ -637,12 +642,12 @@ void textformat2(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int key, 
 			maxlen=max(line->used,maxlen);
 		if(maxlen >= wp->umbruch)
 		{
-			form_alert(1,Aformat[9]);
+			my_form_alert(1,Aformat[9]);
 			return;
 		}
 		if((wp->umbruch > 90) && !gewarnt)/* das drfte wohl reichen (?) */
 		{
-			if(form_alert(1,Aformat[7])==1)
+			if(my_form_alert(1,Aformat[7])==1)
 				return;
 			gewarnt=1;
 		}
@@ -655,7 +660,7 @@ void textformat2(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut, int key, 
 				if(!line->string)
 				{
 					line->string=temp;
-					form_alert(1,Aformat[6]);
+					my_form_alert(1,Aformat[6]);
 					return;
 				}
 				graf_mouse(BUSY_BEE,NULL);
@@ -756,7 +761,7 @@ void hndl_textformat(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT *
 					break;
 				
 				case FORMHELP:
-					form_alert(1,Aformat[8]);
+					my_form_alert(1,Aformat[8]);
 					objc_change(tree,exit_obj,0,
 						tree->ob_x,tree->ob_y,
 						tree->ob_width,tree->ob_height,

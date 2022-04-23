@@ -21,7 +21,6 @@
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
-#	include <ext.h>
 #else
 #	include <osbind.h>
 	typedef struct {
@@ -34,7 +33,12 @@
 #endif
 
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "language.h"
@@ -82,7 +86,7 @@ void hndl_shell(OBJECT *tree, int start)
 		exit_obj=form_exdo(tree,start);
 		if(exit_obj==SHELHELP)
 		{
-			form_alert(1,Ashell[0]);
+			my_form_alert(1,Ashell[0]);
 			objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 /*
 			tree[exit_obj].ob_state&=~SELECTED;
@@ -222,7 +226,7 @@ void hndl_shell(OBJECT *tree, int start)
 				form_dial(FMD_FINISH,0,0,0,0,xdesk,ydesk,wdesk,hdesk);
 			}
 			else
-				form_alert(1,Ashell[1]);
+				my_form_alert(1,Ashell[1]);
 		}
 	}
 }

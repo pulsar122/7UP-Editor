@@ -16,9 +16,6 @@
 #include <ctype.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
-#	include <ext.h>
-#	define KEYTAB   _KEYTAB
-#	define capslock caps
 #else
 #	include <osbind.h>
 #endif
@@ -31,7 +28,11 @@
 #	include <limits.h>
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "findrep.h"
 #include "toolbar.h"
@@ -65,7 +66,7 @@
 
 int SysKey=0;
 
-static _KEYTAB *pkeytbl=NULL;
+static KEYTAB *pkeytbl=NULL;
 
 static int test_entry(char *str, int kstate, int key, int ob_flags)
 {
@@ -542,7 +543,7 @@ int MapKey(int *kstate, int *key)
 		sc-=0x76;
 
 	if((ks&K_CAPS) && !(ks&K_SHIFT))
-		ret=((char *)pkeytbl->caps)[sc];
+		ret=((char *)pkeytbl->capslock)[sc];
 	else
 	{
 		if(ks&K_SHIFT)

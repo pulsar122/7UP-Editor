@@ -27,7 +27,12 @@
 #endif
 
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "undo.h"
@@ -205,7 +210,7 @@ void hndl_sort(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT **endcu
 			switch(exit_obj)
 			{
 				case SORTHELP:
-					form_alert(1,Asort[1]);
+					my_form_alert(1,Asort[1]);
 					objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 					break;
 				case SORTLINE:
@@ -255,7 +260,7 @@ void hndl_sort(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT **endcu
 		if(!group && (tree[SORTGROUP].ob_state & SELECTED) && !(tree[SORTKRIT].ob_state & SELECTED))
 		{
 			if(tree[SORTEXTRA].ob_state&SELECTED)
-				form_alert(1,Asort[2]);
+				my_form_alert(1,Asort[2]);
 			grpbegcut=*begcut;
 			grpendcut=*endcut;
 			grpbegline=begline;
@@ -265,7 +270,7 @@ void hndl_sort(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT **endcu
 		if(!group && (tree[SORTGROUP].ob_state & SELECTED) &&  (tree[SORTKRIT].ob_state & SELECTED))
 		{
 			if(tree[SORTEXTRA].ob_state&SELECTED)
-				form_alert(1,Asort[3]);
+				my_form_alert(1,Asort[3]);
 			Wblksize(wp,*begcut,*endcut,&grplen,&chars);
 			group=1;
 			return;
@@ -356,14 +361,14 @@ void hndl_sort(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT **endcu
 						graf_mouse(ARROW,NULL);
 					}
 					else
-						form_alert(1,Asort[0]);
+						my_form_alert(1,Asort[0]);
 					Mfree(gs);
 				}
 				else
-					form_alert(1,Asort[0]);
+					my_form_alert(1,Asort[0]);
 			}
 			else
-				form_alert(1,Asort[4]);
+				my_form_alert(1,Asort[4]);
 			tree[SORTLINE].ob_state|=SELECTED;
 			tree[SORTGROUP].ob_state&=~SELECTED;
 			tree[SORTKRIT].ob_state &=~SELECTED;
@@ -429,7 +434,7 @@ void hndl_sort(WINDOW *wp, OBJECT *tree, LINESTRUCT **begcut, LINESTRUCT **endcu
 				graf_mouse(ARROW,NULL);
 			}
 			else
-				form_alert(1,Asort[0]);
+				my_form_alert(1,Asort[0]);
 			tree[SORTLINE].ob_state|=SELECTED;
 			tree[SORTGROUP].ob_state&=~SELECTED;
 			tree[SORTKRIT].ob_state &=~SELECTED;

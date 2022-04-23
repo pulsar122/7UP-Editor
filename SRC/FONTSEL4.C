@@ -25,9 +25,14 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "forms.h"
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "7up3.h"
 #include "editor.h"
 #include "objc_.h"
@@ -490,7 +495,7 @@ int fontsel_input(OBJECT *tree, int handle, int fontid, int fontsize, int ncount
 				}
 				break;
 			case FSHELP:
-				form_alert(1,Afontsel[0]);
+				my_form_alert(1,Afontsel[0]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case FSOK:
@@ -735,13 +740,13 @@ void hndl_font(WINDOW *wp, OBJECT *tree)	 /* geraete direkt ansprechen */
 				if(kstate & (K_LSHIFT|K_RSHIFT))
 				{
 					sprintf(alertstr,Afontsel[2],id,size);
-					form_alert(1,alertstr);
+					my_form_alert(1,alertstr);
 				}
 				break;
 			case 0:
 				break;
 			case -1:
-				form_alert(1,Afontsel[1]);
+				my_form_alert(1,Afontsel[1]);
 				break;
 		}
 	}

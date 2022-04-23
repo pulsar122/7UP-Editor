@@ -28,8 +28,13 @@
 #	include <limits.h>
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "alert.h"
+#include "falert.h"
 #include "di_fly.h"
 #include "resource.h"
 #include "fileio.h"
@@ -200,7 +205,7 @@ static void _loadshortcuts(char *filename)
 			}
 		}
 		else
-			form_alert(1,Adeadkey[0]);
+			my_form_alert(1,Adeadkey[0]);
 		fclose(fp);
 		graf_mouse(ARROW,NULL);
 	}
@@ -279,7 +284,7 @@ static void _hndl_shortcuts(OBJECT *tree)
 				event_timer(62);
         		break;
 			case MENUMHELP:
-			   form_alert(1,Adeadkey[4]);
+			   my_form_alert(1,Adeadkey[4]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
         		break;
 			case MENUMSAVE:
@@ -326,7 +331,7 @@ static void _hndl_shortcuts(OBJECT *tree)
 					objc_update(tree,exit_obj,0);
 			   break;
 			case MENUTHELP:
-			   form_alert(1,Adeadkey[5]);
+			   my_form_alert(1,Adeadkey[5]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
         		break;
 			case MENUTSAVE:

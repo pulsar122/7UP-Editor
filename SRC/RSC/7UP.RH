@@ -10,11 +10,11 @@ EXTERN BITBLK   *rs_frimg[];
 EXTERN OBJECT   rs_object[];
 EXTERN OBJECT   *rs_trindex[];
 
-#define NUM_BB    4
-#define NUM_IB    0
+#define NUM_BB    18
+#define NUM_IB    13
 #define NUM_CIB   0
-#define NUM_TI    5
+#define NUM_TI    418
 #define NUM_FRSTR 0
 #define NUM_FRIMG 0
-#define NUM_OBS   15
-#define NUM_TREE  1
+#define NUM_OBS   1068
+#define NUM_TREE  36

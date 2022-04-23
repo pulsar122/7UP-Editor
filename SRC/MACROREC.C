@@ -23,11 +23,18 @@
 #endif
 
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "version.h"
 #include "alert.h"
+#include "falert.h"
 #include "config.h"
 #include "fileio.h"
+#include "mevent.h"									/* (GS)	*/
+
 
 #include "macro.h"
 
@@ -86,7 +93,7 @@ int record_macro(int command, int kstate, int key)
 					else /* Ziffer!!! */
 					{
 						macro.rec = 0; /* Fehler, halt! */
-						form_alert(1,Amacrorec[0]);
+						my_form_alert(1,Amacrorec[0]);
 					}
 					return(0);
 				}
@@ -114,13 +121,13 @@ int record_macro(int command, int kstate, int key)
 							}
 							else /* leider kein Speicher mehr frei */
 							{
-								form_alert(1,Amacrorec[1]);
+								my_form_alert(1,Amacrorec[1]);
 								macro.rec = 0;
 							}
 						}
 						else /* max. Makrogr”že erreicht */
 						{	
-							form_alert(1,Amacrorec[1]);
+							my_form_alert(1,Amacrorec[1]);
 							macro.rec = 0;
 						}
 					}
@@ -232,14 +239,14 @@ int mevnt_event(MEVENT *mevent) {
 		mevent->e_flags |= MU_TIMER;
 		if ( !(flags & MU_TIMER) || time > MACROPLAYTIME )
 			mevent->e_time = MACROPLAYTIME;
-		retval = evnt_event( mevent );
+		retval = evnt_mevent( mevent );
 		retval |= play_macro(&(mevent->e_ks),&(mevent->e_kr));
 		mevent->e_flags = flags;
 		mevent->e_time = time;
 		if ( time > MACROPLAYTIME )
 			flags &= ~MU_TIMER;
 		retval &= flags;
-	} else if ( ( retval = evnt_event( mevent ) ) & MU_KEYBD ) {
+	} else if ( ( retval = evnt_mevent( mevent ) ) & MU_KEYBD ) {
 		if ( !record_macro(0,mevent->e_ks,mevent->e_kr) )
 			retval &= ~MU_KEYBD;
 	}

@@ -6,7 +6,7 @@
 
 	1997-04-07 (MJK): ben”tigte Headerfiles werden geladen,
 	                  compilierbar mit max. Warnungen
-	1998-03-06 (MJK): Die Makrorecordergeschichte, is hier nun weg!
+	1998-03-06 (MJK): Die Makrorecordergeschichte, ist hier nun weg!
 *****************************************************************/
 #ifdef TCC_GEM
 #include <stdio.h>
@@ -30,7 +30,7 @@ static AESPB aespb=
    (int *)_GemParBlk.addrout
 };
 
-int evnt_event(MEVENT *mevent)
+int evnt_mevent(MEVENT *mevent)
 {
    memcpy(_GemParBlk.intin,mevent,14*sizeof(int));   
    _GemParBlk.addrin[0]=mevent->e_mepbuf;

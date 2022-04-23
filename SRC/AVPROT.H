@@ -12,10 +12,12 @@
 	Prototypen
 *****************************************************************/
 
+/* MH
 #ifdef TCC_GEM
 int appl_getinfo(int ap_gtype, int *ap_gout1, int *ap_gout2, int *ap_gout3, int *ap_gout4);
 int appl_search( int ap_smode, char *ap_sname, int *ap_stype, int *ap_sid );
 #endif
+*/
 
 void hndl_AVProt(int msgbuf[]);
 int relay( int myid, int apid, int argc, char *argv[]);

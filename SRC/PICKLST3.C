@@ -26,6 +26,7 @@
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	undef abs
 #	include <ext.h>
+typedef unsigned long	ino_t;		/* holds an inode (fake under GEMDOS) */
 #else
 # include <stat.h>
 #	include <unistd.h>
@@ -46,9 +47,14 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "forms.h"
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "version.h"
 #include "language.h"
 #include "config.h"
@@ -135,12 +141,12 @@ int load_picklist( void )
 						pl[count].info[strlen(pl[count].info)-1]=0; /*CR weg*/
 					}
 				} else {
-					form_alert(1,Apicklist[3]);
+					my_form_alert(1,Apicklist[3]);
 					count = -1;
 				}
 			}
 		}	else if(filelength(fileno(fp)) > 0)
-			form_alert(1,Apicklist[2]);
+			my_form_alert(1,Apicklist[2]);
 		fclose(fp);
 		graf_mouse(ARROW,NULL);	
 	}
@@ -468,7 +474,7 @@ static int _hndl_picklist(OBJECT *tree, char *filename, long *line)
 		switch(exit_obj)
 		{
 			case PICKHELP:
-				form_alert(1,Apicklist[0]);
+				my_form_alert(1,Apicklist[0]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case PICKDEL:
@@ -642,7 +648,7 @@ void hndl_picklist(OBJECT *tree)
 					hndl_goto(wp, NULL, line);
 			break;
 		case -1:
-			form_alert(1,Apicklist[1]);
+			my_form_alert(1,Apicklist[1]);
 			/* durchfallen!!! */
 		case 0:
 			tree[PICKAKTIV].ob_state = a;

@@ -22,8 +22,13 @@
 
 #include "windows.h"
 #include "forms.h"
-#include "7UP.H"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "alert.h"
+#include "falert.h"
 #include "7up3.h"
 #include "printer.h"
 #include "objc_.h"
@@ -168,7 +173,7 @@ void hndl_preview(WINDOW *wp, OBJECT *tree, LINESTRUCT *begcut, LINESTRUCT *endc
 
 	if((pagedesc = malloc(lines*sizeof(long)))==NULL)
 	{
-		form_alert(1,Apreview[1]);
+		my_form_alert(1,Apreview[1]);
 		return;
 	}
 
@@ -277,7 +282,7 @@ void hndl_preview(WINDOW *wp, OBJECT *tree, LINESTRUCT *begcut, LINESTRUCT *endc
 						objc_update(tree,PREVPAGE,0);
 						break;
 					case PREVHELP:
-						form_alert(1,Apreview[0]);
+						my_form_alert(1,Apreview[0]);
 						objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,
 							tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 						break;
@@ -321,7 +326,7 @@ void hndl_preview(WINDOW *wp, OBJECT *tree, LINESTRUCT *begcut, LINESTRUCT *endc
 				  	goto ENDE;
 				break;
 			case PREVHELP:
-				form_alert(1,Apreview[0]);
+				my_form_alert(1,Apreview[0]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,
 					tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;

@@ -16,7 +16,11 @@
 #	include <gem.h>
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "editor.h"

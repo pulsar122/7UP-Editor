@@ -271,7 +271,21 @@ Bugfixing und Žnderungen 2.33 PL 6
 Bugfixing und Žnderungen 2.33 PL 7
 ----------------------------------
 
-1.) 2000-10-20  Alle INF-Dateinamen auf Kleinbuchstaben umgestellt.
+1.) 2000-10-20 (GS)
+    Alle INF-Dateinamen auf Kleinbuchstaben umgestellt.
+
+2.) 2002-03-21 (GS)
+    Internationale Version erstellt.
+
+Bugfixing und Žnderungen 2.33 PL 8
+----------------------------------
+
+1.) 	2002-09-28 (GS)
+			Der Fensterinhalt wird auch mit den PC spezifischen	Tasten gescrollt
+			( Bild hoch, Bild runter, Ende ).
+
+2.)   2009-10-01 (GS)
+      Bei GDOS-Druckern wird, wenn m”glich, der Druckername angezeigt.
 
 Allgemein:
 ----------

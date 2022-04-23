@@ -44,7 +44,11 @@
 #endif
 
 #include "macro.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "undo.h"
 #include "editor.h"
@@ -1538,7 +1542,7 @@ static void get_key(WINDOW *wp, int *mx, int *my,  int *key_state)
 			   break;
       }
 /* muž raus, wg. Makrorecorder
-		while(evnt_event(&mevent) == MU_KEYBD)
+		while(evnt_mevent(&mevent) == MU_KEYBD)
 			;
 */
       *mx=max(0,*mx);            /* 1997-04-07 (MJK): Werte statt Pointer */

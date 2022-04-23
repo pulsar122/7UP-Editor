@@ -21,20 +21,20 @@
 */
 
 #include <stdio.h>
-#ifdef TCC_GEm
+#ifdef TCC_GEM
 # include <aes.h>
 # include <vdi.h>
 #else
 # include <gem.h>
 #endif
-#if defined( __TURBOC__ ) && !defined( __MINT__ )
+#if defined( __PUREC__ ) && !defined( __MINT__ )
 #	include <tos.h>
 #else
 #	include <osbind.h>
 #endif
 
 #ifndef _AESversion
-#	ifdef TCC_GEM
+#	ifdef __PUREC__
 #		define _AESversion (_GemParBlk.global[0])
 #	else
 #		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
@@ -80,25 +80,6 @@ int get_cookie_aes (long cookie, long *value)
             cookiejar += 2;
     }   while (cookiejar[-2]);
     return 0;
-}
-
-int appl_xgetinfo (int type, int *out1, int *out2, int *out3, int *out4)
-{
-	static short has_agi = -1;
-	long cookie;
-	AFNT *afnt;
-	
-	if (has_agi<0)
-	    has_agi = (_AESversion >= 0x400 								/* AES 4.0? 		*/
-	        || (get_cookie_aes ('MagX', &cookie)				/* MagiC! 2.0? 	*/
-	            && ((int **) cookie)[2][24] >= 0x200)
-	        || appl_find ("?AGI\0\0\0\0") == 0); 				/* "?AGI"? 			*/
-	if (has_agi)
-	    return appl_getinfo(type, out1, out2, out3, out4);
-	if ( get_cookie_aes ('AFnt', (long *)&afnt) 				/* AES-Font? 		*/
-	    && afnt->af_magic == 'AFnt')
-	    return afnt->afnt_getinfo(type, out1, out2, out3, out4);
-	return 0;
 }
 
 static int load_font (int vdihandle, int fontid)

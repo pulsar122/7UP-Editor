@@ -15,7 +15,6 @@
 #include <ctype.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
-#	define _KEYTAB KEYTAB
 #else
 #	include <osbind.h>
 #endif
@@ -28,7 +27,11 @@
 #	define Objc_edit(a,b,c,d,e,f) objc_edit(a,b,c,f,e)
 #endif
 
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "language.h"
@@ -40,6 +43,7 @@
 #include "objc_.h"
 #include "wind_.h"
 #include "graf_.h"
+#include "mevent.h"									/* (GS)	*/
 
 #include "forms.h"
 
@@ -361,7 +365,7 @@ static int _form_exdo(OBJECT *tree, int fm_start_fld)
 		0L,0L
 	};
 
-	_KEYTAB *pkeytbl;
+	KEYTAB *pkeytbl;
 	char *kbdu;
 
 	pkeytbl=Keytbl((void *)-1L,(void *)-1L,(void *)-1L);
@@ -386,7 +390,7 @@ static int _form_exdo(OBJECT *tree, int fm_start_fld)
 		mevent.e_m1.g_x=mevent.e_mx;
 		mevent.e_m1.g_y=mevent.e_my;
 
-		fm_which=evnt_event(&mevent);
+		fm_which=evnt_mevent(&mevent);
 /*
 		wind_update(BEG_UPDATE);
 */
@@ -587,7 +591,7 @@ WEITER3:
 				}
 			}
 /* muž raus wg. Makrorecorder
-			while(evnt_event(&mevent) == MU_KEYBD) /* Puffer l”schen */
+			while(evnt_mevent(&mevent) == MU_KEYBD) /* Puffer l”schen */
 				;
 */
 		}
@@ -1409,7 +1413,7 @@ int form_exdo(OBJECT *tree, int start)
 /* geht nicht auf dem Falcon
 						do
 						{
-							event=evnt_event(&mevent);
+							event=evnt_mevent(&mevent);
 							if(event & MU_M1)
 							{
 								mx=mevent.e_mx;
@@ -1523,7 +1527,7 @@ int pop_do(OBJECT *tree, int close_at_once)
 								leave, r.g_x, r.g_y, r.g_w, r.g_h,
 								0, 0, 0, 0, 0,
 								NULL, 0,
-#if TC_GEM
+#ifdef TCC_GEM
 								0,
 #endif
 								&mx, &my, &ret, &ret, &ret, &ret);

@@ -12,17 +12,26 @@
 ; dafÅr voreingestellt.
 ;=================================================================
 7UP.APP
-.C [-V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
-;.C [-C -K -P -G -D__TCC_COMPAT__ -DMiNT=1]           ; TC/PC-Libs + GEMLIB
-;.C [-C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -DTCC_GEM] ; TC/PC-Libs
 
-; Mit Debug Info
-;.C [-Y -V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
+;.C [-DENGLISH]		; Gernate english version
+
+;.C [-2]						; Generate 68020 Code
+
+;.C [-V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
+;.C [-V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1]           ; TC/PC-Libs + GEMLIB
+
+;.C[-D__COMPATIBLE_FKT__]
+.C [-V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -DTCC_GEM] ; TC/PC-Libs
+
+; With debug information
+;.C [-V -Y -V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
 ;.L [-G -L -Y]
 
+.C[-Ii:\c\fremde\7up233\purec\include\]
+.C[-Ii:\c\fremde\7up233\rsc\]
+
 =
-;PCVSTAR2.O	;falls die TC- oder PC-Libraries verwendet werden
-crt0.o     ;Bei Verwendung der MiNTLIB
+pcstartb.o					; StartUp-Code Behne
 
 7up3.c
 alert.c [-M]
@@ -36,10 +45,10 @@ editor4.c
 fbinfo.c
 fexist.c
 fileio5.c
-findnext.c ;1997-04-22 (MJK): neu
+findnext.c 					; 1997-04-22 (MJK): new
 findrep6.c
 fkeys.c
-fontaesi.c			; 2000-05-18 (GS) neu
+fontaesi.c					; 2000-05-18 (GS) new
 fontsel4.c
 format.c
 forms.c
@@ -76,7 +85,7 @@ wrealscr.c
 falert3D.c [-M]
 graf_.c
 wind_.c
-objc_.c    ;1997-04-09 (MJK): neu
+objc_.c    ;1997-04-09 (MJK): new
 
 vafunc.c   ;1997-04-23: Neue Funktionen fÅr das VA-Protokoll
 
@@ -86,17 +95,22 @@ vafunc.c   ;1997-04-23: Neue Funktionen fÅr das VA-Protokoll
 ;=================================================================
 
 ; Die MiNTLIB (PL49) und GEMLIB (PL38 erweitert)
-MINTFLT.LIB        	; Floatingpoint-Routinen
+;MINTFLT.LIB        	; Floatingpoint-Routinen
 ;FPUINIT.O          ; ein wenig fpu-Code, der in MiNTFLT fehlt.
-MINTLIB.LIB        	; MiNTLIB
-PCSTDLIB.LIB        ; Standard library (mem*-Funkionen ersetzen, siehe BUG23.TXT!)
-GEM.LIB            	; erweiterte GEMLIB zur MiNTLIB
-GEMX.LIB						; GEMLIB mit mit neuen Funktion NVDI, FSM/Speedo-GDOS, MagiC, WDIALOG
+;MINTLIB.LIB        	; MiNTLIB
+;PCSTDLIB.LIB        ; Standard library (mem*-Funkionen ersetzen, siehe BUG23.TXT!)
+;GEM.LIB            	; erweiterte GEMLIB zur MiNTLIB
+;GEMX.LIB						; GEMLIB mit mit neuen Funktion NVDI, FSM/Speedo-GDOS, MagiC, WDIALOG
 cflib.lib
 
 ; Die Pure-C Libraries
-;PCFLTLIB.LIB       ; floating point library
-;PCEXTLIB.LIB       ; extended library
+PCFLTLIB.LIB       ; floating point library
+PCEXTLIB.LIB       ; extended library
+PCSTDLIB.LIB       ; Standard library (mem*-Funkionen ersetzen, siehe BUG23.TXT!)
+
+PCTOS.LIB
+PCGEM.LIB
+
 ;PCTOSLIB.LIB       ; TOS library
 ;VDILIB.LIB         ; VDI library (TCC_GEM definieren oder GEM.LIB)
 ;AESLIB.LIB         ; AES library (TCC_GEM definieren oder GEM.LIB)

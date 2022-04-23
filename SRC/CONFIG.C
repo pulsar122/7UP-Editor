@@ -42,8 +42,13 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 
-#include "7UP.H"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "forms.h"
 #include "windows.h"
 #include "version.h"
@@ -88,8 +93,6 @@ static WINDOW _dummy[]=
 	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
 	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0
 };					  /* | | */
-
-static GRECT _koord[8];
 
 #pragma warn -par
 void hndl_diverses(OBJECT *tree, int start)
@@ -155,7 +158,7 @@ void hndl_diverses(OBJECT *tree, int start)
 		switch(exit_obj)
 		{
 			case DIVHELP:
-				form_alert(1,Aconfig[0]);
+				my_form_alert(1,Aconfig[0]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case DIVHDA:
@@ -222,7 +225,7 @@ void hndl_diverses(OBJECT *tree, int start)
 		backuptime=0xFFFFFFFFL;
 	if(backuptime==0L)
 	{
-		form_alert(1,Aconfig[1]);
+		my_form_alert(1,Aconfig[1]);
 		backuptime=0xFFFFFFFFL;
 	}
 
@@ -498,7 +501,7 @@ void hndl_lineal(WINDOW *wp, int start)
 		change_linealname(pathname,"LINEAL");
 		sprintf(alertstr,Aconfig[3],
 			split_fname((char *)Wname(wp)),split_fname(pathname));
-		switch(form_alert(0,alertstr))
+		switch(my_form_alert(0,alertstr))
 		{
 		  case 1:
 			  pathname[0]=0;
@@ -512,7 +515,7 @@ void hndl_lineal(WINDOW *wp, int start)
 				  {
 					  sprintf(alertstr,Aconfig[4],
 						  split_fname(pathname));
-					  form_alert(1,alertstr);
+					  my_form_alert(1,alertstr);
 				  }
 			  }
 			  break;
@@ -543,7 +546,6 @@ void saveconfig(int windstruct)
 	FILE *fp;
 	register int i;
 	char *cp, fpattern[FILENAME_MAX];
-	int xy[4];
 	
 	if(!windstruct)
 	{
@@ -801,7 +803,7 @@ void restoreconfig(char *inffile) /* es kann 7UP.INF als Parameter Åbergeben wer
 	if(!fp)
 	{
 		sprintf(alertstr,Aconfig[8],stradj2(fpattern,pathname,40));
-		form_alert(1,alertstr);
+		my_form_alert(1,alertstr);
 		
 	   pathname[0]=0;
 	   strcpy(fpattern,"*.inf");
@@ -1055,7 +1057,7 @@ int saveformat(OBJECT *tree, char *fname)
 		return(1);
 	}
 	else
-		form_alert(1,Aconfig[5]);
+		my_form_alert(1,Aconfig[5]);
 	return(0);
 }
 
@@ -1092,10 +1094,10 @@ int loadformat(OBJECT *tree, char *fname)
 			return(1);
 		}
 		fclose(fp);
-		form_alert(1,Aconfig[6]);
+		my_form_alert(1,Aconfig[6]);
 	}
 	else
-		form_alert(1,Aconfig[7]);
+		my_form_alert(1,Aconfig[7]);
 	return(0);
 }
 

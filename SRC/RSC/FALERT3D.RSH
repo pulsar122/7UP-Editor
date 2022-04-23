@@ -1,6 +1,6 @@
 /* GEM Resource C Source */
 
-#include <gem.h>
+#include <aes.h>
 #include "FALERT3D.H"
 
 #if !defined(WHITEBAK)

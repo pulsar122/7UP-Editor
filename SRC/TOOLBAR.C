@@ -23,8 +23,13 @@
 #endif
 
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "alert.h"
+#include "falert.h"
 #include "editor.h"
 #include "userdef.h"
 #include "7up3.h"
@@ -87,7 +92,7 @@ int toolbar_do(WINDOW *wp, OBJECT *tree, int x, int y, int bstate, int kstate)
 	
 				if(kstate & (K_LSHIFT|K_RSHIFT)) /* Reseten der Tableiste */
 				{
-					if(form_alert(1,Atoolbar[0])==2)
+					if(my_form_alert(1,Atoolbar[0])==2)
 					{
 						memset(cp,'.',STRING_LENGTH);
 	

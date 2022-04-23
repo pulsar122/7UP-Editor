@@ -7,7 +7,7 @@
 
 	1997-04-08 (MJK): ben”tigte Headerfiles werden geladen,
 	                  compilierbar mit max. Warnungen
-	2000-09-29 (GS) : const aus der Deklaration von form_alert entfernt.
+	2000-09-29 (GS) : const aus der Deklaration von my_form_alert entfernt.
 
 *****************************************************************/
 #define RSRC_CREATE
@@ -72,7 +72,7 @@ static void fix_tree(int n_tree)
 #undef RSRC_CREATE
 /*****************************************************************************/
 
-int form_alert (int def, char *alertmsg)
+int my_form_alert (int def, char *alertmsg)
 {
 	static int first=TRUE;
 

@@ -32,13 +32,17 @@
 #endif
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	include <tos.h>
-#	include <ext.h>
 #else
 #	include <osbind.h>
 #endif
 
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "undo.h"
 #include "vafunc.h"
@@ -148,7 +152,7 @@ void hndl_AVProt(int msgbuf[])
 				av_buf[0]=AP_TFAIL;
 				av_buf[1]=0;
 				shel_write(10,0,0,(char *)av_buf,"");
-				form_alert(1,Aavprot[2]);
+				my_form_alert(1,Aavprot[2]);
 			}
 			else
 			{
@@ -173,10 +177,10 @@ void hndl_AVProt(int msgbuf[])
 				if(wp->kind & INFO)
 					wind_set_str(wp->wihandle,WF_INFO,CALCLOCKMSG);
 				else
-					form_alert(1,Aavprot[3]);
+					my_form_alert(1,Aavprot[3]);
 			}
 			else
-				form_alert(1,Aavprot[3]);
+				my_form_alert(1,Aavprot[3]);
 			break;
 		case AV_PROTOKOLL:
 			av_buf[0]=VA_PROTOSTATUS;
@@ -348,7 +352,7 @@ int relay( int myid, int apid, int argc, char *argv[])
 			}
 			else
 			{
-				form_alert(1,Aavprot[1]);
+				my_form_alert(1,Aavprot[1]);
 				return(0); /* Fehler, hat nicht geklappt, aktiv bleiben */
 			}
 		}
@@ -369,64 +373,6 @@ int relay( int myid, int apid, int argc, char *argv[])
 }
 #pragma warn .par
 
-#ifdef TCC_GEM
-int appl_getinfo(int ap_gtype, int *ap_gout1, int *ap_gout2, int *ap_gout3, int *ap_gout4)
-{
-	AESPB aespb=
-	{
-		_GemParBlk.contrl,
-		_GemParBlk.global,
-		_GemParBlk.intin,
-		_GemParBlk.intout,
-		(int *)_GemParBlk.addrin,
-		(int *)_GemParBlk.addrout
-	};
-
-	_GemParBlk.contrl[0] = 130;
-	_GemParBlk.contrl[1] = 1;
-	_GemParBlk.contrl[2] = 5;
-	_GemParBlk.contrl[3] = 0;
-	_GemParBlk.contrl[4] = 0;
-	
-	_GemParBlk.intin[0]  = ap_gtype;
-	
-	_crystal(&aespb);
-	
-	*ap_gout1 = _GemParBlk.intout[1];
-	*ap_gout2 = _GemParBlk.intout[2];
-	*ap_gout3 = _GemParBlk.intout[3];
-	*ap_gout4 = _GemParBlk.intout[4];
-	return(_GemParBlk.intout[0]);
-}
-
-int appl_search( int ap_smode, char *ap_sname, int *ap_stype, int *ap_sid )
-{
-	AESPB aespb=
-	{
-		_GemParBlk.contrl,
-		_GemParBlk.global,
-		_GemParBlk.intin,
-		_GemParBlk.intout,
-		(int *)_GemParBlk.addrin,
-		(int *)_GemParBlk.addrout
-	};
-
-	_GemParBlk.intin [0] = ap_smode;
-	_GemParBlk.addrin[0] = ap_sname;
-
-	_GemParBlk.contrl[0]=18;	
-	_GemParBlk.contrl[1]=1;	
-	_GemParBlk.contrl[2]=3;	
-	_GemParBlk.contrl[3]=1;	
-
-	_crystal(&aespb);
-
-	*ap_stype = _GemParBlk.intout[1];
-	*ap_sid	= _GemParBlk.intout[2];
-
-	return(_GemParBlk.intout[0]);
-}
-#endif /* TCC_GEM */
 
 #define MAXPAPPS 15
 #define APP_FIRST 0

@@ -22,7 +22,11 @@
 
 #include "windows.h"
 #include "forms.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "language.h"
 #include "findrep.h"
 

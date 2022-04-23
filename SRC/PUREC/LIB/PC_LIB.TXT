@@ -1,0 +1,3 @@
+The library PCGEM.LIB and PCTOS.LIB are from Martin Els„sser.
+
+http://acspro.atari.org/

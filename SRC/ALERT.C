@@ -362,7 +362,7 @@ char *Agrepfile[]=
    "[1][Nothing found!][OK]",
    "[3][Can't create|%s!][OK]",
    "[0][\'.\' = beliebiges Zeichen|\'$\' = Zeilenende|\'*\' = 0-max Wiederholungen|\'+\' = 1-max Wiederholungen|\'\\\' = Sonderzeichenquotierung][Cancel|More]",
-   "[0][\':a\' = Buchstabe|\':d\' = Ziffer|\':n\' = alphanumerisch|\':.\' = Interpunktion|\': \' = Leerzeichen][Cancel|More]",
+   "[0][\':a\' = letter|\':d\' = number|\':n\' = alpha numeric|\':.\' = interpunction|\': \' = blank][Cancel|More]",
    "[0][Character set in squared|brackets: 0-9,a-z,^0-9,^a-z|z.B.: ^a-bd-z? only searches for|\'c\', numbers, interpunctions,|without the question mark.][OK]"
 };
 
@@ -515,15 +515,15 @@ char *Afindrep[]=
    "[1][%ld positions have been replaced.][OK]",
    "[1][Wrong value!][OK]",
    "[0][Double clicking a bracket causes a|jump to the corresponding bracket|including a marking a block.|Exception: comment brackets.][OK]",
-   "[3][Fehler: geschweifte Klammer!|Differenz: %d][OK]",
-   "[3][Fehler: eckige Klammer!|Differenz: %d][OK]",
-   "[3][Fehler: runde Klammer!|Differenz: %d][OK]",
-   "[3][Fehler: spitze Klammer!|Differenz: %d][OK]",
+   "[3][Error: geschweifte Klammer!|Differenz: %d][OK]",
+   "[3][Error: eckige Klammer!|Differenz: %d][OK]",
+   "[3][Error: runde Klammer!|Differenz: %d][OK]",
+   "[3][Error: spitze Klammer!|Differenz: %d][OK]",
    "[3][Out of memory!][OK]",
-   "[3][Fehler: Pascal Kommentar!|Differenz: %d][OK]",
-   "[3][Fehler: 'C'-Kommentar!|Differenz: %d][OK]",
-   "[3][Fehler: X. freies Muster!|%d schliežende Elemente fehlen.][OK]",
-   "[3][Fehler: X. freies Muster!|%d ”ffnende Elemente fehlen.][OK]"
+   "[3][Error: Pascal Kommentar!|Differenz: %d][OK]",
+   "[3][Error: 'C'-Kommentar!|Differenz: %d][OK]",
+   "[3][Error: X. freies Muster!|%d schliežende Elemente fehlen.][OK]",
+   "[3][Error: X. freies Muster!|%d ”ffnende Elemente fehlen.][OK]"
 };
 
 char *Anumerik[]=
@@ -537,7 +537,7 @@ char *Anumerik[]=
 /* 6*/   "[3][Can't calculate standard deviation!][OK]",
 /* 7*/   "[0][Tax   : %0.2lf][OK]",
 /* 8*/   "[3][Can't calculate tax!][OK]",
-/* 9*/   "[0][Anzahl  : %d|Summe   : %0.2lf|Mittel  : %0.2lf|Std.Abw.: %0.2lf|Mwst    : %0.2lf][OK]",
+/* 9*/   "[0][Amount: %d|Sum   : %0.2lf|Mean  : %0.2lf|Std. Dev.: %0.2lf|Tax   : %0.2lf][OK]",
 /*10*/   "[3][Can't create file!][OK]",
 /*11*/   "[0][7UP verarbeitet Dezimalpunkt und|Dezimalkomma. Die Nachkommastellen|und Tausenderseperatoren werden nur|im Dokument dargestellt.][Cancel|More]",
 /*12*/   "[3][Wrong value for tax!][OK]",

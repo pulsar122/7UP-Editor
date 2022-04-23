@@ -25,7 +25,12 @@
 #endif
 
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "wfindblk.h"
 #include "block.h"
@@ -112,7 +117,7 @@ printf("\33H*%ld %ld %d %d %d*",
 			  undo->begcol,
 			  undo->endcol,
 			  end->used);
-form_alert(1,"[0][ ][OK]");
+my_form_alert(1,"[0][ ][OK]");
 */
 		undo->endcol=min(undo->endcol,STRING_LENGTH);
 		undo->blktype=wp->w_state&COLUMN;
@@ -130,7 +135,7 @@ printf("\33H*%ld %ld %d %d %d %d*",
 			  undo.blkbeg->endcol,
 			  undo.blkend->begcol,
 			  undo.blkend->endcol);
-form_alert(1,"[0][ ][OK]");
+my_form_alert(1,"[0][ ][OK]");
 */
 	event_timer(125);
 	if(undo.blktype==COLUMN)
@@ -157,7 +162,7 @@ printf("\33H*%ld %ld %d %d %d %d*",
 			  undo.blkbeg->endcol,
 			  undo.blkend->begcol,
 			  undo.blkend->endcol);
-form_alert(1,"[0][ ][OK]");
+my_form_alert(1,"[0][ ][OK]");
 #endif
 		if(undo.blktype==COLUMN)
 			paste_col(wp,begcopy,endcopy);
@@ -210,7 +215,7 @@ void do_undo(WINDOW *wp)										 /* Undo ausfÅhren */
 		if(undo.flag!=1)
 		{
 			free_undoblk(wp, undo.blkbeg);
-			form_alert(1,Aundo[0]);
+			my_form_alert(1,Aundo[0]);
 			undo.item=0;
 			return;
 		}

@@ -31,7 +31,12 @@
 #endif
 
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "windows.h"
 #include "forms.h"
 #include "resource.h"
@@ -233,7 +238,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 				scrp_read(filename);
 			else
 			{
-				form_alert(1,Anumerik[0]);
+				my_form_alert(1,Anumerik[0]);
 				return;
 			}
 		}
@@ -241,7 +246,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 		{
 			if(first) /* beim erstenmal Clipbrd lîschen */
 			{
-				scrp_clear();
+				scrp_clear_own();
 				first=0;
 			}
 		}
@@ -291,7 +296,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 						sprintf(alertstr,Anumerik[3],wert3);
 					}
 					else
-						form_alert(1,Anumerik[4]);
+						my_form_alert(1,Anumerik[4]);
 					break;
 				case BLKSDEV:
 					wert4=sdev(begin, end);
@@ -303,7 +308,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 						sprintf(alertstr,Anumerik[5],wert4);
 					}
 					else
-						 form_alert(1,Anumerik[6]);
+						 my_form_alert(1,Anumerik[6]);
 					break;
 				case BLKMWST:
 					wert5=steuer(begin, end);
@@ -315,7 +320,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 						sprintf(alertstr,Anumerik[7],wert5);
 					}
 					else
-						 form_alert(1,Anumerik[8]);
+						 my_form_alert(1,Anumerik[8]);
 					break;
 				case BLKINTER:
 	            extract(&begin->string[begin->begcol], 
@@ -334,10 +339,10 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 					{
 /*
 						sprintf(alertstr,Anumerik[15],(int)wert6);
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 */
 						sprintf(alertstr,Anumerik[15+fehler]);
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 						hide_blk(wp, begin, end);
 						graf_mouse_on(0);
 						Wcursor(wp);
@@ -373,15 +378,15 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 						sprintf(alertstr,Anumerik[9],wert1,wert2,wert3,wert4,wert5);
 					}
 					else
-						form_alert(1,Anumerik[4]);
+						my_form_alert(1,Anumerik[4]);
 					break;
 			}
 			fclose(fp);
 			if(*alertstr)
-				form_alert(1,alertstr);
+				my_form_alert(1,alertstr);
 		}
 		else
-			form_alert(1,Anumerik[10]);
+			my_form_alert(1,Anumerik[10]);
 		graf_mouse(ARROW,NULL);
 	}
 }
@@ -406,8 +411,8 @@ void hndl_nummenu(OBJECT *tree, int start, int mode)
 		switch(exit_obj)
 		{
 			case NUMHELP:
-				if(form_alert(2,Anumerik[11])==2)
-					form_alert(1,Anumerik[14]);
+				if(my_form_alert(2,Anumerik[11])==2)
+					my_form_alert(1,Anumerik[14]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			default:
@@ -432,13 +437,13 @@ void hndl_nummenu(OBJECT *tree, int start, int mode)
 		form_read(tree, NUMMWSTN, mwst); /* MWST lesen */
 		if(!isfloat(mwst))				  /* korrektes Format? */
 		{
-			form_alert(1,Anumerik[12]);
+			my_form_alert(1,Anumerik[12]);
 			form_write(tree,NUMMWSTN,a,0); /* Nein, zurÅcksetzen */
 		}
 		form_read(tree, NUMMWSTE, mwst); /* MWST lesen */
 		if(!isfloat(mwst))				  /* korrektes Format? */
 		{
-			form_alert(1,Anumerik[12]);
+			my_form_alert(1,Anumerik[12]);
 			form_write(tree,NUMMWSTE,h,0); /* Nein, zurÅcksetzen */
 		}
 		nkst=atoi(form_read(tree,NUMKOMMA,b));/* Nachkommastellen lesen */

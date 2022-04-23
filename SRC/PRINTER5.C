@@ -39,9 +39,14 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "resource.h"
 #include "fileio.h"
 #include "7up3.h"
@@ -51,6 +56,8 @@
 #include "objc_.h"
 #include "listbox.h"
 #include "graf_.h"
+#include "mevent.h"									/* (GS)	*/
+
 
 #include "printer.h"
 
@@ -231,11 +238,9 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 {
 	char *cp/*,devstr[4],assignsys[]="@:\\ASSIGN.SYS"*/;
 	int i,first;
-/*
-	FILE *fp;
-*/
 	int handle,exists;
-	char name[33], device_name[100];
+	char name[100], file_name[255], file_path[255];
+	uint16 nvdi_version;
 	
 	scrollist = (TSCROLLIST *)malloc(sizeof(TSCROLLIST));
 	memset(scrollist,0,sizeof(TSCROLLIST));
@@ -245,22 +250,24 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 	scrollist->gdosinfo[0].state |= SELECTED;
 	scrollist->gdosinfo[0].retcode=1;
 #ifdef ENGLISH
-	strcpy(scrollist->gdosinfo[0].devname,"  undefinied  ");
+	strcpy(scrollist->gdosinfo[0].devname,"  undefinied             ");
 #else
-	strcpy(scrollist->gdosinfo[0].devname,"  undefiniert ");
+	strcpy(scrollist->gdosinfo[0].devname,"  undefiniert            ");
 #endif
 	scrollist->gdosinfo[0].devno=0;
 	
 	scrollist->gdosinfo[1].retcode=2;
-	strcpy(scrollist->gdosinfo[1].devname,"  Epson ESC/P ");
+	strcpy(scrollist->gdosinfo[1].devname,"  Epson ESC/P            ");
 	scrollist->gdosinfo[1].devno=0;
 
 	scrollist->gdosinfo[2].retcode=3;
-	strcpy(scrollist->gdosinfo[2].devname,"  IBM Pro     ");
+	strcpy(scrollist->gdosinfo[2].devname,"  IBM Pro                ");
 	scrollist->gdosinfo[2].devno=0;
 	
 	if(vq_gdos())
 	{
+		nvdi_version = Ash_NVDIVersion ();
+
 		graf_mouse(BUSY_BEE,NULL);
 		first=1;
 		for(i=11; (i<100) && (scrollist->count<MAXDEVICES); i++)
@@ -271,11 +278,6 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 				{
 					ps[0].w = (int)((long)work_out[0]*(long)work_out[3]/100);
 					ps[0].h = (int)((long)work_out[1]*(long)work_out[4]/100);
-/*
-					sprintf((char *)pop[POPBASIS].ob_spec.index,
-								"  %3d x %3d ",
-								ps[0].w/10, ps[0].h/10);
-*/
 					sprintf((char *)tree[PRNPAPER].ob_spec.index,
 								"  %3d x %3d ",
 								ps[0].w/10, ps[0].h/10);
@@ -284,21 +286,21 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 				}
 				scrollist->gdosinfo[scrollist->count].retcode=(int)(scrollist->count+1);
 				scrollist->gdosinfo[scrollist->count].devno=i;
-				if(vq_vgdos()==0x5F46534DL) /* Abfragbar ab Vektor GDOS */
+				if( nvdi_version >= 0x0300 ) /* Ab NVDI 3.00 */
 				{
 					memset(name,0,sizeof(name));
-					vq_devinfo(handle,i,&exists,name,device_name);
+					vq_ext_devinfo(handle,i,&exists, file_path, file_name, name);
 					if(exists)
 					{
 						if((cp=strrchr(name,'.'))!=NULL) /* '.SYS' weg */
 							*cp=0;
-						sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-8s  ",i,name);
+						sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-18s  ",i,name);
 					}
 					else
-						sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-8s  ",i,"GDOS");
+						sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-18s  ",i,"GDOS");
 				}
 				else
-					sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-8s  ",i,"GDOS");
+					sprintf(scrollist->gdosinfo[scrollist->count].devname,"  %2d %-18s  ",i,"GDOS");
 				scrollist->count++;
 				close_work(handle,i);
 			}
@@ -306,40 +308,6 @@ static int scan_assignsys(OBJECT *tree, OBJECT *pop)
 		unlink("GEMFILE.GEM");
 		graf_mouse(ARROW,NULL);
 	}
-/*	
-	devcount=0;
-	assignsys[0]=(char)(getbootdev()+'A');
-	if((fp=fopen(assignsys,"r"))!=NULL)
-	{
-		while(fgets(alertstr,PATH_MAX,fp))
-		{
-			if(*alertstr != ';') /* Kommentarzeile */
-			{
-				for(i=PRINTER; i<METAFILE; i++)
-				{
-					sprintf(devstr,"%2d",i);
-					if(!strncmp(devstr,alertstr,2))
-					{
-						if(tolower(alertstr[2])=='r') /* residenter Treiber */
-							sscanf(&alertstr[4],"%s",&alertstr[100]);
-						else
-							sscanf(&alertstr[3],"%s",&alertstr[100]);
-						strcpy(alertstr,&alertstr[100]);
-						if((cp=strrchr(alertstr,'.'))!=NULL)
-							*(cp+1)=0;
-
-						alertstr[strlen(alertstr)-1]=' ';
-						sprintf((char *)tree[i-PRINTER+POP21].ob_spec.index+5L,
-								  "%-8s",alertstr);
-						devcount++;
-						break;
-					}
-				}
-			}
-		}
-		fclose(fp);
-	}
-*/
 	return (int)(scrollist->count);
 }
 #pragma warn .par
@@ -381,7 +349,7 @@ void print_block(WINDOW *wp, LINESTRUCT *beg, LINESTRUCT *end)
 #endif
 		}
 		else
-			form_alert(1,Aprinter[0]);
+			my_form_alert(1,Aprinter[0]);
 	}
 	graf_mouse(ARROW,0L);
 }
@@ -412,7 +380,7 @@ void spool(char *filename, int copies, int mode)
 #endif
 	}
 	else
-		form_alert(1,Aprinter[1]);
+		my_form_alert(1,Aprinter[1]);
 }
 
 static int draftprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, FILE *fp)
@@ -436,7 +404,7 @@ static int draftprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, F
 	line=wp->fstr;
 	for(i=0;i<pages;i++)											/* fr jede Seite */
 	{
-		event=evnt_event(&mevent);
+		event=evnt_mevent(&mevent);
 /*
 		wind_update(BEG_UPDATE);
 */
@@ -474,7 +442,7 @@ static int draftprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, F
 				objc_change(tree1,PRTESC,0,tree1->ob_x,tree1->ob_y,
 													tree1->ob_width,tree1->ob_height,
 													tree1[PRTESC].ob_state|SELECTED,1);
-				if(form_alert(2,Aprinter[4])==2)
+				if(my_form_alert(2,Aprinter[4])==2)
 				{
 /*
 					wind_update(END_UPDATE);
@@ -698,7 +666,7 @@ static int draftprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, F
 			}
 		}
 		if(tree3[PRNPAUSE].ob_state&SELECTED)
-			if(form_alert(2,Aprinter[2])==1)
+			if(my_form_alert(2,Aprinter[2])==1)
 			{
 				result=0;
 				goto ENDE;
@@ -761,7 +729,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 	if((act_dev>=POP21 && !vq_gdos()) ||
 		(act_dev>gdospop->ob_height/boxh)) /* ein Drucker weniger in Assign.sys */
 	{  /* Assign.sys fehlt wohl, und Seitenlayout wurde noch nicht beachtet */
-		form_alert(1,Aprinter[3]);
+		my_form_alert(1,Aprinter[3]);
 		return;
 	}
 	if(act_dev>=POP21 || (appl_find("CALCLOCK")<0 && appl_find("1STGUIDE")<0))
@@ -805,7 +773,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 		switch(exit_obj)
 		{
 			case PRN2HELP:
-				form_alert(1,Aprinter[6]);
+				my_form_alert(1,Aprinter[6]);
 				objc_change(tree3,exit_obj,0,tree3->ob_x,tree3->ob_y,
 					tree3->ob_width,tree3->ob_height,tree3[exit_obj].ob_state&~SELECTED,1);
 				break;
@@ -838,7 +806,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 		mevent.e_flags|=MU_MESAG;
 		graf_mouse_on(0);
 		Wcursor(wp);		 /* ausschalten */
-		evnt_event(&mevent); /* Dummyaufruf um Redraw zu killen */
+		evnt_mevent(&mevent); /* Dummyaufruf um Redraw zu killen */
 		Wredraw(wp,array2grect(&msgbuf[4]));
 		Wcursor(wp);		 /* einschalten */
 		graf_mouse_on(1);
@@ -850,7 +818,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 	lpage=atoi(form_read(tree3,PRNTO,alertstr));
 	if(fpage>lpage || fpage==0 || lpage==0)
 	{
-		form_alert(1,Aprinter[7]);
+		my_form_alert(1,Aprinter[7]);
 		fpage=1;
 		lpage=9999;
 		return;
@@ -859,7 +827,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 	lcol=atoi(form_read(tree3,PRNLCOL,alertstr));
 	if(fcol>lcol || fcol==0 || lcol==0 || lcol>512)
 	{
-		form_alert(1,Aprinter[8]);
+		my_form_alert(1,Aprinter[8]);
 		fcol=1;
 		lcol=512;
 		return;
@@ -867,7 +835,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 	copies=atoi(form_read(tree3,PRNCOPY,alertstr));
 	if(copies==0)
 	{
-		form_alert(1,Aprinter[9]);
+		my_form_alert(1,Aprinter[9]);
 		copies=1;
 		return;
 	}
@@ -909,7 +877,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 				spool(filename,copies,tree3[PRNDEL].ob_state&SELECTED?1:0);
 			}
 			else
-				form_alert(1,Aprinter[10]);
+				my_form_alert(1,Aprinter[10]);
 			return;
 		}
 		if(tree3[PRNFILE].ob_state&SELECTED)
@@ -926,7 +894,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 					fclose(fp);
 				}
 				else
-					form_alert(1,Aprinter[11]);
+					my_form_alert(1,Aprinter[11]);
 			}
 			return;
 		}
@@ -934,7 +902,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 		Ongibit(32); /* Deskjet erwache! aber nur einmal, statt in is_busy() */
 		while(!is_busy())
 		{
-			if(form_alert(2,Aprinter[5])==1)
+			if(my_form_alert(2,Aprinter[5])==1)
 				return;
 			Ongibit(32); /* Deskjet erwache! aber nur einmal, statt in is_busy() */
 		}
@@ -961,7 +929,7 @@ void hndl_prtmenu(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp)
 				}
 				else
 				{
-					form_alert(1,Aprinter[0]);
+					my_form_alert(1,Aprinter[0]);
 #if !defined( __TURBOC__ ) || defined( __MINT__ )
 					fclose(stdprn);
 #endif
@@ -1057,7 +1025,7 @@ static void verify_printable_lines(WINDOW *wp)
 			id=vst_font(handle,wp->fontid);							 /* Font w„hlen */
 			size=vst_point(handle,wp->fontsize,&ret,&ret,&ret,&ch);		  /* pts */
 			if(id!=wp->fontid || size!=wp->fontsize)
-				form_alert(1,Aprinter[15]);		 /* Warnung ausgeben */
+				my_form_alert(1,Aprinter[15]);		 /* Warnung ausgeben */
 			else
 			{
 				if(act_dist==POPD1)
@@ -1085,8 +1053,6 @@ void hndl_layout(OBJECT *tree, int start)
 	int A,B,C,D,E,F,G,H,I,J,K,L,M,N;
 	/*static*/ char fpattern[FILENAME_MAX]="*.lay";
 	
-/*
-*/
 	graf_mouse(BUSY_BEE,0L);
 	wp=Wgettop();
 	if(first)
@@ -1104,26 +1070,6 @@ void hndl_layout(OBJECT *tree, int start)
 		strcpy((char *)tree[PRNDRUCK].ob_spec.index, 
 			scrollist->gdosinfo[POPNO-1].devname);
 
-/*
-		if(vq_gdos())
-			i=scan_assignsys(gdospop)+PRINTER;
-		else
-			i=PRINTER;
-		gdospop->ob_height=3*boxh+(i-PRINTER)*boxh;
-
-		if(act_dev>gdospop->ob_height/boxh)
-			act_dev=POPNO;
-		if(act_dev>POPIBM && !vq_gdos()) /* Kein GDOS mehr da */
-			act_dev=POPNO;
-		if(act_dist>POPD1 && !vq_gdos()) /* Kein GDOS mehr da */
-			act_dist=POPD1;
-		if(act_dev>POPIBM)					/* Zeilenzahl einstellen */
-			verify_printable_lines(wp);
-
-		gdospop [act_dev  ].ob_state|=CHECKED;
-		strcpy((char *)tree[PRNDRUCK].ob_spec.index,
-				 (char *)gdospop[act_dev].ob_spec.index);
-*/
 		first=0;
 	}
 
@@ -1291,107 +1237,7 @@ void hndl_layout(OBJECT *tree, int start)
 					verify_printable_lines(wp);
 					goto BL;
             }
-/*
-				graf_mkstate(&mx,&my,&ret,&ret);
-				objc_offset(tree,PRNDRUCK,&x,&y);
-				mx=x+tree[PRNDRUCK].ob_width/2;
-				my=y+gdospop->ob_height/2-(act_dev-POPNO)*boxh;
-				switch(ret=pop_exhndl(gdospop,mx,my,1))
-				{
-					case POPNO:
-					case POPEPS:
-					case POPIBM:
-					case POP21:
-					case POP22:
-					case POP23:
-					case POP24:
-					case POP25:
-					case POP26:
-					case POP27:
-					case POP28:
-					case POP29:
-					case POP30:
-						if(ret!=act_dev)
-						{
-							gdospop[act_dev].ob_state&=~CHECKED;
-							act_dev=ret;
-							gdospop[act_dev].ob_state|=CHECKED;
-							strcpy((char *)tree[PRNDRUCK].ob_spec.index,
-									 (char *)gdospop[ret].ob_spec.index);
-							objc_update(tree,PRNDRUCK,0);
-							if(act_dev<POP21)
-							{
-								tree[PRNPAPER].ob_state|=DISABLED;
-								tree[PRNCIRC1].ob_state|=DISABLED;
-								tree[PRNDIST ].ob_state|=DISABLED;
-								tree[PRNCIRC3].ob_state|=DISABLED;
-								tree[PRNPAPER].ob_flags&=~TOUCHEXIT;
-								tree[PRNCIRC1].ob_flags&=~TOUCHEXIT;
-								tree[PRNDIST ].ob_flags&=~TOUCHEXIT;
-								tree[PRNCIRC3].ob_flags&=~TOUCHEXIT;
-							}
-							else
-							{
-								tree[PRNPAPER].ob_state&=~DISABLED;
-								tree[PRNCIRC1].ob_state&=~DISABLED;
-								tree[PRNDIST ].ob_state&=~DISABLED;
-								tree[PRNCIRC3].ob_state&=~DISABLED;
-								tree[PRNPAPER].ob_flags|=TOUCHEXIT;
-								tree[PRNCIRC1].ob_flags|=TOUCHEXIT;
-								tree[PRNDIST ].ob_flags|=TOUCHEXIT;
-								tree[PRNCIRC3].ob_flags|=TOUCHEXIT;
-							}
-							objc_update(tree,PRNPAPER,0);
-							objc_update(tree,PRNCIRC1,0);
-							objc_update(tree,PRNDIST,0);
-							objc_update(tree,PRNCIRC3,0);
-							verify_printable_lines(wp);
-							goto BL;
-						}
-				}
-*/
-				break;
-/*
-			case PRNCIRC2:
-				gdospop[act_dev].ob_state&=~CHECKED;
-				if(++act_dev>(POPNO+gdospop->ob_height/boxh)-1)
-					act_dev=POPNO;
-				gdospop[act_dev].ob_state|=CHECKED;
-				strcpy((char *)tree[PRNDRUCK].ob_spec.index,
-						 (char *)gdospop[act_dev].ob_spec.index);
-
-				objc_update(tree,PRNDRUCK,0);
-				if(act_dev<POP21)
-				{
-					tree[PRNPAPER].ob_state|=DISABLED;
-					tree[PRNCIRC1].ob_state|=DISABLED;
-					tree[PRNDIST ].ob_state|=DISABLED;
-					tree[PRNCIRC3].ob_state|=DISABLED;
-					tree[PRNPAPER].ob_flags&=~TOUCHEXIT;
-					tree[PRNCIRC1].ob_flags&=~TOUCHEXIT;
-					tree[PRNDIST ].ob_flags&=~TOUCHEXIT;
-					tree[PRNCIRC3].ob_flags&=~TOUCHEXIT;
-				}
-				else
-				{
-					tree[PRNPAPER].ob_state&=~DISABLED;
-					tree[PRNCIRC1].ob_state&=~DISABLED;
-					tree[PRNDIST ].ob_state&=~DISABLED;
-					tree[PRNCIRC3].ob_state&=~DISABLED;
-					tree[PRNPAPER].ob_flags|=TOUCHEXIT;
-					tree[PRNCIRC1].ob_flags|=TOUCHEXIT;
-					tree[PRNDIST ].ob_flags|=TOUCHEXIT;
-					tree[PRNCIRC3].ob_flags|=TOUCHEXIT;
-				}
-				objc_update(tree,PRNPAPER,0);
-				objc_update(tree,PRNCIRC1,0);
-				objc_update(tree,PRNDIST,0);
-				objc_update(tree,PRNCIRC3,0);
-				verify_printable_lines(wp);
-				evnt_timer(125,0);
-				goto BL;
-				break;
-*/
+			break;
 			case PRNDIST:
 				graf_mkstate(&mx,&my,&ret,&ret);
 				objc_offset(tree,PRNDIST,&x,&y);
@@ -1523,8 +1369,8 @@ UR:
 		objc_update(tree, PRNUR, 0);
 				break;
 			case PRNHELP:
-				if(form_alert(2,Aprinter[12])==2)
-					form_alert(1,Aprinter[13]);
+				if(my_form_alert(2,Aprinter[12])==2)
+					my_form_alert(1,Aprinter[13]);
 				objc_change(tree,exit_obj,0,tree->ob_x,tree->ob_y,tree->ob_width,tree->ob_height,tree[exit_obj].ob_state&~SELECTED,1);
 				break;
 			case PRNLOAD:
@@ -1645,7 +1491,7 @@ static int v_gdosprt(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, in
 	line=wp->fstr;
 	for(i=0; i<pages; i++)							  /* fr jede Seite */
 	{
-		event=evnt_event(&mevent);
+		event=evnt_mevent(&mevent);
 /*
 		wind_update(BEG_UPDATE);
 */
@@ -1683,7 +1529,7 @@ static int v_gdosprt(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, in
 				objc_change(tree1,PRTESC,0,tree1->ob_x,tree1->ob_y,
 													tree1->ob_width,tree1->ob_height,
 													tree1[PRTESC].ob_state|SELECTED,1);
-				if(form_alert(2,Aprinter[4])==2)
+				if(my_form_alert(2,Aprinter[4])==2)
 				{
 /*
 					wind_update(END_UPDATE);
@@ -1917,7 +1763,7 @@ static int v_gdosprt(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, in
 			v_clrwk(handle);
 		}
 		if(tree3[PRNPAUSE].ob_state&SELECTED)
-			if(form_alert(2,Aprinter[2])==1)
+			if(my_form_alert(2,Aprinter[2])==1)
 			{
 				result=0;
 				goto ENDE;
@@ -1999,9 +1845,9 @@ int gdosprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, int devic
 				if(id!=wp->fontid || pt!=wp->fontsize) /* irdendwas paáte nicht */
 				{
 					if(ismetafile(device)/*==METAFILE*/)/* bei Metafiles... */
-						form_alert(1,Aprinter[14]);		/* Warnung ausgeben */
+						my_form_alert(1,Aprinter[14]);		/* Warnung ausgeben */
 					else
-						form_alert(1,Aprinter[15]);		/* Warnung ausgeben */
+						my_form_alert(1,Aprinter[15]);		/* Warnung ausgeben */
 					vst_unload_fonts(handle,0);			/* Fonts freigeben */
 					close_work(handle,device);				/* Workstation schlieáen */
 					if(ismetafile(device)/*==METAFILE*/)/* bei Metafiles... */
@@ -2070,7 +1916,7 @@ int gdosprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, int devic
 			else
 			{
 				sprintf(alertstr,Aprinter[16],device);
-				form_alert(1,alertstr);
+				my_form_alert(1,alertstr);
 			}
 /*
 			graf_mouse(ARROW,NULL);
@@ -2078,7 +1924,7 @@ int gdosprint(OBJECT *tree1, OBJECT *tree2, OBJECT *tree3, WINDOW *wp, int devic
 			return(result);
 		}
 		else
-			form_alert(1,Aprinter[17]);
+			my_form_alert(1,Aprinter[17]);
 	}
 	return(0);
 }

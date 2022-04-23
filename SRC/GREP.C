@@ -24,6 +24,7 @@
 #endif
 
 #include "alert.h"
+#include "falert.h"
 #include "findrep.h"
 
 #include "grep.h"
@@ -58,7 +59,7 @@ static void store(char op)
 {
 	if (pp >= &pbuf[PMAX])
 	{
-		 form_alert(1,Agrep[0]);
+		 my_form_alert(1,Agrep[0]);
 	}
 	*pp++ = op;
 }

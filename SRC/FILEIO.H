@@ -62,7 +62,7 @@ int _read_blk(WINDOW *wp, char *filename, LINESTRUCT **begcut, LINESTRUCT **endc
 int getbootdev(void);
 
 int create_clip(void);
-int scrp_clear(void); /* Clipbrd lîschen, fÅr Atari */
+int scrp_clear_own(void); /* Clipbrd lîschen, fÅr Atari */
 void write_clip(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut);
 int read_clip(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut);
 

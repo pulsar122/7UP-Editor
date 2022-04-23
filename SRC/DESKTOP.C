@@ -36,9 +36,14 @@
 
 #include "macro.h"
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "undo.h"
 #include "language.h"
 #include "7up3.h"
@@ -595,7 +600,7 @@ void drag_icon(OBJECT *tree, int icon)
 					begcut=endcut=NULL;
 					break;
 				default:
-					form_alert(1,Adesktop[0]);
+					my_form_alert(1,Adesktop[0]);
 					break;
 			}
 		}
@@ -618,7 +623,7 @@ void drag_icon(OBJECT *tree, int icon)
 				case DESKICN5:
 				case DESKICN6:
 				case DESKICN7:
-						form_alert(1,Adesktop[0]);
+						my_form_alert(1,Adesktop[0]);
 					break;
 				case DESKICN8: /* Papierkorb */
 				case DESKICND: /* voller Papierkorb */
@@ -638,16 +643,16 @@ void drag_icon(OBJECT *tree, int icon)
 						case DESKICND: /* voller Papierkorb */
 						case DESKICN9: /* Drucker	 */
 						case DESKICNA: /* DISK		 */
-							form_alert(1,Adesktop[0]);
+							my_form_alert(1,Adesktop[0]);
 							break;
 						case DESKICNB: /* Klemmbrett */
 							graf_mouse(BUSY_BEE,NULL);
-							scrp_clear();
+							scrp_clear_own();
 							inst_clipboard_icon(tree,DESKICNB,DESKICNC,0);
 							graf_mouse(ARROW,NULL);
 							break;
 						case DESKICNC:
-							form_alert(1,Adesktop[1]);
+							my_form_alert(1,Adesktop[1]);
 							break;
 					}
 					break;
@@ -667,10 +672,10 @@ void drag_icon(OBJECT *tree, int icon)
 						case DESKICND: /* voller Papierkorb */
 						case DESKICN9: /* Drucker	 */
 						case DESKICNA: /* DISK		 */
-							form_alert(1,Adesktop[0]);
+							my_form_alert(1,Adesktop[0]);
 							break;
 						case DESKICNB: /* Klemmbrett */
-							if(form_alert(2,Adesktop[2])==2)
+							if(my_form_alert(2,Adesktop[2])==2)
 							{
 								scrp_read(filename);
 								if(*filename)
@@ -686,7 +691,7 @@ void drag_icon(OBJECT *tree, int icon)
 							}
 							break;
 						case DESKICNC:
-							form_alert(1,Adesktop[1]);
+							my_form_alert(1,Adesktop[1]);
 							break;
 					}
 					break;
@@ -706,13 +711,13 @@ void drag_icon(OBJECT *tree, int icon)
 						case DESKICND: /* voller Papierkorb */
 						case DESKICN9: /* Drucker	 */
 						case DESKICNA: /* DISK		 */
-							form_alert(1,Adesktop[0]);
+							my_form_alert(1,Adesktop[0]);
 							break;
 						case DESKICNB: /* Klemmbrett */
-							form_alert(1,Adesktop[3]);
+							my_form_alert(1,Adesktop[3]);
 							break;
 						case DESKICNC: /* leeres Klemmbrett */
-							form_alert(1,Adesktop[1]);
+							my_form_alert(1,Adesktop[1]);
 							break;
 					}
 					break;
@@ -741,7 +746,7 @@ void drag_icon(OBJECT *tree, int icon)
 						case DESKICNA: /* DISK		 */
 						case DESKICNB: /* Klemmbrett */
 						case DESKICNC: /* ungÅltig */
-							form_alert(1,Adesktop[0]);
+							my_form_alert(1,Adesktop[0]);
 							break;
 					}
 					break;
@@ -907,7 +912,7 @@ void click_icon(OBJECT *tree, int icon)
 	}
 	if(icon==DESKICNC)
 	{ /* leer */
-		form_alert(1,Adesktop[1]);
+		my_form_alert(1,Adesktop[1]);
 	}
 	desel_icons(tree,icon,icon,1);
 }

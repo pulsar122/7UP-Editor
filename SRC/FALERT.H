@@ -1,6 +1,12 @@
-/* Resource Datei Indizes fÅr FALERT */
+/*****************************************************************
+	7UP
+	Header: FALERT.H
 
-#define FALERT   0   /* Formular/Dialog */
-#define IMAGE1   3   /* IMAGE in Baum FALERT */
-#define STRING1  7   /* STRING in Baum FALERT */
-#define BUTTON1  12  /* BOXTEXT in Baum FALERT */
+*****************************************************************/
+
+#ifndef FALERT_H
+#define FALERT_H
+
+int my_form_alert (int def, char *alertmsg);
+
+#endif /* FALERT_H */

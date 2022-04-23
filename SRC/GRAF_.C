@@ -25,7 +25,7 @@ static AESPB aespb=
    (int *)_GemParBlk.addrout
 };
 
-int graf_mouse( int gr_monumber, MFORM *gr_mofaddr )
+int my_graf_mouse( int gr_monumber, MFORM *gr_mofaddr )
 {
    _GemParBlk.intin [0] = gr_monumber;
    _GemParBlk.addrin[0] = gr_mofaddr;
@@ -61,7 +61,7 @@ int graf_mouse( int gr_monumber, MFORM *gr_mofaddr )
 }
 
 int graf_mouse_on( int on ) {
-	graf_mouse( on ? M_ON : M_OFF, NULL );
+	return my_graf_mouse( on ? M_ON : M_OFF, NULL );
 }
 #else
 int graf_mouse_on( int on ) {

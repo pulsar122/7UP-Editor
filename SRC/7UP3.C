@@ -61,16 +61,16 @@
 	2000-09-15 (GS):	Begonnen CF-Lib einzubinden vorerst nur fÅr die
 										Debugausgaben.
 	2000-09-20 (GS)	: cf-Lib wieder entfernt.
-
+	2001-10-23 (GS)	: Lib-Versionen werden im Copyright-Dialog angezeigt.
+	
 *****************************************************************/
 
-#define PL7UP "07"	/* Patchlevel von 7Up */
+#define PL7UP "08"	/* Patchlevel von 7Up */
 
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
 #	undef abs
 #	include <tos.h>
-#	include <ext.h>
 #else
 #	include <mintbind.h>
 #	include <signal.h>
@@ -88,12 +88,21 @@
 #	include <gemx.h>
 #endif
 
+#include <cflib.h>									/* (GS) */
+
 #include "vaproto.h"
 #include "fsel_inp.h"
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
+
 #include "undo.h"
 #include "version.h"
 
@@ -135,6 +144,12 @@
 #include "wind_.h"
 #include "graf_.h"
 #include "fontaesi.h"
+#include "mevent.h"									/* (GS)	*/
+
+extern char	__Ident_gnulib[];								/* (GS) */
+/*
+extern char	__Ident_gem[];									/* (GS) */
+*/
 
 #ifndef SQUARED	/* error at gemfast? */
 #	define SQUARED SQUARE
@@ -588,7 +603,7 @@ void pinit(char *inffile)
 
 	if(!rsrc_init("7UP.RSC",inffile))
 	{
-		 form_alert(1,A7up[0]);
+		 my_form_alert(1,A7up[0]);
 		 close_work(userhandle,SCREEN); /**/
 		 close_work(vdihandle,SCREEN);
 		 wind_update(END_UPDATE);
@@ -718,7 +733,7 @@ int delete(WINDOW *wp, OBJECT *tree, int desk_obj)
 	if(wp && wp->w_state & CHANGED)
 	{
 		sprintf(alertstr,A7up[1],split_fname((char *)Wname(wp)));
-		switch(form_alert(3,alertstr))
+		switch(my_form_alert(3,alertstr))
 		{
 			case 1:
 				wp->w_state&=~CHANGED;
@@ -778,6 +793,16 @@ void hndl_menu(int menu, int item)
 #else
 					"Version 2.33PL"PL7UP" %s. %s %s",&alertstr[4],&alertstr[0],&alertstr[7]);
 #endif
+
+/* MH
+				get_patchlev(__Ident_gnulib, alertstr);											/* (GS) */
+				strcpy ( (char *)copyinfo[CMINT].ob_spec.index, alertstr );	/* (GS) */
+				get_patchlev(__Ident_gemlib, alertstr);												/* (GS) */
+				strcpy ( (char *)copyinfo[CGEM].ob_spec.index, alertstr );	/* (GS) */
+*/
+				get_patchlev(__Ident_cflib, alertstr);											/* (GS) */
+				strcpy ( (char *)copyinfo[CCF].ob_spec.index, alertstr );		/* (GS) */
+				
 				if(!windials)
 				{
 					if(form_exhndl(copyinfo,0,0) == CINFO)
@@ -790,7 +815,7 @@ void hndl_menu(int menu, int item)
 						{
 							graf_mouse_on(FALSE);
 							Wcursor(wp);		 /* ausschalten */
-							evnt_event(&mevent); /* Dummyaufruf um Redraw zu killen */
+							evnt_mevent(&mevent); /* Dummyaufruf um Redraw zu killen */
 							Wredraw(wp,array2grect(&msgbuf[4]));
 							Wcursor(wp);
 							graf_mouse_on(TRUE);
@@ -847,7 +872,7 @@ void hndl_menu(int menu, int item)
 								{
 									case -1:	/* kein ram frei */
 										sprintf(alertstr,A7up[3],(char *)split_fname(filename));
-										form_alert(1,alertstr); /* kein break, es geht weiter */
+										my_form_alert(1,alertstr); /* kein break, es geht weiter */
 									case TRUE: /* ok */
 										wp->w_state|=CHANGED;
 										k=endcut->used; /* k nicht i */
@@ -884,7 +909,7 @@ void hndl_menu(int menu, int item)
 						{
 							case -1:	/* kein ram frei */
 								sprintf(alertstr,A7up[3],split_fname(filename));
-								form_alert(1,alertstr); /* kein break, es geht weiter */
+								my_form_alert(1,alertstr); /* kein break, es geht weiter */
 							case TRUE: /* ok */
 								store_undo(wp, &undo, begcut, endcut, WINEDIT, EDITCUT);
 								wp->w_state|=CHANGED;
@@ -910,7 +935,7 @@ void hndl_menu(int menu, int item)
 								break;
 							case FALSE:
 								sprintf(alertstr,A7up[4],(char *)split_fname(filename));
-								form_alert(1,alertstr);
+								my_form_alert(1,alertstr);
 								undo.item=FALSE;	/* EDITCUT */
 								break;
 						}
@@ -1042,7 +1067,7 @@ void hndl_menu(int menu, int item)
 						if(_wind[k].w_state & CHANGED)
 						{
 							sprintf(alertstr,A7up[1],split_fname((char *)Wname(&_wind[k])));
-							switch(form_alert(3,alertstr))
+							switch(my_form_alert(3,alertstr))
 							{
 								case 1:
 									_wind[k].w_state&=~CHANGED;
@@ -1147,7 +1172,7 @@ void hndl_menu(int menu, int item)
 								break;
 							case -1:
 								free_blk(wp,begcopy);		 /* Kopie freigeben	 */
-								form_alert(1,A7up[5]);
+								my_form_alert(1,A7up[5]);
 								break;
 						}
 					}
@@ -1234,7 +1259,7 @@ void hndl_menu(int menu, int item)
 								break;
 							case -1:
 								free_blk(wp,begcopy);		 /* Kopie freigeben	 */
-								form_alert(1,A7up[5]);
+								my_form_alert(1,A7up[5]);
 								cut=FALSE;
 								undo.item=FALSE;	/* EDITCUT */
 								break;
@@ -1485,18 +1510,18 @@ void hndl_menu(int menu, int item)
 						if(wp->kind & INFO)
 							wind_set_str(wp->wihandle,WF_INFO,errorstr);
 						else
-							form_alert(1,A7up[6]);
+							my_form_alert(1,A7up[6]);
 					}
 					else
 					{
-						form_alert(1,A7up[7]);
+						my_form_alert(1,A7up[7]);
 					}
 				}
 				else
 					if(!help())
 					{
 						sprintf(alertstr,A7up[8],(char *)(divmenu[DIVHDA].ob_spec.index/*+16L*/));
-						form_alert(1,alertstr);
+						my_form_alert(1,alertstr);
 					}
 				break;
 			case OPTFONT:
@@ -1575,7 +1600,7 @@ void hndl_menu(int menu, int item)
 				break;
 			case OPTSAVE:	/* Einstellungen sichern */
 /*
-				if(form_alert(2,A7up[9])==2)
+				if(my_form_alert(2,A7up[9])==2)
 */
 				{
 					sicons();

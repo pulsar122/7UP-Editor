@@ -62,7 +62,7 @@ static char pipename[] = "U:\\PIPE\\DRAGDROP.AA";
 static long oldpipesig;
 
 #ifdef DEBUGGING
-#define debug_alert(x, y) form_alert(x, y)
+#define debug_alert(x, y) my_form_alert(x, y)
 #else
 #define debug_alert(x, y)
 #endif

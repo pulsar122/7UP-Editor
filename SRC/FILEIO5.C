@@ -45,6 +45,7 @@
 #ifdef TCC_GEM
 #	include <aes.h>
 #	include <vdi.h>
+#	include <cflib.h>
 #else
 #	include <gem.h>
 #	include <cflib.h>
@@ -52,9 +53,14 @@
 
 #include "fsel_inp.h"
 #include "alert.h"
+#include "falert.h"
 #include "windows.h"
 #include "forms.h"
-#include "7UP.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "language.h"
 #include "7up3.h"
 #include "resource.h"
@@ -121,10 +127,12 @@ int access(const char *filename, int fattr)
   if ( !findfirst(filename,&fileRec,0) )
   	switch( fattr ) {
   		case 0:	return 0;
+/*
   		case 1: if ( fileRec.ff_attrib & FA_DIREC ||
   		             isexecutable( filename ) )
   		        	return 0;
   		        break;
+*/
   		case 2: if ( !( fileRec.ff_attrib & FA_RDONLY ) )
   		       		return 0;
   		       	break;
@@ -155,7 +163,7 @@ void Wfree(WINDOW *wp)
 			if(wp->w_state & CHANGED)
 			{
 				sprintf(iostring,Afileio[0],split_fname((char *)Wname(wp)));
-				if(form_alert(2,iostring)==2)
+				if(my_form_alert(2,iostring)==2)
 				{
 					if(!strcmp((char *)Wname(wp),NAMENLOS))
 						newname=1;
@@ -890,14 +898,14 @@ int read_clip(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut)
 		scrp_read(filename);
 		if(!*filename)
 		{
-			form_alert(1,Afileio[3]);
+			my_form_alert(1,Afileio[3]);
 			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
 																	/* versucht wird. 											*/
 			return(0);
 		}
 		if(!path_exists(filename))
 		{
-			form_alert(1,Afileio[3]);
+			my_form_alert(1,Afileio[3]);
 			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
 																	/* versucht wird. 											*/
 			return(0);
@@ -908,12 +916,12 @@ int read_clip(WINDOW *wp, LINESTRUCT **begcut, LINESTRUCT **endcut)
 		switch(_read_blk(wp, filename,begcut,endcut))
 		{
 			case -1:
-				form_alert(1,Afileio[4]);
+				my_form_alert(1,Afileio[4]);
 			case 1:
 				wp->w_state|=CHANGED;
 				return(1);
 			case 0:
-				form_alert(1,Afileio[5]);
+				my_form_alert(1,Afileio[5]);
 				break;
 		}
 	}
@@ -966,7 +974,7 @@ WINDOW *Wnewfile(char *name)
 		Wsetrcinfo(wp);
 		if(!Wopen(wp))
 		{
-			form_alert(1,Afileio[6]);
+			my_form_alert(1,Afileio[6]);
 			_exit(-1);
 		}
 		Wcuron(wp);
@@ -980,7 +988,7 @@ WINDOW *Wnewfile(char *name)
 		undo.item=WINCLOSE;
 	}
 	else
-		form_alert(1,Afileio[7]);
+		my_form_alert(1,Afileio[7]);
 	return(wp);
 }
 
@@ -1026,7 +1034,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 		{
 			case -1: /* kein ram frei */
 				sprintf(iostring,Afileio[1],split_fname((char *)Wname(wp)));
-				form_alert(1,iostring); /* kein break, es geht weiter */
+				my_form_alert(1,iostring); /* kein break, es geht weiter */
 			case 1: /* ok */
 				add_icon(desktop, wp->icon);
 				ren_icon(desktop, wp->icon);
@@ -1039,7 +1047,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 				Wsetscreen(wp);
 				if(!Wopen(wp))
 				{
-					form_alert(1,Afileio[6]);
+					my_form_alert(1,Afileio[6]);
 					_exit(-1);
 				}
 				Wslupdate(wp,1+2+4+8);
@@ -1057,7 +1065,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 				if(*iostring)
 				{
 					sprintf(alertstr,Afileio[8],(char *)split_fname(iostring));
-					if(form_alert(2,alertstr)==2)
+					if(my_form_alert(2,alertstr)==2)
 						wp=Wnewfile(iostring);
 					else
 						wp=NULL;
@@ -1066,7 +1074,7 @@ WINDOW *Wreadfile(char *name, int automatic)
 		}
 	}
 	else
-		form_alert(1,Afileio[7]);
+		my_form_alert(1,Afileio[7]);
 	return(wp);
 }
 
@@ -1098,7 +1106,7 @@ WINDOW *Wreadtempfile(char *filename, int mode)
 		if(!access(tempname,0))
 		{
 			sprintf(alertstr,Afileio[10],split_fname(filename));
-			if(form_alert(2,alertstr)==2)
+			if(my_form_alert(2,alertstr)==2)
 			{
 				if((wp=Wreadfile(tempname,mode)) != NULL)
 				{
@@ -1154,7 +1162,7 @@ static int _write_blk(WINDOW *wp, char *filename, LINESTRUCT *beg, LINESTRUCT *e
 			{
 				if(fputs(colcpy(iostring,line),fp)==EOF)
 				{
-					form_alert(1,Afileio[11]);
+					my_form_alert(1,Afileio[11]);
 					goto WEITER;
 				}
 			}
@@ -1164,7 +1172,7 @@ static int _write_blk(WINDOW *wp, char *filename, LINESTRUCT *beg, LINESTRUCT *e
 				iostring[line->endcol-line->begcol]=0;
 				if(fputs(iostring,fp)==EOF)
 				{
-					form_alert(1,Afileio[11]);
+					my_form_alert(1,Afileio[11]);
 					goto WEITER;
 				}
 			}
@@ -1172,7 +1180,7 @@ static int _write_blk(WINDOW *wp, char *filename, LINESTRUCT *beg, LINESTRUCT *e
 			{
 				if(fputs("\n",fp)==EOF)
 				{
-					form_alert(1,Afileio[11]);
+					my_form_alert(1,Afileio[11]);
 					goto WEITER;
 				}
 			}
@@ -1182,7 +1190,7 @@ static int _write_blk(WINDOW *wp, char *filename, LINESTRUCT *beg, LINESTRUCT *e
 				{
 					if(fputs("\n",fp)==EOF)
 					{
-						form_alert(1,Afileio[11]);
+						my_form_alert(1,Afileio[11]);
 						goto WEITER;
 					}
 				}
@@ -1371,7 +1379,7 @@ static long bwrite(WINDOW *wp, LINESTRUCT *line, int ascformat, FILE *fp)
 				count+=n;
 			else
 			{
-				form_alert(1,Afileio[11]);
+				my_form_alert(1,Afileio[11]);
 				count=-1;
 				goto WEITER;
 			}
@@ -1445,7 +1453,7 @@ NOCHMAL:
 					}
 					if(fputs(iostring,fp)==EOF)
 					{
-						form_alert(1,Afileio[11]);
+						my_form_alert(1,Afileio[11]);
 						goto WEITER;
 					}
 					if(line->next)
@@ -1459,21 +1467,21 @@ NOCHMAL:
 									case CRLF:
 										if(fputs("\r\n",fp)==EOF)
 										{
-											form_alert(1,Afileio[11]);
+											my_form_alert(1,Afileio[11]);
 											goto WEITER;
 										}
 										break;
 									case LF:
 										if(fputs("\n",fp)==EOF)
 										{
-											form_alert(1,Afileio[11]);
+											my_form_alert(1,Afileio[11]);
 											goto WEITER;
 										}
 										break;
 									case CR:
 										if(fputs("\r",fp)==EOF)
 										{
-											form_alert(1,Afileio[11]);
+											my_form_alert(1,Afileio[11]);
 											goto WEITER;
 										}
 										break;
@@ -1483,7 +1491,7 @@ NOCHMAL:
 							{
 								if(fputs(" ",fp)==EOF)  /* weiches Return Absatzformat */
 								{
-									form_alert(1,Afileio[11]);
+									my_form_alert(1,Afileio[11]);
 									goto WEITER;
 								}
 							}
@@ -1494,7 +1502,7 @@ NOCHMAL:
 							{
 								if(fputs(" ",fp)==EOF)  /* weiches Return */
 								{
-									form_alert(1,Afileio[11]);
+									my_form_alert(1,Afileio[11]);
 									goto WEITER;
 								}
 							}
@@ -1503,21 +1511,21 @@ NOCHMAL:
 								case CRLF:
 									if(fputs("\r\n",fp)==EOF)
 									{
-										form_alert(1,Afileio[11]);
+										my_form_alert(1,Afileio[11]);
 										goto WEITER;
 									}
 									break;
 								case LF:
 									if(fputs("\n",fp)==EOF)
 									{
-										form_alert(1,Afileio[11]);
+										my_form_alert(1,Afileio[11]);
 										goto WEITER;
 									}
 									break;
 								case CR:
 									if(fputs("\r",fp)==EOF)
 									{
-										form_alert(1,Afileio[11]);
+										my_form_alert(1,Afileio[11]);
 										goto WEITER;
 									}
 									break;
@@ -1542,7 +1550,7 @@ WEITER:
 			{
 /*neu*/		if(newname && strcmp((char *)Wname(wp),filename))
 				{
-					if(form_alert(2,Afileio[13])==2)
+					if(my_form_alert(2,Afileio[13])==2)
 					{
 						wp->w_state &= ~CHANGED; /* rckg„ngig machen */
 						Wnewname(wp,filename);
@@ -1564,7 +1572,7 @@ WEITER:
 /* unn”tig
 				while(!findnext(&fileRec)); /* weiter bis zum Ende */
 */
-				if(form_alert(2,Afileio[14])==2)
+				if(my_form_alert(2,Afileio[14])==2)
 				{
 					Fattrib(filename,1,0);  /* Schreibschutz aufheben */
 					goto NOCHMAL;
@@ -1575,13 +1583,13 @@ WEITER:
 			else
 			{
 				while(!findnext(&fileRec)); /* weiter bis zum Ende */
-				form_alert(1,Afileio[15]);
+				my_form_alert(1,Afileio[15]);
 			}
 #else
 			if( !stat(filename,&finfo) &&
 			    S_ISREG( finfo.st_mode ) && !(finfo.st_attr & S_IWUSR) &&
 			    finfo.st_uid == geteuid() &&
-			    form_alert(2,Afileio[14])==2 &&
+			    my_form_alert(2,Afileio[14])==2 &&
 			    !chmod( filename, finfo.st_attr | S_IWUSR ) )
 				goto NOCHMAL;
 			else
@@ -1624,7 +1632,7 @@ void write_file(WINDOW *wp, int newname)
 					if(!access(filename,0))
 					{
 						sprintf(iostring,Afileio[12],split_fname(filename));
-						if(form_alert(1,iostring)==1)
+						if(my_form_alert(1,iostring)==1)
 							return;
 					}
 					k=(int)strlen(filename);
@@ -1680,12 +1688,12 @@ void write_block(WINDOW *wp, LINESTRUCT *beg, LINESTRUCT *end)
 		if(!access(filename,0))
 		{
 			sprintf(iostring,Afileio[12],split_fname(filename));
-			if(form_alert(1,iostring)==1)
+			if(my_form_alert(1,iostring)==1)
 				return;
 		}
 		if(!_write_blk(wp, filename, beg, end))
 		{
-			form_alert(1,Afileio[16]);
+			my_form_alert(1,Afileio[16]);
 		}
 	}
 }
@@ -1715,10 +1723,10 @@ int create_clip(void)
 	}
 }
 
-int scrp_clear(void) /* Clipbrd l”schen */
+int scrp_clear_own(void) /* Clipbrd l”schen */
 {
 	char filename[PATH_MAX],path[PATH_MAX];
-#if defined( __TUBRC__ ) && !defined( __MINT__ )
+#if defined( __PUREC__ ) && !defined( __MINT__ )
 	struct ffblk fileRec;
 #else
 	DIR *dir;
@@ -1729,7 +1737,7 @@ int scrp_clear(void) /* Clipbrd l”schen */
 	scrp_read(path);
 	if(*path)
 	{
-#if defined( __TURBOC__ ) && !defined( __MINT__ )
+#if defined( __PUREC__ ) && !defined( __MINT__ )
 		complete_path(path);
 		strcpy(filename,path);
 		strcat(filename,"SCRAP.*");
@@ -1779,7 +1787,7 @@ void write_clip(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 				scrp_read(filename);
 			else
 			{
-				form_alert(1,Afileio[17]);
+				my_form_alert(1,Afileio[17]);
 				return;
 			}
 		}
@@ -1787,14 +1795,14 @@ void write_clip(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 		{
 			if(first) /* beim erstenmal Clipbrd l”schen */
 			{
-				scrp_clear();
+				scrp_clear_own();
 				first=0;
 			}
 		}
 		complete_path(filename);
 		if(!path_exists(filename))
 		{
-			form_alert(1,Afileio[3]);
+			my_form_alert(1,Afileio[3]);
 			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
 																	/* versucht wird. 											*/
 			return;
@@ -1802,7 +1810,7 @@ void write_clip(WINDOW *wp, LINESTRUCT *begcut, LINESTRUCT *endcut)
 		strcat(filename,"SCRAP.TXT");
 		if(!_write_blk(wp, filename, begcut, endcut))
 		{
-			form_alert(1,Afileio[25]);
+			my_form_alert(1,Afileio[25]);
 			clipbrd = 0;								/* 2000-09-12 (GS) damit es nicht immer */
 																	/* versucht wird. 											*/
 		}
@@ -1834,7 +1842,7 @@ void Gsave(WINDOW *wp) /* GEMINI: nach $TRASHDIR */
 			}
 			else
 			{
-				form_alert(1,Afileio[18]);
+				my_form_alert(1,Afileio[18]);
 			}
 		}
 	}
@@ -1871,11 +1879,11 @@ void delete_file(void)
 				strcat(filename,lpath[i]);
 				{
 					sprintf(alertstr,Afileio[19],lpath[i]);
-					if(form_alert(2,alertstr)==2)
+					if(my_form_alert(2,alertstr)==2)
 					{
 						graf_mouse(BUSY_BEE,NULL);
 						if(unlink(filename)!=0)
-							form_alert(1,Afileio[23]);
+							my_form_alert(1,Afileio[23]);
 						graf_mouse(ARROW,NULL);
 					}
 				}
@@ -1885,7 +1893,7 @@ void delete_file(void)
 	else
 	{
 		sprintf(alertstr,Afileio[19],split_fname(filename));
-		if(form_alert(2,alertstr)==2)
+		if(my_form_alert(2,alertstr)==2)
 		{
 			graf_mouse(BUSY_BEE,NULL);
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -1894,20 +1902,20 @@ void delete_file(void)
 				cut_path(filename);
 				strcat(filename,fileRec.ff_name);
 				if(unlink(filename)!=0)
-					form_alert(1,Afileio[23]);
+					my_form_alert(1,Afileio[23]);
 				while(!findnext(&fileRec))
 				{
 					cut_path(filename);
 					strcat(filename,fileRec.ff_name);
 					if(unlink(filename)!=0)
-						form_alert(1,Afileio[23]);
+						my_form_alert(1,Afileio[23]);
 				}
 				inst_trashcan_icon(desktop,DESKICN8,DESKICND,0);
 				if(!stricmp((char *)split_fname(filename),"SCRAP.TXT"))
 					inst_clipboard_icon(desktop,DESKICNB,DESKICNC,0);
 			}
 			else
-				form_alert(1,Afileio[20]);
+				my_form_alert(1,Afileio[20]);
 #else
 			/* Diese Version stoppt im Gegensatz zur obigen nach der
 			 * ersten nicht l”schbaren Datei.
@@ -1919,9 +1927,9 @@ void delete_file(void)
 			if ( !unlink( filename ) ) {
 				while ( !unlink( filename ) );
 			} else if ( errno == ENOENT )
-				form_alert(1,Afileio[20]);
+				my_form_alert(1,Afileio[20]);
 			if ( errno != ENOENT )
-				form_alert(1,Afileio[23]);
+				my_form_alert(1,Afileio[23]);
 #endif
 			graf_mouse(ARROW,NULL);
 		}
@@ -1980,7 +1988,7 @@ static void nofilearg(char *arg, char what)
 						wind_set_str(wp->wihandle,WF_INFO,errorstr);
 					}
 					else
-						form_alert(1,Afileio[21]);
+						my_form_alert(1,Afileio[21]);
 				}
 			}
 			break;
@@ -2141,7 +2149,7 @@ void loadfiles(char *TV_path, char *TV_pattern) /* evtl. Treeviewpfade */
 			if(!Wreadtempfile(filename,0))
 			{
 				sprintf(alertstr,Afileio[8],(char *)split_fname(filename));
-				if(form_alert(2,alertstr)==2)
+				if(my_form_alert(2,alertstr)==2)
 					Wnewfile(filename);
 			}
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -2165,7 +2173,7 @@ void loadfiles(char *TV_path, char *TV_pattern) /* evtl. Treeviewpfade */
 			else
 			{
 				sprintf(alertstr,Afileio[8],(char *)split_fname(filename));
-				if(form_alert(2,alertstr)==2)
+				if(my_form_alert(2,alertstr)==2)
 					Wnewfile(filename);
 			}
 		}

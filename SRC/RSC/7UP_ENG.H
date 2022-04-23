@@ -1,4 +1,4 @@
-/* Resource Datei Indizes fÅr 7UP */
+/* Resource Datei Indizes fÅr 7UP_ENG */
 
 #define WINMENU          0   /* Menuebaum */
 #define WINFILE          4   /* TITLE in Baum WINMENU */
@@ -143,6 +143,9 @@
 #define THEOLOGO         12  /* IMAGE in Baum COPYINFO */
 #define CINFO            13  /* BOXTEXT in Baum COPYINFO */
 #define COPYOK           14  /* BOXTEXT in Baum COPYINFO */
+#define CMINT            19  /* STRING in Baum COPYINFO */
+#define CGEM             20  /* STRING in Baum COPYINFO */
+#define CCF              21  /* STRING in Baum COPYINFO */
 
 #define SHELMENU         6   /* Formular/Dialog */
 #define SHELCOMM         4   /* FTEXT in Baum SHELMENU */
@@ -160,7 +163,7 @@
 #define FSELTEXT         1   /* TEXT in Baum FSELBOX */
 
 #define SHARWARE         9   /* Formular/Dialog */
-#define SHAREOK          13  /* BOXTEXT in Baum SHARWARE */
+#define SHAREOK          12  /* BOXTEXT in Baum SHARWARE */
 
 #define FONTSEL          10  /* Formular/Dialog */
 #define FSSHOW           3   /* BOXTEXT in Baum FONTSEL */
@@ -525,10 +528,10 @@
 #define MENUOK           21  /* BOXTEXT in Baum MENUEDITOR */
 
 #define REGISTER         33  /* Formular/Dialog */
-#define REGISTNAME       7   /* FTEXT in Baum REGISTER */
-#define REGISTKEY        9   /* FTEXT in Baum REGISTER */
-#define REGISTABBR       12  /* BOXTEXT in Baum REGISTER */
-#define REGISTOK         13  /* BOXTEXT in Baum REGISTER */
+#define REGISTNAME       6   /* FTEXT in Baum REGISTER */
+#define REGISTKEY        8   /* FTEXT in Baum REGISTER */
+#define REGISTABBR       9   /* BOXTEXT in Baum REGISTER */
+#define REGISTOK         10  /* BOXTEXT in Baum REGISTER */
 
 #define TEXTFORMAT       34  /* Formular/Dialog */
 #define FORMLEFT         5   /* BOXTEXT in Baum TEXTFORMAT */

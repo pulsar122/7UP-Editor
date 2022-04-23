@@ -37,7 +37,11 @@
 #endif
 
 #include "windows.h"
-#include "7up.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 #include "language.h"
 #include "toolbar.h"
 #include "7up3.h"
@@ -1642,7 +1646,7 @@ static int __CDECL draw_tabbar (PARMBLK *pb)
 }
 
 /*****************************************************************************/
-#define MAXUSERBLK (219+3+1) /* 3 Buttons in form_alert() + 1 Reserve */
+#define MAXUSERBLK (219+3+1) /* 3 Buttons in my_form_alert() + 1 Reserve */
 
 static int userdefobjs=0;
 

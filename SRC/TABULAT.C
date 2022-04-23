@@ -18,7 +18,12 @@
 #include "windows.h"
 #include "forms.h"
 #include "alert.h"
-#include "7up.h"
+#include "falert.h"
+#ifndef ENGLISH											/* (GS) */
+	#include "7UP.h"
+#else
+	#include "7UP_eng.h"
+#endif
 
 #include "tabulat.h"
 
@@ -126,7 +131,7 @@ int hndl_tab(OBJECT *tree,WINDOW *wp)
 			if(*str)
 				tab=atoi(str);
 			else
-				form_alert(1,Atabulat[0]);
+				my_form_alert(1,Atabulat[0]);
 			if(tab<1)
 				tab=1;
 		}
