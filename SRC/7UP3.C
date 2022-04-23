@@ -49,9 +49,22 @@
 	2000-04-29 (GS) : Die Dateinamen der geîffneten Fenster werden
 										wieder gespeichert.
 
+	PL06:
+	2000-06-22 (GS) : Psignal wird immer aufgerufen, kînnte ja auch MagiC
+										laufen.
+										Der Aufruf von menu_register ist nicht mehr abhÑmig von
+										MiNT.
+										7Up wird sofort nachdem start in die MiNT-Domain ge-
+										schaltet.
+
+	PL07:
+	2000-09-15 (GS):	Begonnen CF-Lib einzubinden vorerst nur fÅr die
+										Debugausgaben.
+	2000-09-20 (GS)	: cf-Lib wieder entfernt.
+
 *****************************************************************/
 
-#define PL7UP "05"	/* Patchlevel von 7Up */
+#define PL7UP "07"	/* Patchlevel von 7Up */
 
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -71,8 +84,8 @@
 #	include <aes.h>
 #	include <vdi.h>
 #else
-#	include <aesbind.h>
-#	include <vdibind.h>
+#	include <gem.h>
+#	include <gemx.h>
 #endif
 
 #include "vaproto.h"
@@ -121,6 +134,7 @@
 #include "objc_.h"
 #include "wind_.h"
 #include "graf_.h"
+#include "fontaesi.h"
 
 #ifndef SQUARED	/* error at gemfast? */
 #	define SQUARED SQUARE
@@ -130,7 +144,7 @@
 #	ifdef TCC_GEM
 #		define _AESversion (_GemParBlk.global[0])
 #	else
-#		error First define _AESversion to global[0]
+#		define _AESversion (aes_global[0])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -138,7 +152,7 @@
 #	ifdef TCC_GEM
 #		define _AESnumapps (_GemParBlk.global[1])
 #	else
-#		error First define _AESnumapps to global[1]
+#		define _AESnumapps (aes_global[1])			/* 10.05.2000 GS */
 #	endif
 #endif
 
@@ -186,7 +200,7 @@ int umlautwandlung=FALSE,toolbar_zeigen=FALSE,scrollreal;
 /***************************************************************************/
 /* in diesen Speicherbereich sollen die Konfigurationen geschrieben werden */
 int clipbrd=TRUE;
-int nodesktop,vastart;
+int nodesktop,vastart, tosdomain;
 
 /* hier sind die Iconpositionen abgespeichert */
 ICNCOORDS iconcoords[]=
@@ -246,16 +260,11 @@ static MEVENT mevent=
 static unsigned long timer=0L; /* fÅr Autosave */
 
 char alertstr[256];
-/*
-extern long *ckbd; /* Compose Keyboard von Pascal Fellerich */
-*/
 long *winx;
 
 WINDOW *blkwp=NULL;
 LINESTRUCT *begcut=NULL, *endcut=NULL, *begcopy=NULL, *endcopy=NULL;
 int			cut=FALSE;
-/* Es gibt keine Registrierung mehr (MJK 3/97)
-int         registriert; */
 
 int open_work (int device)
 {
@@ -263,17 +272,17 @@ int open_work (int device)
 	int handle;
 
 	for (i = 0; i < 103; i++) work_in [i] = 1;
-	work_in [0]  = device;								 /* device handle */
-	work_in [10] = 2;								 /* Raster Koordinaten */
+	work_in [0]  = device;									/* device handle 							*/
+	work_in [10] = 2;								 				/* Raster Koordinaten	 				*/
 
 	if (device == SCREEN)
 	{
 	  handle=aeshandle;
-	  v_opnvwk (work_in, &handle, work_out);	  /* virtuell îffnen */
+	  v_opnvwk (work_in, &handle, work_out);/* virtuell îffnen 						*/
 	}
-	else													 /* nicht Bildschirm */
+	else													 					/* nicht Bildschirm 					*/
 	{
-	  v_opnwk (work_in, &handle, work_out);  /* physikalisch îffnen */
+	  v_opnwk (work_in, &handle, work_out); /* physikalisch îffnen 				*/
 	}
 	return (handle);
 }
@@ -305,7 +314,7 @@ void Wmarkline(WINDOW *wp, LINESTRUCT *line, int fchar, int x, int y)
 	pxyarray[3]=pxyarray[1] + wp->hscroll -1;
 	vsf_color(wp->vdihandle,BLACK);
 	vswr_mode(wp->vdihandle,MD_XOR);
-	vr_recfl (wp->vdihandle,pxyarray);		/* markieren */
+	vr_recfl (wp->vdihandle,pxyarray);			/* markieren 									*/
 	vsf_color(wp->vdihandle,WHITE);
 	vswr_mode(wp->vdihandle,MD_REPLACE);
 }
@@ -313,10 +322,8 @@ void Wmarkline(WINDOW *wp, LINESTRUCT *line, int fchar, int x, int y)
 
 int Wtxtdraw(register WINDOW *wp, int dir, int clip[])
 {
-/*	static int oldeffect = 0;*/
-	
 	register int fline,lline,i,fchar;
-	int x,y/*,dummy*/;
+	int x,y;
 	register LINESTRUCT *line;
 		
 	x = wp->work.g_x;			  /* x-Koordinate fÅr alle Zeilen */
@@ -329,12 +336,9 @@ int Wtxtdraw(register WINDOW *wp, int dir, int clip[])
 		lline=(int)(wp->hsize/wp->hscroll);
 
 	line=wp->wstr;
-/*
-	vs_clip(wp->vdihandle,TRUE,clip);
-*/
-	vr_recfl(wp->vdihandle,clip);				/* weiûes rechteck in workspace */
+	vr_recfl(wp->vdihandle,clip);					/* weiûes rechteck in workspace */
 
-	twp=wp; /* topwindow setzen, damit userdef Tabbar zeichnen kann */
+	twp=wp; 			/* topwindow setzen, damit userdef Tabbar zeichnen kann */
 	
    if(wp->toolbar && (dir==(HORIZONTAL+VERTICAL)))
    {
@@ -343,7 +347,7 @@ int Wtxtdraw(register WINDOW *wp, int dir, int clip[])
 			wp->toolbar->ob_x     =wp->work.g_x-wp->toolbar->ob_width-wp->wscroll/2;
 			wp->toolbar->ob_y     =wp->work.g_y;
 			wp->toolbar->ob_height=wp->work.g_h;
-	      objc_draw(wp->toolbar, ROOT, MAX_DEPTH,
+      objc_draw(wp->toolbar, ROOT, MAX_DEPTH,
 	      	clip[0], clip[1],	clip[2]-clip[0]+1, clip[3]-clip[1]+1);
 		}
 		else
@@ -352,7 +356,7 @@ int Wtxtdraw(register WINDOW *wp, int dir, int clip[])
 			wp->toolbar->ob_y    =wp->work.g_y-wp->toolbar->ob_height;
 			wp->toolbar->ob_width=wp->work.g_w+wp->wscroll/2;
 			wp->toolbar->ob_height--;
-	      objc_draw(wp->toolbar, ROOT, MAX_DEPTH,
+      objc_draw(wp->toolbar, ROOT, MAX_DEPTH,
 	      	clip[0], clip[1],	clip[2]-clip[0]+1, clip[3]-clip[1]+1);
 			wp->toolbar->ob_height++;
 		}
@@ -363,25 +367,7 @@ int Wtxtdraw(register WINDOW *wp, int dir, int clip[])
 		if((y + wp->hscroll)>clip[1] && y<clip[3])
 		{
 			if(fchar < line->used)
-			{
-/*			
-				if((line->attr & TABCOMP) && tabexp)
-				{
-					stpexpan(iostring, &line->string[fchar], wp->tab, STRING_LENGTH,&dummy);
-					outtext(wp->vdihandle,x,y,iostring,
-						strlen(iostring),wp->work.g_w,wp->wscroll);
-				}
-				else
-*/
-/*	
-					if(line->effect != oldeffect) /* normal, fett, kursiv */
-					{
-						vst_effects(wp->vdihandle, line->effect);
-						oldeffect = line->effect;
-					}
-*/
-					v_gtext(wp->vdihandle,x,y,&line->string[fchar]);  /* ...normale ausgabe */	
-			}
+				v_gtext(wp->vdihandle,x,y,&line->string[fchar]);  /* ...normale ausgabe */	
 			if(line->attr & SELECTED)
 				Wmarkline(wp,line,fchar,x,y);
 		}
@@ -406,11 +392,11 @@ void Wdefattr(WINDOW *wp)
 	int ret;
 	if(wp)
 	{
-		vst_alignment(wp->vdihandle,0,5,&ret,&ret); /* Ausrichtung */
+		vst_alignment(wp->vdihandle,0,5,&ret,&ret); /* Ausrichtung 					*/
 		vst_rotation(wp->vdihandle,0);
-		vswr_mode(wp->vdihandle,MD_REPLACE);			 /* replace */
-		vsf_interior(wp->vdihandle,FIS_SOLID);			 /* FÅllung */
-		vsf_color(wp->vdihandle,WHITE);				  /* farbe weiû */
+		vswr_mode(wp->vdihandle,MD_REPLACE);			 	/* replace 							*/
+		vsf_interior(wp->vdihandle,FIS_SOLID);			/* FÅllung 							*/
+		vsf_color(wp->vdihandle,WHITE);				  		/* farbe weiû 					*/
 		vst_color(wp->vdihandle,BLACK);
 		vst_point(wp->vdihandle,wp->fontsize,&ret,&ret,&ret,&ret);
 		vqt_width(wp->vdihandle,'W',&wp->wscroll,&ret,&ret);  /* Breite der Zeichen */
@@ -443,7 +429,7 @@ static int getsysfontheight(int handle,
 	int pt=0,ch,cw,ch2,cw2,ret;
    if(_AESversion>=0x0399)
    {
-      appl_getinfo(0,&pt,&ret,&ret,&ret);
+    appl_getinfo(0,&pt,&ret,&ret,&ret);
 		vst_height(handle,pt,&ret,&ret,&cw2,&ch2);
 		pt=0;
 		do
@@ -503,13 +489,11 @@ void pexit(void)
 	int attr[10];
    
 	graf_mouse(BUSY_BEE,0L);
-	append_picklist(picklist, NULL,0L); /* Pickliste erweitern */
-/* wieder aktiv GS 28.3.00 */
-	writenames(); /* Dateinamen sichern */
-/* */
+	append_picklist(picklist, NULL,0L); /* Pickliste erweitern 						*/
+	writenames(); 											/* Dateinamen sichern 						*/
 
-	sicons();	  /* Iconpositionen sichern */
-	Wnew();								 /* alles dicht machen */
+	sicons();	  												/* Iconpositionen sichern 				*/
+	Wnew();								 							/* alles dicht machen 						*/
 	if((mevent.e_ks & (K_RSHIFT|K_LSHIFT)) ||
 		(divmenu[DIVSAVE].ob_state & SELECTED))
 		saveconfig(TRUE);
@@ -523,11 +507,11 @@ void pexit(void)
 	wind_update(END_UPDATE);
 #endif
 	vqt_attributes(aeshandle,attr);
-	if (vq_gdos() /*&& (attr[0]!=1)*/)
+	if (vq_gdos())
 	  vst_unload_fonts(userhandle,0);
 	AVExit(); /* abmelden; 1997-04-23 (MJK): gl_apid wird nicht mehr benîtigt */
 	Supexec(_keyon);
-	close_work(userhandle,SCREEN); /**/
+	close_work(userhandle,SCREEN);
 	close_work(vdihandle,SCREEN);
 	graf_mouse(ARROW,0L);
 	appl_exit();
@@ -570,23 +554,13 @@ void pinit(char *inffile)
 	userhandle=open_work(SCREEN);
 
 	vqt_attributes(aeshandle,attr);
-	if (vq_gdos() /*&& (attr[0]!=1)*/)
+	if (vq_gdos())
 	  vst_load_fonts(userhandle,0);
 	vst_font(userhandle,attr[0]); /* Systemfont einstellen */
 
-#ifdef DEBUG
-printf("grafhandle boxh=%2d boxw=%2d\n", boxh, boxw);
-#endif
-
-#ifdef DEBUG
-printf("Systemfont Id=%2d\n", attr[0]);
-#endif
-
+	FontAESInfo(userhandle, NULL, &AES_fontid_norm, &AES_fontheight_norm,
+							&AES_fontid_icon, &AES_fontheight_icon);
 	getsysfontheight(userhandle, attr[0], &norm_point, &small_point, boxw, boxh);
-
-#ifdef DEBUG
-printf("Systemfont normal=%2dpt, small=%2dpt\n", norm_point, small_point);
-#endif
 
 	for(i=1;i<MAXWINDOWS;i++)
 	{
@@ -675,8 +649,8 @@ void Wwindmsg(WINDOW *wp, int *msgbuf)
 			checkmenu(winmenu,Wgettop());
 			undo.item=FALSE;
 			break;
-		case 33/*WM_BOTTOMED*/:
-			Wbottom(wp); /* WiNX 14.4.94 */
+		case WM_BOTTOMED:
+			Wbottom(wp);
 			break;
 		case WM_ONTOP:		  /* 7UP wurde nach oben gebracht */
 			inst_trashcan_icon(desktop,DESKICN8,DESKICND,FALSE);
@@ -704,11 +678,11 @@ void Wwindmsg(WINDOW *wp, int *msgbuf)
 			break;
 		/* 11.9.1993 */
 		case WM_ICONIFY:
-			/*Wiconify(wp,&msgbuf[4]);*/
+			Wiconify(wp,&msgbuf[4]);
 			undo.item=FALSE;
 			break;
 		case WM_UNICONIFY:
-			/*Wuniconify(wp,&msgbuf[4]);*/
+			Wuniconify(wp,&msgbuf[4]);
 			undo.item=FALSE;
 			break;
 		case WM_ALLICONIFY:
@@ -804,14 +778,8 @@ void hndl_menu(int menu, int item)
 #else
 					"Version 2.33PL"PL7UP" %s. %s %s",&alertstr[4],&alertstr[0],&alertstr[7]);
 #endif
-/*
-				if(!registriert)
-					shareware[SHAREREGIST].ob_flags |= HIDETREE;
-*/
 				if(!windials)
 				{
-					/* Registrierbutton und Registrierdialog entfernt
-					 * (MJK 3/97) */
 					if(form_exhndl(copyinfo,0,0) == CINFO)
 						form_exhndl(shareware,0,0);
 				}
@@ -828,8 +796,6 @@ void hndl_menu(int menu, int item)
 							graf_mouse_on(TRUE);
 							msgbuf[3]=3; /* MenÅtitel wird Åberschrieben */
 						}
-						/* Registrierbutton und Registrierdialog entfernt
-						 * (MJK 3/97) */
 						form_exhndl(shareware,0,0);
 					}
 				break;
@@ -1517,7 +1483,7 @@ void hndl_menu(int menu, int item)
 					if(*errorstr=='\"' && errorstr[strlen(errorstr)-1]=='\"')
 					{
 						if(wp->kind & INFO)
-							wind_set(wp->wihandle,WF_INFO,errorstr);
+							wind_set_str(wp->wihandle,WF_INFO,errorstr);
 						else
 							form_alert(1,A7up[6]);
 					}
@@ -1642,7 +1608,7 @@ void _hndl_keybd(WINDOW *wp, int kstate, int key)
 				/* MT 16.4.95 disableter MenÅpunkt. Nichts machen */
 				break;
 			case  0:
-				if(wp /*&& ! (wp->w_state & ICONIFIED)*/)
+				if(wp && ! (wp->w_state & ICONIFIED))
 				{
 					if(!fkeys(wp,kstate,key,&begcut,&endcut))
 					{
@@ -1659,7 +1625,7 @@ void _hndl_keybd(WINDOW *wp, int kstate, int key)
 /*
 		if(!menu_ikey(winmenu,kstate,key,&menu,&item))
 		{
-			if(wp /*&& ! (wp->w_state & ICONIFIED)*/)
+			if(wp && ! (wp->w_state & ICONIFIED))
 			{
 				if(!fkeys(wp,kstate,key,&begcut,&endcut))
 				{
@@ -1957,7 +1923,7 @@ WEITER:			  ; /* <- hier mu· fÅr PC-TC 2.0 ein Leerstatement sein, grrr.. */
 								Wsetrcinfo(wp); /* Infozeile setzen, um Timer zu beruhigen */
 								Wcursor(wp);
 								graf_mouse_on(TRUE);
-								wind_set(wp->wihandle,WF_INFO,errorstr); /* einblenden */
+								wind_set_str(wp->wihandle,WF_INFO,errorstr); /* einblenden */
 							}
 						}
 						*searchstring=0;					  /* lîschen				*/
@@ -2112,6 +2078,7 @@ void main(int argc,char *argv[])
 {
 	int event, ap_id;
 	
+	Pdomain(1);
 	pinit(isinffile(argc, argv));
 	atexit(pexit);
 
@@ -2121,48 +2088,25 @@ void main(int argc,char *argv[])
 			if(relay(gl_apid,ap_id,argc,argv)) /* versuchen, Parameter zu Åbergeben */
 				exit(0);								/* schon zu Ende */
 
-	if(get_cookie('MiNT')!=NULL)
-	{
-		Psignal(SIGTERM,
+	Psignal(SIGTERM,
 #ifndef __TOS
 		        (long)
 #endif
 		        sighandler); /* SIGTERM abfangen */
-	}
+
 /* funktioniert nicht auf dem Falcon
 	ckbd = get_cookie('CKBD');
 */
 	winx = get_cookie('WINX');
-	
-	if(_AESversion>=0x0400 && 
-		_AESnumapps!=1 && 
-		get_cookie('MiNT'))
+
+	if(_AESversion>=0x0400 /* && _AESnumapps!=1*/)
 		menu_register(gl_apid, VERSION);
 
 	AVInit(gl_apid,"7UP     ",1|2|16|1024); /* ,NULL); AV_SENDKEY + AV_ASKFILEFONT + AV_OPENWIND + AV_EXIT */
 
-	/* Registrieranforderung rausgworfen (MJK 3/97)
-   registriert = loadlizenz("7UP.KEY");
-   
-   if(!registriert)
-   {
-/*
-		winmenu[MACOPEN].ob_state|=DISABLED;
-		winmenu[MACSAVE].ob_state|=DISABLED;
-		winmenu[MACREC ].ob_state|=DISABLED;
-		winmenu[MACSTOP].ob_state|=DISABLED;
-		winmenu[MACPLAY].ob_state|=DISABLED;
-*/
-		/* Registrierbutton rausgeworfen (MJK 3/97)
-		shareware[SHAREREGIST].ob_flags|=HIDETREE; */
-		form_exhndl(shareware,0,0);
-		/* Registrierbutton rausgeworfen (MJK 3/97)
-		shareware[SHAREREGIST].ob_flags&=~HIDETREE; */
-	}*/
-
-	loadmenu("7UP.MNU");
-	loadshortcuts("7UP.KBD");	  /* Defaultshortcuts zuerst laden */
-	loadsoftkeys("7UP.SFK");
+	loadmenu("7up.mnu");
+	loadshortcuts("7up.kbd");	  /* Defaultshortcuts zuerst laden */
+	loadsoftkeys("7up.sfk");
 	file_input(argc,argv);
 	checkmenu(winmenu,Wgettop()); /* je nach Aktion, Menu (de)aktivieren */
 

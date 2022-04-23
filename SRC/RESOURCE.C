@@ -168,8 +168,8 @@ void checkmenu(OBJECT *tree, WINDOW *wp)
 
 		menu_ienable(tree,FORMUMBR,TRUE);
 		menu_ienable(tree,FORMBLK,TRUE);
-		menu_icheck(tree,FORMBLK,wp->w_state&BLOCKSATZ?TRUE:FALSE); /* HÑkchen fÅr Blocksatz */
-		menu_icheck(tree,BLKCOL,wp->w_state&COLUMN?TRUE:FALSE);
+		menu_icheck(tree,FORMBLK,wp->w_state &  BLOCKSATZ ? TRUE:FALSE ); /* HÑkchen fÅr Blocksatz */
+		menu_icheck(tree,BLKCOL,wp->w_state & COLUMN ? TRUE:FALSE );
 
 		menu_ienable(tree,FORMINS,TRUE);
 		menu_icheck(tree,FORMINS,wp->w_state&INSERT?TRUE:FALSE); /* HÑkchen fÅr Insert */
@@ -689,6 +689,11 @@ int rsrc_init(char *rscname, char *inffile)
 		clipbrd=TRUE;
 	else
 		clipbrd=FALSE;
+
+	if(divmenu[DIVTOSDOMIAN].ob_state & SELECTED)
+		tosdomain = TRUE;
+	else
+		tosdomain = FALSE;
 
   	winmenu[WINOPALL-1].ob_height=((WINFULL-WINOPALL+1)*boxh);
 	for(i=WINDAT1-1; i<=WINDAT7; i++)

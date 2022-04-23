@@ -211,6 +211,7 @@
 #define RBHSEL3D         22  /* IMAGE in Baum USERIMG */
 #define CIRCLEHDIS       23  /* IMAGE in Baum USERIMG */
 #define RBHBG3D          24  /* IMAGE in Baum USERIMG */
+#define WICON_KLEIN      25  /* IMAGE in Baum USERIMG */
 
 #define SHELL2           13  /* Formular/Dialog */
 #define SH2PRG           4   /* BOXTEXT in Baum SHELL2 */
@@ -390,10 +391,11 @@
 #define DIVVAST          35  /* BOXTEXT in Baum DIVERSES */
 #define DIVNAME          36  /* BOXTEXT in Baum DIVERSES */
 #define DIVSAVE          37  /* BOXTEXT in Baum DIVERSES */
-#define DIVHDA           39  /* BUTTON in Baum DIVERSES */
-#define DIVHELP          40  /* BOXTEXT in Baum DIVERSES */
-#define DIVABBR          41  /* BOXTEXT in Baum DIVERSES */
-#define DIVOK            42  /* BOXTEXT in Baum DIVERSES */
+#define DIVTOSDOMIAN     38  /* BOXTEXT in Baum DIVERSES */
+#define DIVHDA           40  /* BUTTON in Baum DIVERSES */
+#define DIVHELP          41  /* BOXTEXT in Baum DIVERSES */
+#define DIVABBR          42  /* BOXTEXT in Baum DIVERSES */
+#define DIVOK            43  /* BOXTEXT in Baum DIVERSES */
 
 #define BRACES           24  /* Formular/Dialog */
 #define CBRACE           5   /* BOXTEXT in Baum BRACES */

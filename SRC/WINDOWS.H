@@ -92,9 +92,10 @@ typedef struct window             /* general window information */
    LINESTRUCT *cstr;                 /* Cursor string    */
    LINESTRUCT *wstr;                 /* Window string    */
    LINESTRUCT *fstr;                 /* First string     */
-   OBJECT *toolbar;						 /* Windowtoolbar    */
-   long toolbaraddress;					 /* Adresse fÅr rsrc_free() */
-	OBJECT *tabbar;						 /* Windowtabbar     */
+   OBJECT *toolbar;						 			 /* Windowtoolbar           */
+   long toolbaraddress;					 		 /* Adresse fÅr rsrc_free() */
+	 OBJECT *tabbar;					 				 /* Windowtabbar            */
+	 int tos_domain;									 /* Datei wurde in der TOS-Domain geladen 2000-10-21 (GS) */
 }WINDOW;
 
 /*****************************************************************

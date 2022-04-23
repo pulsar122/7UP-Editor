@@ -1083,7 +1083,7 @@ void hndl_layout(OBJECT *tree, int start)
 	char str1[31],str2[31],str3[FILENAME_MAX],
 	     pathname[PATH_MAX],filename[13];
 	int A,B,C,D,E,F,G,H,I,J,K,L,M,N;
-	/*static*/ char fpattern[FILENAME_MAX]="*.LAY";
+	/*static*/ char fpattern[FILENAME_MAX]="*.lay";
 	
 /*
 */
@@ -1091,7 +1091,7 @@ void hndl_layout(OBJECT *tree, int start)
 	wp=Wgettop();
 	if(first)
 	{
-		search_env(pathname,"7UP.LAY",0); /* READ */
+		search_env(pathname,"7up.lay",0); /* READ */
 		if(fexist(pathname)/* 23.10.94 shel_find(pathname)*/)
 		{
 			form_write(tree,PRNLAY,(char *)split_fname(pathname),0);
@@ -1130,7 +1130,7 @@ void hndl_layout(OBJECT *tree, int start)
 	if(wp)							 /* Falls Fenster offen... */
 	{
 		strcpy(filename,split_fname((char *)Wname(wp)));
-		change_ext(filename,".LAY");
+		change_ext(filename,".lay");
 		search_env(pathname,filename,0); /* READ */
 		if(fexist(pathname)/* 23.10.94 shel_find(pathname)*/)
 		{

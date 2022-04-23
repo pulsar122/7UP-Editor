@@ -5,6 +5,8 @@
 	1997-03-25 (MJK):	Header begonnen
 	1997-04-08 (MJK): Benîtigtes WINDOWS.H wird geladen
 	1997-04-09 (MJK): MSDOS-Teile entfernt
+	2000-09-25 (GS) : tosdomain eingefÅgt
+	
 *****************************************************************************/
 
 #ifndef SEVENUP3_H
@@ -29,6 +31,7 @@ extern LINESTRUCT   *begcut, *endcut;
 extern int           cut,
                      nodesktop,
                      vastart,
+                     tosdomain,
                      clipbrd,
                      umlautwandlung,
                      toolbar_zeigen,

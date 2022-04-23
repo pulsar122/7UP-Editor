@@ -245,7 +245,7 @@ void rechnen(WINDOW * wp, OBJECT *tree, int operation, LINESTRUCT *begin, LINEST
 				first=0;
 			}
 		}
-      complete_path(filename); /* evtl. Slash oder Backslash anh„ngen */
+    complete_path(filename); /* evtl. Slash oder Backslash anh„ngen */
 /*      
 		if(filename[strlen(filename)-1]!='\\')
 			strcat(filename,"\\");

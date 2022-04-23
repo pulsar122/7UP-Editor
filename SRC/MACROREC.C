@@ -172,8 +172,8 @@ void loadmacro(void)
 	char *cp, filename[PATH_MAX]="";
 	/*static*/ char fpattern[FILENAME_MAX]="*.*";
 
-	strcpy(fpattern,"*.MAC");
-	find_7upinf(filename,"MAC",1 /*0*/);
+	strcpy(fpattern,"*.mac");
+	find_7upinf(filename,"mac",1 /*0*/);
 	if((cp=strrchr(filename,'\\'))!=NULL)
 		strcpy(&cp[1],fpattern);
 	else
@@ -202,8 +202,8 @@ void savemacro(void)
 	char *cp, filename[PATH_MAX]="";
 	/*static*/ char fpattern[FILENAME_MAX]="*.*";
 
-	strcpy(fpattern,"*.MAC");
-	find_7upinf(filename,"MAC",1 /*0*/);
+	strcpy(fpattern,"*.mac");
+	find_7upinf(filename,"mac",1 /*0*/);
 	if((cp=strrchr(filename,'\\'))!=NULL)
 		strcpy(&cp[1],fpattern);
 	else

@@ -268,6 +268,10 @@ Bugfixing und Žnderungen 2.33 PL 6
   nicht erscheint eine Alertbox und im Dialog 'Diverses' wird der ent-
   sprechende Eintrag deselektiert.
 
+Bugfixing und Žnderungen 2.33 PL 7
+----------------------------------
+
+1.) 2000-10-20  Alle INF-Dateinamen auf Kleinbuchstaben umgestellt.
 
 Allgemein:
 ----------

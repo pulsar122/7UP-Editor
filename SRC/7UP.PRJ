@@ -12,9 +12,14 @@
 ; dafÅr voreingestellt.
 ;=================================================================
 7UP.APP
-.C [-v -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
+.C [-V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
 ;.C [-C -K -P -G -D__TCC_COMPAT__ -DMiNT=1]           ; TC/PC-Libs + GEMLIB
 ;.C [-C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -DTCC_GEM] ; TC/PC-Libs
+
+; Mit Debug Info
+;.C [-Y -V -C -K -P -G -D__TCC_COMPAT__ -DMiNT=1 -D__MINT__] ; MiNTLIB + GEMLIB
+;.L [-G -L -Y]
+
 =
 ;PCVSTAR2.O	;falls die TC- oder PC-Libraries verwendet werden
 crt0.o     ;Bei Verwendung der MiNTLIB
@@ -34,6 +39,7 @@ fileio5.c
 findnext.c ;1997-04-22 (MJK): neu
 findrep6.c
 fkeys.c
+fontaesi.c			; 2000-05-18 (GS) neu
 fontsel4.c
 format.c
 forms.c
@@ -79,11 +85,14 @@ vafunc.c   ;1997-04-23: Neue Funktionen fÅr das VA-Protokoll
 ; entfernen:
 ;=================================================================
 
-; Die MiNTLIB (PL46 erweitert) und GEMLIB (PL32 erweitert)
-MINTFLT.LIB        ; Floatingpoint-Routinen
+; Die MiNTLIB (PL49) und GEMLIB (PL38 erweitert)
+MINTFLT.LIB        	; Floatingpoint-Routinen
 ;FPUINIT.O          ; ein wenig fpu-Code, der in MiNTFLT fehlt.
-GMINT.LIB          ; erweiterte, deutsche MiNTLIB
-GEM.LIB            ; erweiterte GEMLIB zur MiNTLIB
+MINTLIB.LIB        	; MiNTLIB
+PCSTDLIB.LIB        ; Standard library (mem*-Funkionen ersetzen, siehe BUG23.TXT!)
+GEM.LIB            	; erweiterte GEMLIB zur MiNTLIB
+GEMX.LIB						; GEMLIB mit mit neuen Funktion NVDI, FSM/Speedo-GDOS, MagiC, WDIALOG
+cflib.lib
 
 ; Die Pure-C Libraries
 ;PCFLTLIB.LIB       ; floating point library
@@ -92,7 +101,6 @@ GEM.LIB            ; erweiterte GEMLIB zur MiNTLIB
 ;VDILIB.LIB         ; VDI library (TCC_GEM definieren oder GEM.LIB)
 ;AESLIB.LIB         ; AES library (TCC_GEM definieren oder GEM.LIB)
 ;GEM.LIB            ; GEM library (oder VDI und AES library)
-PCSTDLIB.LIB       ; Standard library (mem*-Funkionen ersetzen, siehe BUG23.TXT!)
 
 ; Die Turbo-C Libaries
 ; (Ohne die notwendigen Patches wird damit ein fehlerhaftes Progamm

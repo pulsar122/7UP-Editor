@@ -378,11 +378,11 @@ void hndl_grepmenu(OBJECT *tree, int start)
 					}
 				}
 				/*local.*/lfilename[0]=0;
-				if(getfilename(/*local.*/lfilename,gpattern,"7UP.REG",fselmsg[18]))
+				if(getfilename(/*local.*/lfilename,gpattern,"7up.reg",fselmsg[18]))
 				{
 					if(!windials) /* Hintergrund restaurieren */
 						objc_update(tree,ROOT,MAX_DEPTH);
-					if(!strstr(/*local.*/lfilename,".REG"))
+					if(strstr(lfilename,".reg")==NULL || strstr(lfilename,".REG")==NULL)
 					{
 						form_alert(1,Agrepfile[3]);
 						done=1;

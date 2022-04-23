@@ -17,6 +17,9 @@
 										wird ermittelt ob sich die Variable 'clipbrd'
 										ge„ndert hat.
 
+	2000-09-25 (GS) : Im Dialog 'Diverses' gibt es eine neue
+	                  Checkbox 'TOS-Domain Shell'
+
 	BEMERKUNG: Die Speicherung der Seitenparameter geh”rt ge„ndert!
 *****************************************************************/
 #include <macros.h>
@@ -76,14 +79,14 @@ static char pathname[PATH_MAX];
 
 static WINDOW _dummy[]=
 {
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	-1,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,NULL,0L,10,1,3,0L,0L,0L,0L,0L,0L,0
 };					  /* | | */
 
 static GRECT _koord[8];
@@ -92,7 +95,7 @@ static GRECT _koord[8];
 void hndl_diverses(OBJECT *tree, int start)
 {
 	int exit_obj,desk,area[4];
-	int a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,v,w,x,y,z;
+	int a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,v,w,x,y,z,aa;
 	char *cp;
 		unsigned short *ss;
 	/*static*/ char fpattern[FILENAME_MAX]="*.ACC";
@@ -133,6 +136,7 @@ void hndl_diverses(OBJECT *tree, int start)
 	x=tree[DIVUMLAUT].ob_state;
 	y=tree[DIVCLIP ].ob_state;
 	z=tree[DIVTABBAR].ob_state;
+	aa=tree[DIVTOSDOMIAN].ob_state;
 	
 	desk=nodesktop;
 	sprintf(tree[DIVBACK2].ob_spec.tedinfo->te_ptext,"%02d",
@@ -209,6 +213,7 @@ void hndl_diverses(OBJECT *tree, int start)
 		tree[DIVUMLAUT].ob_state=x;
 		tree[DIVCLIP ].ob_state=y;
     tree[DIVTABBAR].ob_state=z;
+    tree[DIVTOSDOMIAN].ob_state=aa;
 		return;
 	}
 	if(tree[DIVBUTIM].ob_state & SELECTED)
@@ -257,6 +262,11 @@ void hndl_diverses(OBJECT *tree, int start)
 		vastart=1;
 	else
 		vastart=0;
+
+	if(divmenu[DIVTOSDOMIAN].ob_state & SELECTED)
+		tosdomain=1;
+	else
+		tosdomain=0;
 
 	if(tree[DIVINFO].ob_state & SELECTED)
 		WI_KIND|=INFO;
@@ -477,9 +487,9 @@ static void _write_lin(WINDOW *wp, char *name) /* Zeilenlineal schreiben */
 void hndl_lineal(WINDOW *wp, int start)
 {
 /*
-	/*static*/ char fpattern[FILENAME_MAX]="LINEAL.*";
+	/*static*/ char fpattern[FILENAME_MAX]="lineal.*";
 */
-	/*static*/ char fpattern[FILENAME_MAX]="7up*.LIN";
+	/*static*/ char fpattern[FILENAME_MAX]="7up*.lin";
 	char filename[FILENAME_MAX];
 	
 	if(wp)
@@ -523,7 +533,7 @@ char *find_7upinf(char *path, char *ext, int mode)
 {
 	char filename[FILENAME_MAX];
 
-	strcpy(filename,"7UP.");
+	strcpy(filename,"7up.");
 	strcat(filename,ext);
 	return(search_env(path,filename,mode));
 }
@@ -537,8 +547,8 @@ void saveconfig(int windstruct)
 	
 	if(!windstruct)
 	{
-    strcpy(fpattern,"*.INF");
-		find_7upinf(pathname,"INF",1);
+    strcpy(fpattern,"*.inf");
+		find_7upinf(pathname,"inf",1);
 		if((cp=strrchr(pathname,'\\'))!=NULL || (cp=strrchr(pathname,'/'))!=NULL)
 			strcpy(&cp[1],fpattern);
 		else
@@ -549,7 +559,7 @@ void saveconfig(int windstruct)
 		   return;
 	}
 	else
-		fp=fopen(find_7upinf(pathname,"INF",1),"wb");
+		fp=fopen(find_7upinf(pathname,"inf",1),"wb");
 	if(fp)
 	{
 		graf_mouse(BUSY_BEE,NULL);
@@ -638,7 +648,7 @@ void saveconfig(int windstruct)
 				_dummy[i].work.g_y =_wind[i].work.g_y;
 				_dummy[i].work.g_w =_wind[i].work.g_w;
 				_dummy[i].work.g_h =_wind[i].work.g_h;
-				_dummy[i].w_state  =(_wind[i].w_state&(BLOCKSATZ+INSERT+INDENT+PROPFONT+COLUMN));
+				_dummy[i].w_state  =(_wind[i].w_state & (BLOCKSATZ+INSERT+INDENT+PROPFONT+COLUMN));
 				_dummy[i].umbruch  =_wind[i].umbruch;
 				_dummy[i].wscroll  =_wind[i].wscroll;
 				_dummy[i].hscroll  =_wind[i].hscroll;
@@ -751,6 +761,8 @@ void saveconfig(int windstruct)
 
 		fwrite(&menueditor[MENUTAKTIV].ob_state,sizeof(int),1,fp);
 
+		fwrite(&divmenu[DIVTOSDOMIAN].ob_state,sizeof(int),1,fp);	/* (GS) */
+
 		fclose(fp);
 		graf_mouse(ARROW,NULL);
 	}
@@ -782,9 +794,9 @@ void restoreconfig(char *inffile) /* es kann 7UP.INF als Parameter bergeben wer
 /*	register int i; */
 	char fpattern[FILENAME_MAX];
 	
-	fp=fopen(inffile?inffile:find_7upinf(pathname,"INF",0),"rb");
+	fp=fopen(inffile?inffile:find_7upinf(pathname,"inf",0),"rb");
 	if(!fp)
-		fp=fopen("7UP.INF","rb");
+		fp=fopen("7up.inf","rb");
 	
 	if(!fp)
 	{
@@ -792,7 +804,7 @@ void restoreconfig(char *inffile) /* es kann 7UP.INF als Parameter bergeben wer
 		form_alert(1,alertstr);
 		
 	   pathname[0]=0;
-	   strcpy(fpattern,"*.INF");
+	   strcpy(fpattern,"*.inf");
 		if(getfilename(pathname,fpattern,"@",fselmsg[4]))
 			fp=fopen(pathname,"rb");
 	}
@@ -1001,6 +1013,8 @@ void restoreconfig(char *inffile) /* es kann 7UP.INF als Parameter bergeben wer
 
 			fread(&menueditor[MENUTAKTIV].ob_state,sizeof(int),1,fp);
 
+			fread(&divmenu[DIVTOSDOMIAN].ob_state,sizeof(int),1,fp);	/* (GS) */
+
 		}
 		fclose(fp);
 	}
@@ -1122,7 +1136,7 @@ int readnames(void) /* letzte Dateinamen sichern */
 
 	if(divmenu[DIVNAME].ob_state & SELECTED)
 	{
-		if((fp=fopen(find_7upinf(pathname,"NMS",0),"r"))!=NULL)
+		if((fp=fopen(find_7upinf(pathname,"nms",0),"r"))!=NULL)
 		{
 			fgets(filename,PATH_MAX,fp);
 			filename[strlen(filename)-1]=0;
@@ -1149,7 +1163,7 @@ void writenames(void) /* letzte Dateien laden */
 
 	if(divmenu[DIVNAME].ob_state & SELECTED)
 	{
-		if((Wcount(CREATED)>0) && ((fp=fopen(find_7upinf(pathname,"NMS",1),"w"))!=NULL))
+		if((Wcount(CREATED)>0) && ((fp=fopen(find_7upinf(pathname,"nms",1),"w"))!=NULL))
 		{
 			fputs(VERSIONNAME,fp);
 			fputs("\n",fp);

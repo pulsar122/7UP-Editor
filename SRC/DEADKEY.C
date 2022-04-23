@@ -284,8 +284,8 @@ static void _hndl_shortcuts(OBJECT *tree)
         		break;
 			case MENUMSAVE:
 				form_read(tree,MENUMNAME,(char *)winmenu[c_entry].ob_spec.index);
-				strcpy(fpattern,"*.MNU");
-				find_7upinf(filename,"MNU",1);
+				strcpy(fpattern,"*.mnu");
+				find_7upinf(filename,"mnu",1);
 				if((cp=strrchr(filename,'\\'))!=NULL || (cp=strrchr(filename,'/'))!=NULL)
 					strcpy(&cp[1],fpattern);
 				else
@@ -300,8 +300,8 @@ static void _hndl_shortcuts(OBJECT *tree)
 			   break;
 			case MENUMLOAD:
 			   /* muû 1, weil nicht 7UP.MNU sondern auch XYZ.MNU gÅltig ist */
-				strcpy(fpattern,"*.MNU");
-				find_7upinf(filename,"MNU",1 /*0*/); 
+				strcpy(fpattern,"*.mnu");
+				find_7upinf(filename,"mnu",1 /*0*/); 
 				if((cp=strrchr(filename,'\\'))!=NULL || (cp=strrchr(filename,'/'))!=NULL)
 					strcpy(&cp[1],fpattern);
 				else
@@ -332,8 +332,8 @@ static void _hndl_shortcuts(OBJECT *tree)
 			case MENUTSAVE:
 				break;
 			case MENUTLOAD:
-				strcpy(fpattern,"*.KBD");
-				find_7upinf(filename,"KBD",1 /*0*/);
+				strcpy(fpattern,"*.kbd");
+				find_7upinf(filename,"kbd",1 /*0*/);
 				if((cp=strrchr(filename,'\\'))!=NULL || (cp=strrchr(filename,'/'))!=NULL)
 					strcpy(&cp[1],fpattern);
 				else

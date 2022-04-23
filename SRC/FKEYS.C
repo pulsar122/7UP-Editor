@@ -639,8 +639,8 @@ void hndl_fkeymenu(OBJECT *tree, int start)
 		switch(exit_obj)
 		{
 			case FKEYLOAD:
-				strcpy(fpattern,"*.SFK");
-				find_7upinf(filename,"SFK",1);
+				strcpy(fpattern,"*.sfk");
+				find_7upinf(filename,"sfk",1);
 				if((cp=strrchr(filename,'\\'))!=NULL || (cp=strrchr(filename,'/'))!=NULL)
 					strcpy(&cp[1],fpattern);
 				else
@@ -651,8 +651,8 @@ void hndl_fkeymenu(OBJECT *tree, int start)
 				objc_update(tree,ROOT,MAX_DEPTH); /* Alles zeichnen! */
 				break;
 			case FKEYSAVE:
-				strcpy(fpattern,"*.SFK");
-				find_7upinf(filename,"SFK",1);
+				strcpy(fpattern,"*.sfk");
+				find_7upinf(filename,"sfk",1);
 				if((cp=strrchr(filename,'\\'))!=NULL || (cp=strrchr(filename,'/'))!=NULL)
 					strcpy(&cp[1],fpattern);
 				else

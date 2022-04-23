@@ -21,6 +21,9 @@
 										Fehler so wird der Eintrag im Dialog 'Diverses'
 										zurÅckgesetzt.
 
+	2000-09-15 (GS)	: CF-Lib fÅr Debugausgaben
+	2000-09-20 (GS)	: cf-Lib wieder entfernt
+	
 *****************************************************************/
 #include <macros.h>
 #if defined( __TURBOC__ ) && !defined( __MINT__ )
@@ -30,7 +33,7 @@
 #else
 #	include <dirent.h>
 #	include <errno.h>
-#	include <osbind.h>
+#	include <mintbind.h>
 #	include <signal.h>
 #	include <stat.h>
 #	include <unistd.h>
@@ -44,6 +47,7 @@
 #	include <vdi.h>
 #else
 #	include <gem.h>
+#	include <cflib.h>
 #endif
 
 #include "fsel_inp.h"
@@ -464,6 +468,7 @@ static int read_file(WINDOW *wp,char *name)
 {
 	FILE *fp;
 	long k=0;
+	int succes;
 	char filename[PATH_MAX],lastchar=0;
 	int ascformat=0,blank,enough_ram=1;
 	register LINESTRUCT *line,*help;
@@ -485,10 +490,41 @@ static int read_file(WINDOW *wp,char *name)
 	}
 	wp->draw=Wtxtdraw;
 	Wnewname(wp,filename);
-
+/*debug_init("7up", Datei, "C:\\7up.log");*/
+debug("--------------------------\n");
+debug("read_file\n");
+debug("tosdomain %i\n",  tosdomain);
+debug("filename: %s\n", filename);
 	ascformat=isascformat(wp->name); /* Extension .ASC? */
 	k=0;
+	succes=0;	
 	if((fp=fopen(filename,"rb"))!=NULL)
+	{
+		succes = 1;
+debug("Datei offen ohne Sonderbehandlung\n");
+	}
+	else
+	{
+debug("Sonderbehandlung einleiten\n");
+		if(tosdomain)
+		{
+debug("Schalter sitzt\n");
+			Pdomain(0);
+debug("Umgeschaltet\n");
+			if((fp=fopen(filename,"rb"))!=NULL)
+			{
+debug("Datei offen mit Sonderbehandlung\n");
+				succes = 1;
+				wp->tos_domain = 1;
+			}
+			else
+			{
+debug("Trotz Sonderbehandlung kein erfolgt\n");
+				Pdomain(1);
+			}
+		}
+	}
+	if(succes)
 	{
 		wp->umbruch--;
 		graf_mouse(BUSY_BEE,NULL);
@@ -659,11 +695,18 @@ WEITER:	 ;
 		wp->hsize = k * wp->hscroll;
 		graf_mouse(ARROW,NULL);
 		wp->umbruch++;
+		if(tosdomain && wp->tos_domain)
+		{
+			Pdomain(1);
+debug("Umschaltung zurÅck nehmen\n");
+		}
 	}
 	else
 	{
+debug_exit();
 		return(0);
 	}
+debug_exit();
 	return(enough_ram);
 }
 
@@ -947,7 +990,8 @@ WINDOW *Wreadfile(char *name, int automatic)
 	char pathname[PATH_MAX],filename[FILENAME_MAX];
 
 	int wort1, ret;
-   WI_KIND &= ~SMALLER;
+
+  WI_KIND &= ~SMALLER;
 	if(_AESversion>=0x0399)
 	{
 	   appl_getinfo(12, &wort1, &ret, &ret, &ret);
@@ -1210,12 +1254,12 @@ char *change_linealname(char *name, char *newname)
 	else
 		temp[0]=0;
 		
-	strcat(temp,"7UP");
+	strcat(temp,"7up");
 	cp=strrchr(name,'.');
 	if(cp)
 		strcat(temp,&cp[1]);
 
-	strcat(temp,".LIN");
+	strcat(temp,".lin");
 	strcpy(name,temp);
 	return(name);
 }
@@ -1356,6 +1400,8 @@ void _write_file(WINDOW *wp, char *filename, char *openmodus, int newname, int a
 
 	if(wp)
 	{
+		if(wp->tos_domain)
+			Pdomain(0);
 		if(signal==SIGNULL)
 		{
 			graf_mouse_on(0);
@@ -1548,6 +1594,9 @@ WEITER:
 			Wcursor(wp);
 			graf_mouse_on(1);
 		}
+		if(wp->tos_domain)
+			Pdomain(1);
+		
 	}
 }
 
@@ -1974,7 +2023,7 @@ char *isinffile(int argc, char *argv[]) /* *.INF File dabei? */
 	register int i;
 	if(argc>1)
 		for(i=1; i<argc; i++)
-			if(stristr(argv[i],"7UP") && stristr(argv[i],".INF"))
+			if(stristr(argv[i],"7up") && stristr(argv[i],".inf"))
 				return(argv[i]);
 	return(NULL);
 }
@@ -1995,7 +2044,7 @@ void file_input(int argc, char *argv[])
 				nofilearg(argv[i],'z');
 			if(isnumeric(argv[i-1]) && isnumeric(argv[i]))
 				nofilearg(argv[i],'s');
-			if(!(stristr(argv[i],"7UP") && stristr(argv[i],".INF")) &&
+			if(!(stristr(argv[i],"7up") && stristr(argv[i],".inf")) &&
 				!isnumeric(argv[i]) && *argv[i]!='-' && *argv[i]!='\"')
 			{
 				Wreadtempfile(argv[i],0);

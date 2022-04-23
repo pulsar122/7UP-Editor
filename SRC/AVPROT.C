@@ -11,6 +11,13 @@
 	1997-03-26 (MJK): benîtigte Headerfiles werden geladen,
 	                  compilierbar mit max. Warnungen
 	1997-04-11 (MJK): EingeschrÑnkt auf GEMDOS
+	2000-09-15 (GS) : cf-Lib
+										Kam eine VA_START-Message so wurde der Åberge-
+										bene Dateiname in Groûbuchstaben (?) gewandelt.
+										Das gleiche gilt fÅr AP_DRAGDROP und
+										VA_DRAGACCWIND. Die Umwandlng ist entfernt.
+	2000-09-20 (GS)	: cf-Lib wieder entfernt
+
 *****************************************************************/
 
 #include <stdio.h>
@@ -253,7 +260,7 @@ DRAGDROPENTRY:
 				{
 					if(_get_args(&gargc, gargv, pathname))
 						for(i=1,k=1; i<gargc && k<MAXWINDOWS-Wcount(CREATED); i++)
-							Wreadtempfile(strupr(gargv[i]),0);
+							Wreadtempfile(gargv[i],0);
 				}
 			}
 			break;
@@ -263,7 +270,9 @@ DRAGDROPENTRY:
 				strcpy(clp,*((char **)(&msgbuf[3])));			  /* Pfadname */
 				if(_get_args(&gargc, gargv, clp))
 					for(i=1,k=1; i<gargc && k<MAXWINDOWS-Wcount(CREATED); i++)
-						Wreadtempfile(strupr(gargv[i]),0);
+					{
+						Wreadtempfile(gargv[i],0);
+					}
 			  free(clp);
 			}
 #if MiNT

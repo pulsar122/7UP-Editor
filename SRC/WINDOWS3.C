@@ -106,14 +106,14 @@ static int x_desk,y_desk,w_desk,h_desk;
 
 WINDOW _wind[MAXWINDOWS]=
 {
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,0L,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,
-	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,0,0,0,0,0,0,0L,0L,0L,0L,8,16,0,0,0L,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0,
+	NOWINDOW,0,0,0,0,0,0,0,0,0L,0L,INSERT+INDENT,0,0,0,0,STRING_LENGTH,0L,0L,0L,0L,8,16,0,0,(int(*)())Wclear,0L,10,1,3,0L,0L,0L,0L,0L,0L,0
 };					  /* | | */
 
 int align(register int x, register int n)	  /* Umrechnung einer Koordinate auf die n„chste  */
@@ -182,7 +182,7 @@ printf("Got Window font: Id=%2d size=%2dpt\n", wp->fontid, wp->fontsize);
 			wp->kind	  = kind;
 			wp->w_state |= CREATED;
 			
-			if(toolbar_zeigen && rsrc_load(find_7upinf(pathname,"BAR",0)))
+			if(toolbar_zeigen && rsrc_load(find_7upinf(pathname,"bar",0)))
 			{  /* Register fr rsrc_free() sichern */
 				wp->toolbaraddress=*(long *)_AESrshdr;
 /*
@@ -1485,6 +1485,7 @@ void Wreset(WINDOW *wp)
 		wp->toolbar=NULL;
 		wp->toolbaraddress=0L;
 		wp->tabbar =NULL;
+		wp->tos_domain = 0;
 	}
 }
 

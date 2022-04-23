@@ -92,7 +92,7 @@ int help(void)
       }
       else
       {
-         strcpy(keyword,"7UP");
+         strcpy(keyword,"7up");
          keyw=keyword;
       }
       if(*keyw)

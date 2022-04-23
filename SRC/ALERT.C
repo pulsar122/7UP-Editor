@@ -13,7 +13,7 @@ char *Agrepfile[]=
    "[2][Durchsuchung beenden?][Nein|Ja]",
    "[0][Suchen in Textdateien mit|regulÑren AusdrÅcken. Geben|Sie in der FSB das Start-|verzeichnis und das Such-|muster fÅr die Dateien an.][OK]",
    "[3][Das Suchmuster konnte nicht|richtig ausgewertet werden!][OK]",
-   "[0][Das Ergebnis der Dateidurch-|suchung muû in einer Datei|*.REG abgelegt werden.][OK]",
+   "[0][Das Ergebnis der Dateidurch-|suchung muû in einer Datei|*.reg abgelegt werden.][OK]",
    "[1][Nichts gefunden!][OK]",
    "[3][Die Datei %s konnte|nicht erzeugt werden!][OK]",
    "[0][\'.\' = beliebiges Zeichen|\'$\' = Zeilenende|\'*\' = 0-max Wiederholungen|\'+\' = 1-max Wiederholungen|\'\\\' = Sonderzeichenquotierung][Abbruch|Weiter]",
@@ -130,7 +130,7 @@ char *Aavprot[]=
 {
    "[2][%s existiert nicht.|Neu anlegen?][Abbruch|OK]",
    "[3][AES Fehler:|öberlauf der Messagepipe!][OK]",
-   "[3][7UP:|Bitte verÑnderte Texte sichern.][OK]",
+   "[3][Bitte verÑnderte Texte sichern.][OK]",
    "[0][Meldung von CALCLOCK:|Druckauftrag erhalten.][OK]"
 };
 
@@ -262,7 +262,7 @@ char *Afileio[]=
 /*21*/  "[3][Die Fehlermeldung kann|nicht dargestellt werden,|weil die Infozeile fehlt.][OK]",
 /*22*/  "[1][%s|nicht gefunden.][OK]",
 /*23*/  "[1][Fehler beim Lîschen der Datei!][OK]",
-/*24*/  "[3][Fehler beim Anlegen des Backups!][OK]"
+/*24*/  "[3][Fehler beim Anlegen des Backups!][OK]",
 /*25*/  "[3][Fehler beim Anlegen der Scrapdatei!][OK]",
 };
 
@@ -358,7 +358,7 @@ char *Agrepfile[]=
    "[2][Quit searching?][No|Yes]",
    "[0][Searching in text file with regular|expressions. Select starting directory|and the pattern for the files.][OK]",
    "[3][Can't compile search pattern!][OK]",
-   "[0][The result of searching will be|put into a file named *.REG.][OK]",
+   "[0][The result of searching will be|put into a file named *.reg.][OK]",
    "[1][Nothing found!][OK]",
    "[3][Can't create|%s!][OK]",
    "[0][\'.\' = beliebiges Zeichen|\'$\' = Zeilenende|\'*\' = 0-max Wiederholungen|\'+\' = 1-max Wiederholungen|\'\\\' = Sonderzeichenquotierung][Cancel|More]",

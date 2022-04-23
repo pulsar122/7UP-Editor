@@ -1,6 +1,6 @@
 /* GEM Resource C Source */
 
-#include <aesbind.h>
+#include <gem.h>
 #include "7UP.H"
 
 #if !defined(WHITEBAK)
@@ -1135,6 +1135,10 @@ static TEDINFO rs_tedinfo[] =
   "\0",
   "\0",
   IBM  , 0, TE_LEFT , 0x1180, 0, -1, 18, 1,
+  "TOS-Domain Shell",
+  "\0",
+  "\0",
+  IBM  , 0, TE_LEFT , 0x1180, 0, -1, 17, 1,
   "Hilfe",
   "\0",
   "\0",
@@ -2536,6 +2540,51 @@ static short RSBB16DATA[] =
   0x381C, 0x1FF8, 0x07E0, 0x0000
 };
 
+static short RSBB17DATA[] =
+{ 0x0000, 0x0000, 0x0000, 0x0000, 
+  0x0000, 0x0000, 0x0000, 0x0000, 
+  0x0000, 0x0000, 0x0000, 0x0000, 
+  0x0000, 0x0000, 0x0000, 0x0000, 
+  0x0FFF, 0xF800, 0x0000, 0x0000, 
+  0x0FFF, 0xF000, 0x0000, 0x0000, 
+  0x1FFF, 0xF000, 0x0000, 0x0000, 
+  0x1FFF, 0xE000, 0x0000, 0x0000, 
+  0x3000, 0xC000, 0x0000, 0x0000, 
+  0x2000, 0xC000, 0x0000, 0x0000, 
+  0x4001, 0x8000, 0x0000, 0x0000, 
+  0x0003, 0x8000, 0x0000, 0x0000, 
+  0x0003, 0x0000, 0x0000, 0x0000, 
+  0x0007, 0x0000, 0x0000, 0x0000, 
+  0x0006, 0x03C0, 0x3806, 0x1E00, 
+  0x000C, 0x1FC0, 0x787E, 0x7F80, 
+  0x001C, 0x0780, 0x701E, 0x8780, 
+  0x0018, 0x0380, 0x701D, 0x03C0, 
+  0x0038, 0x0780, 0xF01E, 0x03C0, 
+  0x0030, 0x0780, 0xF01C, 0x03C0, 
+  0x0060, 0x0700, 0xE01C, 0x03C0, 
+  0x00E0, 0x0F01, 0xE03C, 0x03C0, 
+  0x00C0, 0x0F01, 0xE038, 0x0780, 
+  0x01C0, 0x0E03, 0xC038, 0x0780, 
+  0x0180, 0x1E07, 0xC078, 0x0700, 
+  0x0380, 0x1E05, 0xC070, 0x0F00, 
+  0x0700, 0x1E0B, 0xC070, 0x0E00, 
+  0x0600, 0x3C13, 0x8470, 0x1C00, 
+  0x0E00, 0x3C23, 0x88F0, 0x3800, 
+  0x0C00, 0x3C43, 0x90F0, 0x7000, 
+  0x1C00, 0x3F83, 0xE0F0, 0xE000, 
+  0x3800, 0x1E03, 0xC0FF, 0x8000, 
+  0x3800, 0x0000, 0x01E0, 0x0000, 
+  0x0000, 0x0000, 0x01C0, 0x0000, 
+  0x0000, 0x0000, 0x01C0, 0x0000, 
+  0x0000, 0x0000, 0x01C0, 0x0000, 
+  0x0000, 0x0000, 0x03C0, 0x0000, 
+  0x0000, 0x0000, 0x0380, 0x0000, 
+  0x0000, 0x0000, 0x0380, 0x0000, 
+  0x0000, 0x0000, 0x0FC0, 0x0000, 
+  0x0000, 0x0000, 0x3FF0, 0x0000, 
+  0x0000, 0x0000, 0x0000, 0x0000
+};
+
 static BITBLK rs_bitblk[] =
 { RSBB0DATA,  12,  48,   0,   0, 0x0001,
   RSBB1DATA,   6,  30,   0,   0, 0x0001,
@@ -2553,7 +2602,8 @@ static BITBLK rs_bitblk[] =
   RSBB13DATA,   2,  16,   0,   0, 0x0001,
   RSBB14DATA,   2,  16,   0,   0, 0x0001,
   RSBB15DATA,   2,  16,   0,   0, 0x0001,
-  RSBB16DATA,   2,  16,   0,   0, 0x0000
+  RSBB16DATA,   2,  16,   0,   0, 0x0000,
+  RSBB17DATA,   8,  42,   0,   0, 0x0001
 };
 
 static OBJECT rs_object[] =
@@ -4200,7 +4250,7 @@ static OBJECT rs_object[] =
   0x0003, 0x0007, 0x0005, 0x0001,
   
   /******** Tree 12 USERIMG ****************************************************/
-        -1, RBLNORM         , RBHBG3D         , G_BOX             ,   /* Object 0  */
+        -1, RBLNORM         , WICON_KLEIN     , G_BOX             ,   /* Object 0  */
   FLAGS9, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0028, 0x000D,
   RBLSEL          ,       -1,       -1, G_IMAGE           ,   /* Object 1 RBLNORM */
@@ -4262,7 +4312,7 @@ static OBJECT rs_object[] =
   0x000E, 0x000B, 0x0008, 0x0001,
   RBHNORM3D       ,       -1,       -1, G_IMAGE           ,   /* Object 20 WICON */
   NONE, NORMAL, (long)&rs_bitblk[12],
-  0x001B, 0x0001, 0x000A, 0x0804,
+  0x001D, 0x0800, 0x000A, 0x0804,
   RBHSEL3D        ,       -1,       -1, G_IMAGE           ,   /* Object 21 RBHNORM3D */
   NONE, NORMAL, (long)&rs_bitblk[13],
   0x0009, 0x0002, 0x0002, 0x0001,
@@ -4272,9 +4322,12 @@ static OBJECT rs_object[] =
   RBHBG3D         ,       -1,       -1, G_IMAGE           ,   /* Object 23 CIRCLEHDIS */
   NONE, NORMAL, (long)&rs_bitblk[15],
   0x001A, 0x0005, 0x0002, 0x0001,
-         0,       -1,       -1, G_IMAGE           ,   /* Object 24 RBHBG3D */
-  LASTOB, NORMAL, (long)&rs_bitblk[16],
+  WICON_KLEIN     ,       -1,       -1, G_IMAGE           ,   /* Object 24 RBHBG3D */
+  NONE, NORMAL, (long)&rs_bitblk[16],
   0x000F, 0x0002, 0x0002, 0x0001,
+         0,       -1,       -1, G_IMAGE           ,   /* Object 25 WICON_KLEIN */
+  LASTOB, NORMAL, (long)&rs_bitblk[17],
+  0x041E, 0x0008, 0x0008, 0x0A02,
   
   /******** Tree 13 SHELL2 ****************************************************/
         -1,        1, SH2ABBR         , G_BOX             ,   /* Object 0  */
@@ -5110,7 +5163,7 @@ static OBJECT rs_object[] =
         16,       -1,       -1, G_STRING          ,   /* Object 29  */
   NONE, NORMAL, (long)"min.",
   0x0013, 0x0008, 0x0004, 0x0001,
-        38,       31, DIVSAVE         , G_BOX             |0x0900,   /* Object 30  */
+        39,       31, DIVTOSDOMIAN    , G_BOX             |0x0900,   /* Object 30  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0026, 0x080A, 0x0018, 0x0809,
   DIVDESK         ,       -1,       -1, G_TEXT            |0x2000,   /* Object 31  */
@@ -5131,23 +5184,26 @@ static OBJECT rs_object[] =
   DIVSAVE         ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 36 DIVNAME */
   SELECTABLE, NORMAL, (long)&rs_tedinfo[275],
   0x0002, 0x0005, 0x0014, 0x0001,
-        30,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 37 DIVSAVE */
+  DIVTOSDOMIAN    ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 37 DIVSAVE */
   SELECTABLE, NORMAL, (long)&rs_tedinfo[276],
   0x0002, 0x0006, 0x0011, 0x0001,
-  DIVHDA          ,       -1,       -1, G_STRING          ,   /* Object 38  */
+        30,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 38 DIVTOSDOMIAN */
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[277],
+  0x0002, 0x0007, 0x0011, 0x0001,
+  DIVHDA          ,       -1,       -1, G_STRING          ,   /* Object 39  */
   NONE, NORMAL, (long)"Hilfeaccessory:",
   0x0003, 0x0015, 0x000F, 0x0001,
-  DIVHELP         ,       -1,       -1, G_BUTTON          ,   /* Object 39 DIVHDA */
+  DIVHELP         ,       -1,       -1, G_BUTTON          ,   /* Object 40 DIVHDA */
   SELECTABLE|EXIT|FLAGS9|FLAGS10, NORMAL, (long)"1STGUIDE",
   0x0014, 0x0015, 0x0009, 0x0001,
-  DIVABBR         ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 40 DIVHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[277],
-  0x0022, 0x0015, 0x0008, 0x0001,
-  DIVOK           ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 41 DIVABBR */
+  DIVABBR         ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 41 DIVHELP */
   SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[278],
+  0x0022, 0x0015, 0x0008, 0x0001,
+  DIVOK           ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 42 DIVABBR */
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[279],
   0x002C, 0x0015, 0x0008, 0x0001,
-         0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 42 DIVOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[279],
+         0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 43 DIVOK */
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[280],
   0x0036, 0x0015, 0x0008, 0x0001,
   
   /******** Tree 24 BRACES ****************************************************/
@@ -5155,88 +5211,88 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0023, 0x0016,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[280],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[281],
   0x0021, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[281],
+  NONE, NORMAL, (long)&rs_tedinfo[282],
   0x0003, 0x0001, 0x000C, 0x0001,
   BRACHELP        ,        4, FREE5END        , G_BOX             |0x0900,   /* Object 3  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x001D, 0x080F,
   CBRACE          ,       -1,       -1, G_TEXT            |0x2000,   /* Object 4  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[282],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[283],
   0x0001, 0x0000, 0x000E, 0x0001,
   SBRACE          ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 5 CBRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[283],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[284],
   0x0002, 0x0001, 0x0019, 0x0001,
   RBRACE          ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 6 SBRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[284],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[285],
   0x0002, 0x0002, 0x0019, 0x0001,
   PBRACE          ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 7 RBRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[285],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[286],
   0x0002, 0x0003, 0x0019, 0x0001,
   PKOMBRAC        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 8 PBRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[286],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[287],
   0x0002, 0x0004, 0x0019, 0x0001,
   CKOMBRAC        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 9 PKOMBRAC */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[287],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[288],
   0x0002, 0x0005, 0x0019, 0x0001,
   FREE1BRACE      ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 10 CKOMBRAC */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[288],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[289],
   0x0002, 0x0006, 0x0019, 0x0001,
   FREE1BEG        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 11 FREE1BRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[289],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[290],
   0x0002, 0x0807, 0x0002, 0x0001,
   FREE1END        ,       -1,       -1, G_FTEXT           ,   /* Object 12 FREE1BEG */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[290],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[291],
   0x0005, 0x0807, 0x000A, 0x0001,
   FREE2BRACE      ,       -1,       -1, G_FTEXT           ,   /* Object 13 FREE1END */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[291],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[292],
   0x0011, 0x0807, 0x000A, 0x0001,
   FREE2BEG        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 14 FREE2BRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[292],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[293],
   0x0002, 0x0009, 0x0002, 0x0001,
   FREE2END        ,       -1,       -1, G_FTEXT           ,   /* Object 15 FREE2BEG */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[293],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[294],
   0x0005, 0x0009, 0x000A, 0x0001,
   FREE3BRACE      ,       -1,       -1, G_FTEXT           ,   /* Object 16 FREE2END */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[294],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[295],
   0x0011, 0x0009, 0x000A, 0x0001,
   FREE3BEG        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 17 FREE3BRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[295],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[296],
   0x0002, 0x080A, 0x0002, 0x0001,
   FREE3END        ,       -1,       -1, G_FTEXT           ,   /* Object 18 FREE3BEG */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[296],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[297],
   0x0005, 0x080A, 0x000A, 0x0001,
   FREE4BRACE      ,       -1,       -1, G_FTEXT           ,   /* Object 19 FREE3END */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[297],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[298],
   0x0011, 0x080A, 0x000A, 0x0001,
   FREE4BEG        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 20 FREE4BRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[298],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[299],
   0x0002, 0x000C, 0x0002, 0x0001,
   FREE4END        ,       -1,       -1, G_FTEXT           ,   /* Object 21 FREE4BEG */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[299],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[300],
   0x0005, 0x000C, 0x000A, 0x0001,
   FREE5BRACE      ,       -1,       -1, G_FTEXT           ,   /* Object 22 FREE4END */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[300],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[301],
   0x0011, 0x000C, 0x000A, 0x0001,
   FREE5BEG        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 23 FREE5BRACE */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[301],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[302],
   0x0002, 0x080D, 0x0002, 0x0001,
   FREE5END        ,       -1,       -1, G_FTEXT           ,   /* Object 24 FREE5BEG */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[302],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[303],
   0x0005, 0x080D, 0x000A, 0x0001,
          3,       -1,       -1, G_FTEXT           ,   /* Object 25 FREE5END */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[303],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[304],
   0x0011, 0x080D, 0x000A, 0x0001,
   BRACABBR        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 26 BRACHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[304],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[305],
   0x0004, 0x0014, 0x0008, 0x0001,
   BRACOK          ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 27 BRACABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[305],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[306],
   0x000E, 0x0014, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 28 BRACOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[306],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[307],
   0x0018, 0x0014, 0x0008, 0x0001,
   
   /******** Tree 25 SORTMENU ****************************************************/
@@ -5244,82 +5300,82 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0033, 0x0010,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[307],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[308],
   0x0031, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[308],
+  NONE, NORMAL, (long)&rs_tedinfo[309],
   0x0003, 0x0001, 0x0009, 0x0001,
         11,        4, SORTCOL         , G_BOX             |0x0900,   /* Object 3  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x0018, 0x0004,
          5,       -1,       -1, G_TEXT            |0x2000,   /* Object 4  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[309],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[310],
   0x0001, 0x0000, 0x0009, 0x0001,
   SORTFROM        ,       -1,       -1, G_STRING          ,   /* Object 5  */
   NONE, NORMAL, (long)"Zeile",
   0x0002, 0x0001, 0x0005, 0x0001,
          7,       -1,       -1, G_FTEXT           ,   /* Object 6 SORTFROM */
-  NONE, NORMAL, (long)&rs_tedinfo[310],
+  NONE, NORMAL, (long)&rs_tedinfo[311],
   0x0009, 0x0001, 0x0004, 0x0001,
   SORTTO          ,       -1,       -1, G_STRING          ,   /* Object 7  */
   NONE, NORMAL, (long)"bis",
   0x000E, 0x0001, 0x0003, 0x0001,
          9,       -1,       -1, G_FTEXT           ,   /* Object 8 SORTTO */
-  NONE, NORMAL, (long)&rs_tedinfo[311],
+  NONE, NORMAL, (long)&rs_tedinfo[312],
   0x0012, 0x0001, 0x0004, 0x0001,
   SORTCOL         ,       -1,       -1, G_STRING          ,   /* Object 9  */
   NONE, NORMAL, (long)"Spalte",
   0x0002, 0x0002, 0x0009, 0x0001,
          3,       -1,       -1, G_FTEXT           ,   /* Object 10 SORTCOL */
-  NONE, NORMAL, (long)&rs_tedinfo[312],
+  NONE, NORMAL, (long)&rs_tedinfo[313],
   0x0009, 0x0002, 0x0003, 0x0001,
         15,       12, SORTDN          , G_BOX             |0x0900,   /* Object 11  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x001D, 0x0003, 0x0013, 0x0004,
   SORTUP          ,       -1,       -1, G_TEXT            |0x2000,   /* Object 12  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[313],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[314],
   0x0001, 0x0000, 0x000A, 0x0001,
   SORTDN          ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 13 SORTUP */
-  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[314],
+  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[315],
   0x0002, 0x0001, 0x000E, 0x0001,
         11,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 14 SORTDN */
-  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[315],
+  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[316],
   0x0002, 0x0002, 0x000D, 0x0001,
         21,       16, SORTEXTRA       , G_BOX             |0x0900,   /* Object 15  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0008, 0x0018, 0x0005,
   SORTLINE        ,       -1,       -1, G_TEXT            |0x2000,   /* Object 16  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[316],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[317],
   0x0001, 0x0000, 0x0009, 0x0001,
   SORTGROUP       ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 17 SORTLINE */
-  SELECTABLE|EXIT|RBUTTON, SELECTED, (long)&rs_tedinfo[317],
+  SELECTABLE|EXIT|RBUTTON, SELECTED, (long)&rs_tedinfo[318],
   0x0002, 0x0001, 0x0008, 0x0001,
   SORTKRIT        ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 18 SORTGROUP */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[318],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[319],
   0x000C, 0x0001, 0x0009, 0x0001,
   SORTEXTRA       ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 19 SORTKRIT */
-  SELECTABLE, DISABLED, (long)&rs_tedinfo[319],
+  SELECTABLE, DISABLED, (long)&rs_tedinfo[320],
   0x0002, 0x0002, 0x0013, 0x0001,
         15,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 20 SORTEXTRA */
-  SELECTABLE, DISABLED, (long)&rs_tedinfo[320],
+  SELECTABLE, DISABLED, (long)&rs_tedinfo[321],
   0x0002, 0x0003, 0x000D, 0x0001,
   SORTHELP        ,       22, SORTIGNO        , G_BOX             |0x0900,   /* Object 21  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x001D, 0x0008, 0x0013, 0x0005,
   SORTIGNO        ,       -1,       -1, G_TEXT            |0x2000,   /* Object 22  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[321],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[322],
   0x0001, 0x0000, 0x000A, 0x0001,
         21,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 23 SORTIGNO */
-  SELECTABLE, SELECTED, (long)&rs_tedinfo[322],
+  SELECTABLE, SELECTED, (long)&rs_tedinfo[323],
   0x0002, 0x0001, 0x000D, 0x0001,
   SORTABBR        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 24 SORTHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[323],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[324],
   0x0014, 0x000E, 0x0008, 0x0001,
   SORTOK          ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 25 SORTABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[324],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[325],
   0x001E, 0x000E, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 26 SORTOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[325],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[326],
   0x0028, 0x000E, 0x0008, 0x0001,
   
   /******** Tree 26 POPPRN ****************************************************/
@@ -5406,49 +5462,49 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0041, 0x000D,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[326],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[327],
   0x003F, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[327],
+  NONE, NORMAL, (long)&rs_tedinfo[328],
   0x0003, 0x0001, 0x0011, 0x0001,
   GREPPATT        ,       -1,       -1, G_TEXT            ,   /* Object 3  */
-  NONE, NORMAL, (long)&rs_tedinfo[328],
+  NONE, NORMAL, (long)&rs_tedinfo[329],
   0x0003, 0x0003, 0x0009, 0x0001,
          5,       -1,       -1, G_FTEXT           ,   /* Object 4 GREPPATT */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[329],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[330],
   0x0003, 0x0004, 0x003B, 0x0001,
         11,        6, GREPMARK        , G_BOX             |0x0900,   /* Object 5  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0006, 0x001C, 0x0006,
   GREPGREP        ,       -1,       -1, G_TEXT            |0x2000,   /* Object 6  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[330],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[331],
   0x0001, 0x0000, 0x000A, 0x0001,
   GREPALL         ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 7 GREPGREP */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[331],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[332],
   0x0002, 0x0001, 0x0007, 0x0001,
   GREPFOLD        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 8 GREPALL */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[332],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[333],
   0x0002, 0x0002, 0x0013, 0x0001,
   GREPMARK        ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 9 GREPFOLD */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[333],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[334],
   0x0002, 0x0003, 0x0016, 0x0001,
          5,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 10 GREPMARK */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[334],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[335],
   0x0002, 0x0004, 0x0018, 0x0001,
   GREPNAME        ,       -1,       -1, G_TEXT            ,   /* Object 11  */
-  NONE, NORMAL, (long)&rs_tedinfo[335],
+  NONE, NORMAL, (long)&rs_tedinfo[336],
   0x0022, 0x0006, 0x000C, 0x0001,
   GREPHELP        ,       -1,       -1, G_FTEXT           ,   /* Object 12 GREPNAME */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[336],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[337],
   0x0022, 0x0007, 0x001C, 0x0001,
   GREPABBR        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 13 GREPHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[337],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[338],
   0x0022, 0x000B, 0x0008, 0x0001,
   GREPOK          ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 14 GREPABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[338],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[339],
   0x002C, 0x000B, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 15 GREPOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[339],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[340],
   0x0036, 0x000B, 0x0008, 0x0001,
   
   /******** Tree 29 POPDIST ****************************************************/
@@ -5470,46 +5526,46 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0022, 0x0013,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[340],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[341],
   0x0020, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[341],
+  NONE, NORMAL, (long)&rs_tedinfo[342],
   0x0003, 0x0001, 0x000D, 0x0001,
          8,        4, NUMTSEP         , G_BOX             |0x0900,   /* Object 3  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x001C, 0x0005,
   NUMNDT          ,       -1,       -1, G_TEXT            |0x2000,   /* Object 4  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[342],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[343],
   0x0001, 0x0000, 0x000A, 0x0001,
   NUMNAMI         ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 5 NUMNDT */
-  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[343],
+  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[344],
   0x0002, 0x0001, 0x000A, 0x0001,
   NUMTSEP         ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 6 NUMNAMI */
-  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[344],
+  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[345],
   0x000E, 0x0001, 0x000B, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 7 NUMTSEP */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[345],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[346],
   0x0002, 0x0003, 0x0017, 0x0001,
         16,        9,       15, G_BOX             |0x0900,   /* Object 8  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0009, 0x001C, 0x0804,
   NUMNORM         ,       -1,       -1, G_TEXT            |0x2000,   /* Object 9  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[346],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[347],
   0x0001, 0x0000, 0x0014, 0x0001,
   NUMMWSTN        ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 10 NUMNORM */
-  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[347],
+  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[348],
   0x0002, 0x0001, 0x000A, 0x0001,
         12,       -1,       -1, G_FTEXT           ,   /* Object 11 NUMMWSTN */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[348],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[349],
   0x000E, 0x0001, 0x0005, 0x0001,
   NUMERM          ,       -1,       -1, G_STRING          ,   /* Object 12  */
   NONE, NORMAL, (long)"%",
   0x0014, 0x0001, 0x0001, 0x0001,
   NUMMWSTE        ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 13 NUMERM */
-  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[349],
+  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[350],
   0x0002, 0x0802, 0x000B, 0x0001,
         15,       -1,       -1, G_FTEXT           ,   /* Object 14 NUMMWSTE */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[350],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[351],
   0x000E, 0x0802, 0x0005, 0x0001,
          8,       -1,       -1, G_STRING          ,   /* Object 15  */
   NONE, NORMAL, (long)"%",
@@ -5518,16 +5574,16 @@ static OBJECT rs_object[] =
   NONE, NORMAL, (long)"Nachkommastellen:",
   0x0003, 0x000F, 0x0011, 0x0001,
   NUMHELP         ,       -1,       -1, G_FTEXT           ,   /* Object 17 NUMKOMMA */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[351],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[352],
   0x0015, 0x000F, 0x0001, 0x0001,
   NUMABBR         ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 18 NUMHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[352],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[353],
   0x0003, 0x0011, 0x0008, 0x0001,
   NUMOK           ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 19 NUMABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[353],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[354],
   0x000D, 0x0011, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 20 NUMOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[354],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[355],
   0x0017, 0x0011, 0x0008, 0x0001,
   
   /******** Tree 31 PICKLIST ****************************************************/
@@ -5535,37 +5591,37 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0034, 0x0017,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[355],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[356],
   0x0032, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[356],
+  NONE, NORMAL, (long)&rs_tedinfo[357],
   0x0003, 0x0001, 0x0009, 0x0001,
   PICKINFO        , PICKFIRST       , PICKBOX         , G_BOX             ,   /* Object 3  */
   NONE, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x002E, 0x000A,
          5,       -1,       -1, G_TEXT            ,   /* Object 4 PICKFIRST */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[357],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[358],
   0x0001, 0x0001, 0x002A, 0x0001,
          6,       -1,       -1, G_TEXT            ,   /* Object 5  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[358],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[359],
   0x0001, 0x0002, 0x002A, 0x0001,
          7,       -1,       -1, G_TEXT            ,   /* Object 6  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[359],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[360],
   0x0001, 0x0003, 0x002A, 0x0001,
          8,       -1,       -1, G_TEXT            ,   /* Object 7  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[360],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[361],
   0x0001, 0x0004, 0x002A, 0x0001,
          9,       -1,       -1, G_TEXT            ,   /* Object 8  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[361],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[362],
   0x0001, 0x0005, 0x002A, 0x0001,
         10,       -1,       -1, G_TEXT            ,   /* Object 9  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[362],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[363],
   0x0001, 0x0006, 0x002A, 0x0001,
   PICKLAST        ,       -1,       -1, G_TEXT            ,   /* Object 10  */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[363],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[364],
   0x0001, 0x0007, 0x002A, 0x0001,
   PICKUP          ,       -1,       -1, G_TEXT            ,   /* Object 11 PICKLAST */
-  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[364],
+  SELECTABLE|EXIT|RBUTTON|TOUCHEXIT|FLAGS11, NORMAL, (long)&rs_tedinfo[365],
   0x0001, 0x0008, 0x002A, 0x0001,
   PICKDN          ,       -1,       -1, G_BOXCHAR         ,   /* Object 12 PICKUP */
   TOUCHEXIT|FLAGS12, NORMAL, (long) ((long)'\001' << 24)|0x00FF1100L,
@@ -5580,31 +5636,31 @@ static OBJECT rs_object[] =
   TOUCHEXIT, NORMAL, (long)0x00FF1100L,
   0x0000, 0x0000, 0x0002, 0x0002,
         17,       -1,       -1, G_BOXTEXT         ,   /* Object 16 PICKINFO */
-  NONE, NORMAL, (long)&rs_tedinfo[365],
+  NONE, NORMAL, (long)&rs_tedinfo[366],
   0x0003, 0x000D, 0x002E, 0x0001,
   PICKCOMMENT     ,       -1,       -1, G_STRING          ,   /* Object 17  */
   NONE, NORMAL, (long)"Info:",
   0x0003, 0x000F, 0x0005, 0x0001,
   PICKAKTIV       ,       -1,       -1, G_FTEXT           ,   /* Object 18 PICKCOMMENT */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[366],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[367],
   0x0009, 0x000F, 0x0028, 0x0001,
   PICKCLEAN       ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 19 PICKAKTIV */
-  SELECTABLE, SELECTED, (long)&rs_tedinfo[367],
+  SELECTABLE, SELECTED, (long)&rs_tedinfo[368],
   0x0003, 0x0011, 0x0008, 0x0001,
   PICKDEL         ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 20 PICKCLEAN */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[368],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[369],
   0x0003, 0x0013, 0x0013, 0x0001,
   PICKHELP        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 21 PICKDEL */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[369],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[370],
   0x0003, 0x0015, 0x0008, 0x0001,
   PICKABBR        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 22 PICKHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[370],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[371],
   0x0015, 0x0015, 0x0008, 0x0001,
   PICKOK          ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 23 PICKABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[371],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[372],
   0x001F, 0x0015, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 24 PICKOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[372],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[373],
   0x0029, 0x0015, 0x0008, 0x0001,
   
   /******** Tree 32 MENUEDITOR ****************************************************/
@@ -5612,16 +5668,16 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0031, 0x0014,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[373],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[374],
   0x002F, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[374],
+  NONE, NORMAL, (long)&rs_tedinfo[375],
   0x0003, 0x0001, 0x0009, 0x0001,
         14,        4, MENUMLOAD       , G_BOX             |0x0900,   /* Object 3  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x002B, 0x0008,
          5,       -1,       -1, G_TEXT            |0x2000,   /* Object 4  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[375],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[376],
   0x0001, 0x0000, 0x0006, 0x0001,
   MENUMVOR        ,       -1,       -1, G_STRING          ,   /* Object 5  */
   NONE, NORMAL, (long)"Titel:",
@@ -5630,49 +5686,49 @@ static OBJECT rs_object[] =
   TOUCHEXIT|FLAGS9|FLAGS10, NORMAL, (long) ((long)'\003' << 24)|0x00FF1100L,
   0x0027, 0x0002, 0x0002, 0x0001,
          8,       -1,       -1, G_FBOXTEXT        ,   /* Object 7 MENUMNAME */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[376],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[377],
   0x0009, 0x0002, 0x001D, 0x0001,
   MENUMIDX        ,       -1,       -1, G_STRING          ,   /* Object 8  */
   NONE, NORMAL, (long)"Index:",
   0x0002, 0x0004, 0x0006, 0x0001,
   MENUMFILE       ,       -1,       -1, G_FBOXTEXT        ,   /* Object 9 MENUMIDX */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[377],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[378],
   0x0009, 0x0004, 0x0005, 0x0001,
   MENUMHELP       ,       -1,       -1, G_TEXT            ,   /* Object 10 MENUMFILE */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[378],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[379],
   0x001C, 0x0004, 0x000C, 0x0001,
   MENUMSAVE       ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 11 MENUMHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[379],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[380],
   0x0006, 0x0006, 0x0008, 0x0001,
   MENUMLOAD       ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 12 MENUMSAVE */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[380],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[381],
   0x0010, 0x0006, 0x000B, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 13 MENUMLOAD */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[381],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[382],
   0x001D, 0x0006, 0x000B, 0x0001,
   MENUOK          ,       15, MENUTLOAD       , G_BOX             |0x0900,   /* Object 14  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x000C, 0x002B, 0x0005,
   MENUTAKTIV      ,       -1,       -1, G_TEXT            |0x2000,   /* Object 15  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[382],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[383],
   0x0001, 0x0000, 0x000A, 0x0001,
   MENUTFILE       ,       -1,       -1, G_BOXTEXT         |0x0200,   /* Object 16 MENUTAKTIV */
-  SELECTABLE, NORMAL, (long)&rs_tedinfo[383],
+  SELECTABLE, NORMAL, (long)&rs_tedinfo[384],
   0x0002, 0x0001, 0x0008, 0x0001,
   MENUTHELP       ,       -1,       -1, G_TEXT            ,   /* Object 17 MENUTFILE */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[384],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[385],
   0x001C, 0x0001, 0x000C, 0x0001,
   MENUTSAVE       ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 18 MENUTHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[385],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[386],
   0x0006, 0x0003, 0x0008, 0x0001,
   MENUTLOAD       ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 19 MENUTSAVE */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[386],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[387],
   0x0010, 0x0003, 0x000B, 0x0001,
         14,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 20 MENUTLOAD */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[387],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[388],
   0x001D, 0x0003, 0x000B, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 21 MENUOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[388],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[389],
   0x0026, 0x0012, 0x0008, 0x0001,
   
   /******** Tree 33 REGISTER ****************************************************/
@@ -5680,10 +5736,10 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x002A, 0x0010,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[389],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[390],
   0x0028, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[390],
+  NONE, NORMAL, (long)&rs_tedinfo[391],
   0x0003, 0x0001, 0x0010, 0x0001,
          4,       -1,       -1, G_STRING          ,   /* Object 3  */
   NONE, NORMAL, (long)"Geben Sie hier bitte Ihren Namen und",
@@ -5698,25 +5754,25 @@ static OBJECT rs_object[] =
   NONE, NORMAL, (long)"Name:",
   0x0003, 0x0007, 0x0005, 0x0001,
          8,       -1,       -1, G_FTEXT           ,   /* Object 7 REGISTNAME */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[391],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[392],
   0x000A, 0x0007, 0x001D, 0x0001,
   REGISTKEY       ,       -1,       -1, G_STRING          ,   /* Object 8  */
   NONE, NORMAL, (long)"Schl\201ssel:",
   0x0003, 0x0009, 0x000A, 0x0001,
         10,       -1,       -1, G_FTEXT           ,   /* Object 9 REGISTKEY */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[392],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[393],
   0x000E, 0x0009, 0x000A, 0x0001,
         11,       -1,       -1, G_TEXT            ,   /* Object 10  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[393],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[394],
   0x0003, 0x000B, 0x0624, 0x0001,
   REGISTABBR      ,       -1,       -1, G_TEXT            ,   /* Object 11  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[394],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[395],
   0x0008, 0x000C, 0x021A, 0x0001,
   REGISTOK        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 12 REGISTABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[395],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[396],
   0x0015, 0x000E, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 13 REGISTOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[396],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[397],
   0x001F, 0x000E, 0x0008, 0x0001,
   
   /******** Tree 34 TEXTFORMAT ****************************************************/
@@ -5724,58 +5780,58 @@ static OBJECT rs_object[] =
   FLAGS10, OUTLINED, (long)0x00021100L,
   0x0000, 0x0000, 0x0034, 0x000D,
          2,       -1,       -1, G_BOXTEXT         |0x0500,   /* Object 1  */
-  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[397],
+  SELECTABLE|EXIT, OUTLINED, (long)&rs_tedinfo[398],
   0x0032, 0x0000, 0x0002, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0400,   /* Object 2  */
-  NONE, NORMAL, (long)&rs_tedinfo[398],
+  NONE, NORMAL, (long)&rs_tedinfo[399],
   0x0003, 0x0001, 0x000B, 0x0001,
          9,        4, FORMBLOCK       , G_BOX             |0x0900,   /* Object 3  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x0003, 0x0003, 0x0016, 0x0007,
   FORMLEFT        ,       -1,       -1, G_TEXT            |0x2000,   /* Object 4  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[399],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[400],
   0x0001, 0x0000, 0x0007, 0x0001,
   FORMCENTER      ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 5 FORMLEFT */
-  SELECTABLE|EXIT|RBUTTON, SELECTED, (long)&rs_tedinfo[400],
+  SELECTABLE|EXIT|RBUTTON, SELECTED, (long)&rs_tedinfo[401],
   0x0002, 0x0001, 0x000E, 0x0001,
   FORMRIGHT       ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 6 FORMCENTER */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[401],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[402],
   0x0002, 0x0002, 0x000C, 0x0001,
   FORMBLOCK       ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 7 FORMRIGHT */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[402],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[403],
   0x0002, 0x0003, 0x000F, 0x0001,
          3,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 8 FORMBLOCK */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[403],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[404],
   0x0002, 0x0005, 0x000C, 0x0001,
         14,       10, FORMMARK        , G_BOX             |0x0900,   /* Object 9  */
   FLAGS10, NORMAL, (long)0x00FF1100L,
   0x001B, 0x0003, 0x0016, 0x0007,
   FORMCURSOR      ,       -1,       -1, G_TEXT            |0x2000,   /* Object 10  */
-  FLAGS10, NORMAL, (long)&rs_tedinfo[404],
+  FLAGS10, NORMAL, (long)&rs_tedinfo[405],
   0x0001, 0x0000, 0x0009, 0x0001,
   FORMPARA        ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 11 FORMCURSOR */
-  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[405],
+  SELECTABLE|RBUTTON, SELECTED, (long)&rs_tedinfo[406],
   0x0002, 0x0001, 0x000C, 0x0001,
   FORMMARK        ,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 12 FORMPARA */
-  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[406],
+  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[407],
   0x0002, 0x0002, 0x0009, 0x0001,
          9,       -1,       -1, G_BOXTEXT         |0x0100,   /* Object 13 FORMMARK */
-  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[407],
+  SELECTABLE|RBUTTON, NORMAL, (long)&rs_tedinfo[408],
   0x0002, 0x0003, 0x0013, 0x0001,
   FORMLENGHT      ,       -1,       -1, G_STRING          ,   /* Object 14  */
   NONE, NORMAL, (long)"Zeilenl\204nge:",
   0x0003, 0x000B, 0x000C, 0x0001,
   FORMHELP        ,       -1,       -1, G_FTEXT           ,   /* Object 15 FORMLENGHT */
-  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[408],
+  EDITABLE|FLAGS10, NORMAL, (long)&rs_tedinfo[409],
   0x0010, 0x000B, 0x0003, 0x0001,
   FORMABBR        ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 16 FORMHELP */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[409],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[410],
   0x0015, 0x000B, 0x0008, 0x0001,
   FORMOK          ,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 17 FORMABBR */
-  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[410],
+  SELECTABLE|EXIT, NORMAL, (long)&rs_tedinfo[411],
   0x001F, 0x000B, 0x0008, 0x0001,
          0,       -1,       -1, G_BOXTEXT         |0x0300,   /* Object 18 FORMOK */
-  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[411],
+  SELECTABLE|DEFAULT|EXIT|LASTOB, NORMAL, (long)&rs_tedinfo[412],
   0x0029, 0x000B, 0x0008, 0x0001,
   
   /******** Tree 35 SLISTBOX ****************************************************/
@@ -5783,19 +5839,19 @@ static OBJECT rs_object[] =
   NONE, SHADOWED, (long)0x00FF1100L,
   0x0000, 0x0000, 0x0010, 0x0005,
          2,       -1,       -1, G_TEXT            ,   /* Object 1 SLBT1 */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[412],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[413],
   0x0000, 0x0000, 0x000E, 0x0001,
          3,       -1,       -1, G_TEXT            ,   /* Object 2  */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[413],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[414],
   0x0000, 0x0001, 0x000E, 0x0001,
          4,       -1,       -1, G_TEXT            ,   /* Object 3  */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[414],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[415],
   0x0000, 0x0002, 0x000E, 0x0001,
   SLBT5           ,       -1,       -1, G_TEXT            ,   /* Object 4  */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[415],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[416],
   0x0000, 0x0003, 0x000E, 0x0001,
   SLBUP           ,       -1,       -1, G_TEXT            ,   /* Object 5 SLBT5 */
-  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[416],
+  SELECTABLE|EXIT|RBUTTON, NORMAL, (long)&rs_tedinfo[417],
   0x0000, 0x0004, 0x000E, 0x0001,
   SLBDN           ,       -1,       -1, G_BOXCHAR         ,   /* Object 6 SLBUP */
   TOUCHEXIT, NORMAL, (long) ((long)'\001' << 24)|0x00FF1100L,
@@ -5825,27 +5881,27 @@ static OBJECT *rs_trindex[] =
   &rs_object[494],   /* Tree 10 FONTSEL          */
   &rs_object[532],   /* Tree 11 PRTMENU          */
   &rs_object[539],   /* Tree 12 USERIMG          */
-  &rs_object[564],   /* Tree 13 SHELL2           */
-  &rs_object[586],   /* Tree 14 FKEYMENU         */
-  &rs_object[617],   /* Tree 15 UMBRMENU         */
-  &rs_object[624],   /* Tree 16 PRNINST          */
-  &rs_object[690],   /* Tree 17 PRNINST2         */
-  &rs_object[728],   /* Tree 18 PREVIEW          */
-  &rs_object[736],   /* Tree 19 REPLMENU         */
-  &rs_object[744],   /* Tree 20 INFOMENU         */
-  &rs_object[780],   /* Tree 21 MARKMENU         */
-  &rs_object[794],   /* Tree 22 POPMENU          */
-  &rs_object[805],   /* Tree 23 DIVERSES         */
-  &rs_object[848],   /* Tree 24 BRACES           */
-  &rs_object[877],   /* Tree 25 SORTMENU         */
-  &rs_object[904],   /* Tree 26 POPPRN           */
-  &rs_object[918],   /* Tree 27 POPPAPER         */
-  &rs_object[929],   /* Tree 28 GREPMENU         */
-  &rs_object[945],   /* Tree 29 POPDIST          */
-  &rs_object[949],   /* Tree 30 NUMMENU          */
-  &rs_object[970],   /* Tree 31 PICKLIST         */
-  &rs_object[995],   /* Tree 32 MENUEDITOR       */
-  &rs_object[1017],   /* Tree 33 REGISTER         */
-  &rs_object[1031],   /* Tree 34 TEXTFORMAT       */
-  &rs_object[1050]    /* Tree 35 SLISTBOX         */
+  &rs_object[565],   /* Tree 13 SHELL2           */
+  &rs_object[587],   /* Tree 14 FKEYMENU         */
+  &rs_object[618],   /* Tree 15 UMBRMENU         */
+  &rs_object[625],   /* Tree 16 PRNINST          */
+  &rs_object[691],   /* Tree 17 PRNINST2         */
+  &rs_object[729],   /* Tree 18 PREVIEW          */
+  &rs_object[737],   /* Tree 19 REPLMENU         */
+  &rs_object[745],   /* Tree 20 INFOMENU         */
+  &rs_object[781],   /* Tree 21 MARKMENU         */
+  &rs_object[795],   /* Tree 22 POPMENU          */
+  &rs_object[806],   /* Tree 23 DIVERSES         */
+  &rs_object[850],   /* Tree 24 BRACES           */
+  &rs_object[879],   /* Tree 25 SORTMENU         */
+  &rs_object[906],   /* Tree 26 POPPRN           */
+  &rs_object[920],   /* Tree 27 POPPAPER         */
+  &rs_object[931],   /* Tree 28 GREPMENU         */
+  &rs_object[947],   /* Tree 29 POPDIST          */
+  &rs_object[951],   /* Tree 30 NUMMENU          */
+  &rs_object[972],   /* Tree 31 PICKLIST         */
+  &rs_object[997],   /* Tree 32 MENUEDITOR       */
+  &rs_object[1019],   /* Tree 33 REGISTER         */
+  &rs_object[1033],   /* Tree 34 TEXTFORMAT       */
+  &rs_object[1052]    /* Tree 35 SLISTBOX         */
 };

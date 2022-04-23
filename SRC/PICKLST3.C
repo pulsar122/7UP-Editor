@@ -98,7 +98,7 @@ int load_picklist( void )
 	int count = 0;
 	struct stat st;
 
-	if((fp=fopen(find_7upinf(filename,"PCK",0),"r"))!=NULL)
+	if((fp=fopen(find_7upinf(filename,"pck",0),"r"))!=NULL)
 	{															/* Pickfile ”ffnen */
 		graf_mouse(BUSY_BEE,NULL);
 		fgets(filename,(int)(VERSIONSTRLEN+1),fp);
@@ -153,7 +153,7 @@ void save_picklist(void)
 	char filename[PATH_MAX];
 	int i;
 
-	if((fp=fopen(find_7upinf(filename,"PCK",1),"w"))!=NULL) {													/* Pickfile ”ffnen */
+	if((fp=fopen(find_7upinf(filename,"pck",1),"w"))!=NULL) {													/* Pickfile ”ffnen */
 		graf_mouse(BUSY_BEE,NULL);	
 		fprintf(fp,"%s\n",NEWVERSIONNAME);
 		for(i=0; i<pl_entries; i++)
@@ -205,7 +205,7 @@ void append_picklist(OBJECT * tree, char *pathname, long line)
 		 * auch kein Eintrag in dieselbe */
 		return;
 	
-	if((fp=fopen(find_7upinf(filename,"PCK",1),"w"))!=NULL) { /* Pickfile ”ffnen */
+	if((fp=fopen(find_7upinf(filename,"pck",1),"w"))!=NULL) { /* Pickfile ”ffnen */
 		graf_mouse(BUSY_BEE,NULL);	
 		fprintf(fp,"%s\n",NEWVERSIONNAME);
 		/* Erst die neuen bzw. ge„nderten, ... */
